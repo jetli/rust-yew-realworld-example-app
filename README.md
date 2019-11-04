@@ -1,5 +1,7 @@
 # ![RealWorld Example App](logo.png)
 
+[![RealWorld Frontend](https://img.shields.io/badge/realworld-frontend-%23783578.svg)](http://realworld.io)
+
 > ### [Rust] + [Yew] codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld] spec and API.
 
 
