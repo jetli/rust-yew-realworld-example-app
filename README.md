@@ -6,7 +6,7 @@
 ### [Demo]&nbsp;&nbsp;&nbsp;&nbsp;[RealWorld]
 
 
-This codebase was created to demonstrate a fully fledged fullstack application built with [Yew] including CRUD operations, authentication, routing, pagination, and more.
+This codebase was created to demonstrate a fully fledged [WebAssembly] web application built with [Yew] including CRUD operations, authentication, routing, pagination, and more.
 
 We've gone to great lengths to adhere to the [Yew] community styleguides & best practices.
 
@@ -15,7 +15,7 @@ For more information on how to this works with other frontends/backends, head ov
 
 # How it works
 
-> Describe the general architecture of your app here
+This is an application written in [Rust] that utilizes [Yew] and [WebAssembly] for developing the frontend web app that powers the RealWorld application.
 
 # Getting started
 
@@ -34,3 +34,4 @@ For more information on how to this works with other frontends/backends, head ov
 [Yew]: https://github.com/yewstack/yew
 [RealWorld]: https://github.com/gothinkster/realworld
 [Demo]:https://github.com/gothinkster/realworld
+[WebAssembly]: https://webassembly.org
