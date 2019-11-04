@@ -1,3 +1,3 @@
 fn main() {
-    println!("Hello, world!");
+    yew::start_app::<conduit_wasm::Model>();
 }

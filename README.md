@@ -28,7 +28,7 @@ This is an application written in [Rust] that utilizes [Yew] and [WebAssembly] f
   ```
 * Build and start
   ```
-  cargo web start
+  cargo web start -p conduit-wasm
   ```
 * Visit http://[::1]:8000
 
