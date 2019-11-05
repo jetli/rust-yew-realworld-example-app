@@ -1,6 +1,7 @@
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
+use yew_router::prelude::*;
 
-use crate::components::home::Home;
+use crate::components::{header::Header, home::Home, login::Login, register::Register};
 
 /// The main app component
 pub struct App {}
@@ -27,8 +28,27 @@ impl Component for App {
     fn view(&self) -> Html<Self> {
         html! {
             <>
-                <Home />
+                <Header />
+                <Router<AppRoute, ()>
+                    render = Router::render(|switch: AppRoute| {
+                        match switch {
+                            AppRoute::Login => html!{<Login />},
+                            AppRoute::Register => html!{<Register />},
+                            AppRoute::Home => html!{<Home />},
+                        }
+                    })
+                />
             </>
         }
     }
+}
+
+#[derive(Switch, Debug, Clone)]
+pub enum AppRoute {
+    #[to = "/login"]
+    Login,
+    #[to = "/register"]
+    Register,
+    #[to = "/"]
+    Home,
 }
