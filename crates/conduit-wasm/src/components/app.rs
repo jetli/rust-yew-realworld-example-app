@@ -1,5 +1,7 @@
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
+use crate::components::home::Home;
+
 /// The main app component
 pub struct App {}
 
@@ -17,13 +19,16 @@ impl Component for App {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::DoIt => true,
+            Msg::DoIt => {}
         }
+        true
     }
 
     fn view(&self) -> Html<Self> {
         html! {
-            <button onclick=|_| Msg::DoIt>{ "Click me!" }</button>
+            <>
+                <Home />
+            </>
         }
     }
 }
