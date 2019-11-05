@@ -1,4 +1,4 @@
-use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
+use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
 /// The main app component
 pub struct App {}
@@ -20,9 +20,7 @@ impl Component for App {
             Msg::DoIt => true,
         }
     }
-}
 
-impl Renderable<App> for App {
     fn view(&self) -> Html<Self> {
         html! {
             <button onclick=|_| Msg::DoIt>{ "Click me!" }</button>
