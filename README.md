@@ -28,14 +28,14 @@ You can view a live demo over at [Demo]
   ```
   cargo install cargo-web
   ```
-* Build and start
+* Build and develop
   ```
   cargo web start -p conduit-wasm
   ```
-* Visit http://[::1]:8000
+  You can visit http://[::1]:8000 in your browser now.
 * Build and release
   ```
-  cargo web deploy -p conduit-wasm
+  cargo web deploy -p conduit-wasm --release
   ```
   You should find static files at `target/deploy` folder now.
 
