@@ -45,9 +45,9 @@ impl Component for App {
 
 #[derive(Switch, Debug, Clone)]
 pub enum AppRoute {
-    #[to = "/login"]
+    #[to = "/#login"]
     Login,
-    #[to = "/register"]
+    #[to = "/#register"]
     Register,
     #[to = "/"]
     Home,
