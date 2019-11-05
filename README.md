@@ -44,11 +44,24 @@ You can view a live demo over at [Demo]
   ```
   You should find static files at `target/deploy` folder now.
 
-[Rust]: https://www.rust-lang.org/
-[Yew]: https://github.com/yewstack/yew
-[RealWorld]: https://github.com/gothinkster/realworld
-[Demo]:https://jetli.github.io/rust-yew-realworld-example-app/
-[WebAssembly]: https://webassembly.org
+# Contributing
+
+Feel free to take a look at the current issues in this repo for anything that currently needs to be worked on.
+
+You are also welcome to open a PR or a new issue if you see something is missing or could be improved upon.
+
+# License
+
+Apache License (Version 2.0)
+
+See [LICENSE] for details
+
 [cargo-web]: https://github.com/koute/cargo-web
 [Cargo.toml]: ./crates/conduit-wasm/Cargo.toml
+[Demo]:https://jetli.github.io/rust-yew-realworld-example-app/
+[LICENSE]: ./LICENSE
+[RealWorld]: https://github.com/gothinkster/realworld
+[Rust]: https://www.rust-lang.org/
+[WebAssembly]: https://webassembly.org
+[Yew]: https://github.com/yewstack/yew
 [yew-router]: https://github.com/yewstack/yew_router
