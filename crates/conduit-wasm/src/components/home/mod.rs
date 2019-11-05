@@ -26,12 +26,20 @@ impl Component for Home {
 
     fn view(&self) -> Html<Self> {
         html! {
-            <>
+            <div class="home-page">
                 <Banner />
-                { "Home" }
-                <MainView />
-                <Tags />
-            </>
+                <div class="container page">
+                    <div class="row">
+                        <MainView />
+                        <div class="col-md-3">
+                            <div class="sidebar">
+                                <p>{ "Popular Tags" }</p>
+                                <Tags />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
     }
 }

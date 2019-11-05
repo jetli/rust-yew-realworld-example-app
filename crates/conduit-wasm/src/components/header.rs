@@ -19,9 +19,22 @@ impl Component for Header {
 
     fn view(&self) -> Html<Self> {
         html! {
-            <div>
-                <RouterLink text="Login" link="/login"/> { "|" } <RouterLink text="Register" link="/register"/>
-            </div>
+            <nav class="navbar navbar-light">
+                <div class="container">
+                    <RouterLink text="conduit" link="/" classes="navbar-brand"/>
+                    <ul class="nav navbar-nav pull-xs-right">
+                        <li class="nav-item">
+                            <RouterLink text="Home" link="/" classes="nav-link"/>
+                        </li>
+                        <li class="nav-item">
+                            <RouterLink text="Sign in" link="/login" classes="nav-link"/>
+                        </li>
+                        <li class="nav-item">
+                            <RouterLink text="Sign up" link="/register" classes="nav-link"/>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
         }
     }
 }

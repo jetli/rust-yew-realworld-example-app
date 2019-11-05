@@ -18,7 +18,22 @@ impl Component for MainView {
 
     fn view(&self) -> Html<Self> {
         html! {
-            <div>{ "MainView" }</div>
+            <div class="col-md-9">
+                <div class="feed-toggle">
+                    <ul class="nav nav-pills outline-active">
+                        <li className="nav-item">
+                            <a
+                                href=""
+                                class="nav-link active"
+                                >
+                                { "Global Feed" }
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                // TO DO: ArticleList
+            </div>
         }
     }
 }
