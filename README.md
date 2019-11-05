@@ -19,12 +19,17 @@ For more information on how to this works with other frontends/backends, head ov
 
 This is an application written in [Rust] that utilizes [Yew] and [WebAssembly] for developing the frontend web app that powers the RealWorld application.
 
+You can view a full list of crates being used in [Cargo.toml], but here are some of the main ones of note:
+
+* [Yew] - a modern Rust framework for creating multi-threaded frontend apps with WebAssembly.
+* [yew-router] - a routing library for the [Yew] framework.
+
 # Getting started
 
 You can view a live demo over at [Demo]
 
 * Install [Rust]
-* Install cargo-web
+* Install [cargo-web]
   ```
   cargo install cargo-web
   ```
@@ -32,7 +37,7 @@ You can view a live demo over at [Demo]
   ```
   cargo web start -p conduit-wasm
   ```
-  You can visit http://[::1]:8000 in your browser now.
+  You can visit `http://[::1]:8000` in your browser now.
 * Build and release
   ```
   cargo web deploy -p conduit-wasm --release
@@ -44,3 +49,6 @@ You can view a live demo over at [Demo]
 [RealWorld]: https://github.com/gothinkster/realworld
 [Demo]:https://jetli.github.io/rust-yew-realworld-example-app/
 [WebAssembly]: https://webassembly.org
+[cargo-web]: https://github.com/koute/cargo-web
+[Cargo.toml]: ./crates/conduit-wasm/Cargo.toml
+[yew-router]: https://github.com/yewstack/yew_router
