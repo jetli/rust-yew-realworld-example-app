@@ -21,6 +21,8 @@ This is an application written in [Rust] that utilizes [Yew] and [WebAssembly] f
 
 # Getting started
 
+You can view a live demo over at [Demo]
+
 * Install [Rust]
 * Install cargo-web
   ```
@@ -31,9 +33,14 @@ This is an application written in [Rust] that utilizes [Yew] and [WebAssembly] f
   cargo web start -p conduit-wasm
   ```
 * Visit http://[::1]:8000
+* Build and release
+  ```
+  cargo web deploy -p conduit-wasm
+  ```
+  You should find static files at `target/deploy` folder now.
 
 [Rust]: https://www.rust-lang.org/
 [Yew]: https://github.com/yewstack/yew
 [RealWorld]: https://github.com/gothinkster/realworld
-[Demo]:https://github.com/gothinkster/realworld
+[Demo]:https://jetli.github.io/rust-yew-realworld-example-app/
 [WebAssembly]: https://webassembly.org
