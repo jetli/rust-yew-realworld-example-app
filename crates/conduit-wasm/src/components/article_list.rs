@@ -11,8 +11,8 @@ use crate::types::{ArticleInfo, ArticleListInfo};
 pub struct ArticleList {
     articles: Articles,
     article_list: Option<ArticleListInfo>,
-    callback: Callback<Result<ArticleListInfo, Error>>,
-    task: Option<FetchTask>,
+    article_list_callback: Callback<Result<ArticleListInfo, Error>>,
+    article_list_task: Option<FetchTask>,
 }
 
 pub enum Msg {
@@ -28,22 +28,22 @@ impl Component for ArticleList {
         ArticleList {
             articles: Articles::new(),
             article_list: None,
-            callback: link.send_back(Msg::ArticleListReady),
-            task: None,
+            article_list_callback: link.send_back(Msg::ArticleListReady),
+            article_list_task: None,
         }
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        let task = self.articles.all(self.callback.clone());
-        self.task = Some(task);
+        let task = self.articles.all(0, self.article_list_callback.clone());
+        self.article_list_task = Some(task);
         false
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::ArticleList => {
-                let task = self.articles.all(self.callback.clone());
-                self.task = Some(task);
+                let task = self.articles.all(0, self.article_list_callback.clone());
+                self.article_list_task = Some(task);
             }
             Msg::ArticleListReady(Ok(article_list)) => {
                 self.article_list = Some(article_list);

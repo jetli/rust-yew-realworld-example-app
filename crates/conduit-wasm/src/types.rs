@@ -15,7 +15,7 @@ pub struct ArticleInfo {
     pub slug: String,
     pub title: String,
     pub description: String,
-    pub body: Option<String>,
+    pub body: String,
     pub tag_list: Vec<String>,
     pub created_at: String,
     pub updated_at: String,
