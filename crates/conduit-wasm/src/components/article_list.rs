@@ -16,7 +16,6 @@ pub struct ArticleList {
 }
 
 pub enum Msg {
-    ArticleList,
     ArticleListReady(Result<ArticleListInfo, Error>),
 }
 
@@ -41,15 +40,11 @@ impl Component for ArticleList {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::ArticleList => {
-                let task = self.articles.all(0, self.article_list_callback.clone());
-                self.article_list_task = Some(task);
-            }
             Msg::ArticleListReady(Ok(article_list)) => {
                 self.article_list = Some(article_list);
             }
             Msg::ArticleListReady(Err(err)) => {
-                // Can't load article list
+                // Can't load data
                 info!("{:?}", err);
             }
         }

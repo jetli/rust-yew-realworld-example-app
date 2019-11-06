@@ -30,3 +30,9 @@ pub struct ArticleListInfo {
     pub articles: Vec<ArticleInfo>,
     pub articles_count: u32,
 }
+
+#[derive(Deserialize, Debug, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct TagListInfo {
+    pub tags: Vec<String>,
+}

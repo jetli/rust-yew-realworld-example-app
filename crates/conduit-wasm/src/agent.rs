@@ -4,7 +4,7 @@ use yew::callback::Callback;
 use yew::format::{Json, Nothing};
 use yew::services::fetch::{FetchService, FetchTask, Request, Response};
 
-use crate::types::ArticleListInfo;
+use crate::types::{ArticleListInfo, TagListInfo};
 
 const API_ROOT: &'static str = "https://conduit.productionready.io/api";
 
@@ -29,10 +29,7 @@ impl Requests {
             if meta.status.is_success() {
                 callback.emit(data)
             } else {
-                callback.emit(Err(format_err!(
-                    "{}: error getting article list",
-                    meta.status
-                )))
+                callback.emit(Err(format_err!("{}: error getting data", meta.status)))
             }
         };
         let request = Request::get(url.as_str()).body(Nothing).unwrap();
@@ -75,5 +72,21 @@ impl Articles {
             format!("/articles?author={}&{}", author, limit(10, page)),
             callback,
         )
+    }
+}
+
+pub struct Tags {
+    requests: Requests,
+}
+
+impl Tags {
+    pub fn new() -> Self {
+        Self {
+            requests: Requests::new(),
+        }
+    }
+
+    pub fn get_all(&mut self, callback: Callback<Result<TagListInfo, Error>>) -> FetchTask {
+        self.requests.get::<TagListInfo>(format!("/tags"), callback)
     }
 }
