@@ -27,10 +27,10 @@ impl Component for Header {
                             <RouterLink text="Home" link="/" classes="nav-link"/>
                         </li>
                         <li class="nav-item">
-                            <RouterLink text="Sign in" link="/#login" classes="nav-link"/>
+                            <RouterLink text="Sign in" link="/login" classes="nav-link"/>
                         </li>
                         <li class="nav-item">
-                            <RouterLink text="Sign up" link="/#register" classes="nav-link"/>
+                            <RouterLink text="Sign up" link="/register" classes="nav-link"/>
                         </li>
                     </ul>
                 </div>

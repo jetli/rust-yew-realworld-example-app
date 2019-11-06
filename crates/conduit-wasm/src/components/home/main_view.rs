@@ -1,5 +1,7 @@
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
+use crate::components::article_list::ArticleList;
+
 pub struct MainView {}
 
 pub enum Msg {}
@@ -32,7 +34,7 @@ impl Component for MainView {
                     </ul>
                 </div>
 
-                // TO DO: ArticleList
+                <ArticleList />
             </div>
         }
     }

@@ -1,7 +1,7 @@
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 use yew_router::prelude::*;
 
-use crate::components::{header::Header, home::Home, login::Login, register::Register};
+use super::{header::Header, home::Home, login::Login, register::Register};
 
 /// The main app component
 pub struct App {}
@@ -45,9 +45,9 @@ impl Component for App {
 
 #[derive(Switch, Debug, Clone)]
 pub enum AppRoute {
-    #[to = "/#login"]
+    #[to = "/login"]
     Login,
-    #[to = "/#register"]
+    #[to = "/register"]
     Register,
     #[to = "/"]
     Home,

@@ -42,7 +42,7 @@ You can view a live demo over at [Demo]
   ```
   cargo web deploy -p conduit-wasm --release
   ```
-  You should find static files at `target/deploy` folder now.
+  You should find static files at `target/deploy` folder now, they are hosted in [gh-pages] branch as a demo.
 
 # Contributing
 
@@ -58,7 +58,8 @@ See [LICENSE] for details
 
 [cargo-web]: https://github.com/koute/cargo-web
 [Cargo.toml]: ./crates/conduit-wasm/Cargo.toml
-[Demo]:https://jetli.github.io/rust-yew-realworld-example-app/
+[Demo]: https://jetli.github.io/rust-yew-realworld-example-app/
+[gh-pages]: https://github.com/jetli/rust-yew-realworld-example-app/tree/gh-pages
 [LICENSE]: ./LICENSE
 [RealWorld]: https://github.com/gothinkster/realworld
 [Rust]: https://www.rust-lang.org/
