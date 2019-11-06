@@ -4,7 +4,7 @@ use yew::services::fetch::FetchTask;
 use yew::{html, Callback, Component, ComponentLink, Html, ShouldRender};
 use yew_router::prelude::*;
 
-use super::article_preview::ArticlePreview;
+//use super::article_preview::ArticlePreview;
 use crate::agent::Articles;
 use crate::types::{ArticleInfo, ArticleListInfo};
 

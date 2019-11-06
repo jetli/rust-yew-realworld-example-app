@@ -1,7 +1,10 @@
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 use yew_router::prelude::*;
 
-use super::{header::Header, home::Home, login::Login, register::Register};
+use super::{
+    article::Article, editor::Editor, header::Header, home::Home, login::Login, profile::Profile,
+    profile_favorites::ProfileFavorites, register::Register, settings::Settings,
+};
 
 /// The main app component
 pub struct App {}
@@ -35,6 +38,12 @@ impl Component for App {
                             AppRoute::Login => html!{<Login />},
                             AppRoute::Register => html!{<Register />},
                             AppRoute::Home => html!{<Home />},
+                            AppRoute::Editor(slug) => html!{<Editor />},
+                            AppRoute::EditorCreate => html!{<Editor />},
+                            AppRoute::Article(id) => html!{<Article />},
+                            AppRoute::Settings => html!{<Settings />},
+                            AppRoute::ProfileFavorites(username) => html!{<ProfileFavorites />},
+                            AppRoute::Profile(username) => html!{<Profile />},
                         }
                     })
                 />
@@ -51,4 +60,16 @@ pub enum AppRoute {
     Register,
     #[to = "/"]
     Home,
+    #[to = "/editor/{slug}"]
+    Editor(String),
+    #[to = "/editor"]
+    EditorCreate,
+    #[to = "/article/{id}"]
+    Article(String),
+    #[to = "/settings"]
+    Settings,
+    #[to = "/@{username}/favorites"]
+    ProfileFavorites(String),
+    #[to = "/@{username}"]
+    Profile(String),
 }
