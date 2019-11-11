@@ -77,7 +77,12 @@ impl Requests {
         self.builder("POST", url, body, callback)
     }
 
-    fn put<B, T>(&mut self, url: String, body: B, callback: Callback<Result<T, Error>>) -> FetchTask
+    fn put<B, T>(
+        &mut self,
+        url: String,
+        body: B,
+        callback: Callback<Result<T, Error>>,
+    ) -> FetchTask
     where
         for<'de> T: Deserialize<'de> + 'static,
         B: Serialize,
