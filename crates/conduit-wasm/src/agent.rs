@@ -21,7 +21,13 @@ impl Requests {
         }
     }
 
-    fn builder<B, T>(&mut self, method: &str, url: String, body: B, callback: Callback<Result<T, Error>>) -> FetchTask
+    fn builder<B, T>(
+        &mut self,
+        method: &str,
+        url: String,
+        body: B,
+        callback: Callback<Result<T, Error>>,
+    ) -> FetchTask
     where
         for<'de> T: Deserialize<'de> + 'static,
         B: Into<Text>,
@@ -35,7 +41,11 @@ impl Requests {
                 callback.emit(Err(format_err!("{}: error getting data", meta.status)))
             }
         };
-        let request = Request::builder().method(method).uri(url.as_str()).body(body).unwrap();
+        let request = Request::builder()
+            .method(method)
+            .uri(url.as_str())
+            .body(body)
+            .unwrap();
         self.fetch.fetch(request, handler.into())
     }
 
@@ -53,7 +63,12 @@ impl Requests {
         self.builder("GET", url, Nothing, callback)
     }
 
-    fn post<B, T>(&mut self, url: String, body: B, callback: Callback<Result<T, Error>>) -> FetchTask
+    fn post<B, T>(
+        &mut self,
+        url: String,
+        body: B,
+        callback: Callback<Result<T, Error>>,
+    ) -> FetchTask
     where
         for<'de> T: Deserialize<'de> + 'static,
         B: Serialize,
