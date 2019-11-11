@@ -1,6 +1,6 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct ProfileInfo {
     pub username: String,
@@ -9,7 +9,7 @@ pub struct ProfileInfo {
     pub following: bool,
 }
 
-#[derive(Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct ArticleInfo {
     pub slug: String,
@@ -24,14 +24,14 @@ pub struct ArticleInfo {
     pub author: ProfileInfo,
 }
 
-#[derive(Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct ArticleListInfo {
     pub articles: Vec<ArticleInfo>,
     pub articles_count: u32,
 }
 
-#[derive(Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct TagListInfo {
     pub tags: Vec<String>,

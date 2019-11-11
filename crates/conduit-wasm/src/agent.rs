@@ -1,27 +1,30 @@
+#![allow(dead_code)]
+
 use failure::{format_err, Error};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use yew::callback::Callback;
-use yew::format::{Json, Nothing};
+use yew::format::{Json, Nothing, Text};
 use yew::services::fetch::{FetchService, FetchTask, Request, Response};
 
 use crate::types::{ArticleListInfo, TagListInfo};
 
 const API_ROOT: &'static str = "https://conduit.productionready.io/api";
 
-pub struct Requests {
+struct Requests {
     fetch: FetchService,
 }
 
 impl Requests {
-    pub fn new() -> Self {
+    fn new() -> Self {
         Self {
             fetch: FetchService::new(),
         }
     }
 
-    pub fn get<T>(&mut self, url: String, callback: Callback<Result<T, Error>>) -> FetchTask
+    fn builder<B, T>(&mut self, method: &str, url: String, body: B, callback: Callback<Result<T, Error>>) -> FetchTask
     where
         for<'de> T: Deserialize<'de> + 'static,
+        B: Into<Text>,
     {
         let url = format!("{}{}", API_ROOT, url);
         let handler = move |response: Response<Json<Result<T, Error>>>| {
@@ -32,8 +35,40 @@ impl Requests {
                 callback.emit(Err(format_err!("{}: error getting data", meta.status)))
             }
         };
-        let request = Request::get(url.as_str()).body(Nothing).unwrap();
+        let request = Request::builder().method(method).uri(url.as_str()).body(body).unwrap();
         self.fetch.fetch(request, handler.into())
+    }
+
+    fn delete<T>(&mut self, url: String, callback: Callback<Result<T, Error>>) -> FetchTask
+    where
+        for<'de> T: Deserialize<'de> + 'static,
+    {
+        self.builder("DELETE", url, Nothing, callback)
+    }
+
+    fn get<T>(&mut self, url: String, callback: Callback<Result<T, Error>>) -> FetchTask
+    where
+        for<'de> T: Deserialize<'de> + 'static,
+    {
+        self.builder("GET", url, Nothing, callback)
+    }
+
+    fn post<B, T>(&mut self, url: String, body: B, callback: Callback<Result<T, Error>>) -> FetchTask
+    where
+        for<'de> T: Deserialize<'de> + 'static,
+        B: Serialize,
+    {
+        let body: Text = Json(&body).into();
+        self.builder("POST", url, body, callback)
+    }
+
+    fn put<B, T>(&mut self, url: String, body: B, callback: Callback<Result<T, Error>>) -> FetchTask
+    where
+        for<'de> T: Deserialize<'de> + 'static,
+        B: Serialize,
+    {
+        let body: Text = Json(&body).into();
+        self.builder("PUT", url, body, callback)
     }
 }
 
