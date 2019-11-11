@@ -53,7 +53,7 @@ impl Component for ArticleList {
 
     fn view(&self) -> Html<Self> {
         if let Some(article_list) = &self.article_list {
-            if article_list.articles.len() > 0 {
+            if !article_list.articles.is_empty() {
                 html! {
                     <>
                         {for article_list.articles.iter().map(|article| {

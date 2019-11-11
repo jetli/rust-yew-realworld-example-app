@@ -8,8 +8,9 @@ use yew::services::fetch::{FetchService, FetchTask, Request, Response};
 
 use crate::types::{ArticleListInfo, TagListInfo};
 
-const API_ROOT: &'static str = "https://conduit.productionready.io/api";
+const API_ROOT: &str = "https://conduit.productionready.io/api";
 
+#[derive(Default, Debug)]
 struct Requests {
     fetch: FetchService,
 }
@@ -77,12 +78,7 @@ impl Requests {
         self.builder("POST", url, body, callback)
     }
 
-    fn put<B, T>(
-        &mut self,
-        url: String,
-        body: B,
-        callback: Callback<Result<T, Error>>,
-    ) -> FetchTask
+    fn put<B, T>(&mut self, url: String, body: B, callback: Callback<Result<T, Error>>) -> FetchTask
     where
         for<'de> T: Deserialize<'de> + 'static,
         B: Serialize,
@@ -97,6 +93,7 @@ fn limit(count: u32, p: u32) -> String {
     format!("limit={}&offset={}", count, offset)
 }
 
+#[derive(Default, Debug)]
 pub struct Articles {
     requests: Requests,
 }
@@ -130,6 +127,7 @@ impl Articles {
     }
 }
 
+#[derive(Default, Debug)]
 pub struct Tags {
     requests: Requests,
 }
@@ -142,6 +140,7 @@ impl Tags {
     }
 
     pub fn get_all(&mut self, callback: Callback<Result<TagListInfo, Error>>) -> FetchTask {
-        self.requests.get::<TagListInfo>(format!("/tags"), callback)
+        self.requests
+            .get::<TagListInfo>("/tags".to_string(), callback)
     }
 }

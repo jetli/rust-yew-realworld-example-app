@@ -3,8 +3,8 @@ use yew_router::prelude::*;
 
 use crate::types::ArticleInfo;
 
-//const FAVORITED_CLASS: &'static str = "btn btn-sm btn-primary";
-const NOT_FAVORITED_CLASS: &'static str = "btn btn-sm btn-outline-primary";
+//const FAVORITED_CLASS: &str = "btn btn-sm btn-primary";
+const NOT_FAVORITED_CLASS: &str = "btn btn-sm btn-outline-primary";
 
 pub struct ArticlePreview {
     #[allow(dead_code)]
