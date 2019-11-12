@@ -6,7 +6,7 @@ use yew::callback::Callback;
 use yew::format::{Json, Nothing, Text};
 use yew::services::fetch::{FetchService, FetchTask, Request, Response};
 
-use crate::types::{ArticleListInfo, TagListInfo};
+use crate::types::*;
 
 const API_ROOT: &str = "https://conduit.productionready.io/api";
 
@@ -142,5 +142,60 @@ impl Tags {
     pub fn get_all(&mut self, callback: Callback<Result<TagListInfo, Error>>) -> FetchTask {
         self.requests
             .get::<TagListInfo>("/tags".to_string(), callback)
+    }
+}
+
+#[derive(Default, Debug)]
+pub struct Auth {
+    requests: Requests,
+}
+
+impl Auth {
+    pub fn new() -> Self {
+        Self {
+            requests: Requests::new(),
+        }
+    }
+
+    pub fn current(&mut self, callback: Callback<Result<UserInfoWrapper, Error>>) -> FetchTask {
+        self.requests
+            .get::<UserInfoWrapper>("/user".to_string(), callback)
+    }
+
+    pub fn login(
+        &mut self,
+        login_info: LoginInfoWrapper,
+        callback: Callback<Result<UserInfoWrapper, Error>>,
+    ) -> FetchTask {
+        self.requests.post::<LoginInfoWrapper, UserInfoWrapper>(
+            "/users/login".to_string(),
+            login_info,
+            callback,
+        )
+    }
+
+    pub fn register(
+        &mut self,
+        register_info: RegisterInfoWrapper,
+        callback: Callback<Result<UserInfoWrapper, Error>>,
+    ) -> FetchTask {
+        self.requests.post::<RegisterInfoWrapper, UserInfoWrapper>(
+            "/users".to_string(),
+            register_info,
+            callback,
+        )
+    }
+
+    pub fn save(
+        &mut self,
+        user_update_info: UserUpdateInfoWrapper,
+        callback: Callback<Result<UserInfoWrapper, Error>>,
+    ) -> FetchTask {
+        self.requests
+            .post::<UserUpdateInfoWrapper, UserInfoWrapper>(
+                "/user".to_string(),
+                user_update_info,
+                callback,
+            )
     }
 }
