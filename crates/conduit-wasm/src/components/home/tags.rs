@@ -1,9 +1,9 @@
-use failure::Error;
 use log::info;
 use yew::services::fetch::FetchTask;
 use yew::{html, Callback, Component, ComponentLink, Html, ShouldRender};
 
 use crate::agent::Tags as TagsAgent;
+use crate::error::Error;
 use crate::types::TagListInfo;
 
 pub struct Tags {

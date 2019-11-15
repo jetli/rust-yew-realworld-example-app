@@ -1,4 +1,3 @@
-use failure::Error;
 use log::info;
 use yew::services::fetch::FetchTask;
 use yew::{html, Callback, Component, ComponentLink, Html, ShouldRender};
@@ -6,6 +5,7 @@ use yew_router::prelude::*;
 
 //use super::article_preview::ArticlePreview;
 use crate::agent::Articles;
+use crate::error::Error;
 use crate::types::{ArticleInfo, ArticleListInfo};
 
 pub struct ArticleList {

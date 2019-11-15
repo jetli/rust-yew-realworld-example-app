@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct ErrorInfo {
-    errors: HashMap<String, Vec<String>>,
+    pub errors: HashMap<String, Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -26,7 +26,7 @@ pub struct ArticleInfo {
 #[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct ArticleInfoWrapper {
-    article: ArticleInfo,
+    pub article: ArticleInfo,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -48,7 +48,7 @@ pub struct ArticleCreateInfo {
 #[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct ArticleCreateInfoWrapper {
-    article: ArticleCreateInfo,
+    pub article: ArticleCreateInfo,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -115,7 +115,7 @@ pub struct LoginInfo {
 #[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct LoginInfoWrapper {
-    user: LoginInfo,
+    pub user: LoginInfo,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -129,7 +129,7 @@ pub struct RegisterInfo {
 #[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct RegisterInfoWrapper {
-    user: RegisterInfo,
+    pub user: RegisterInfo,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -139,7 +139,7 @@ pub struct UserInfo {
     pub token: String,
     pub username: String,
     pub bio: Option<String>,
-    pub image: String,
+    pub image: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
