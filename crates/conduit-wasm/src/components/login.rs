@@ -76,7 +76,7 @@ impl Component for Login {
                         <div class="col-md-6 offset-md-3 col-xs-12">
                             <h1 class="text-xs-center">{ "Sign In" }</h1>
                             <p class="text-xs-center">
-                                <RouterLink text="Need an account?" link="/#register"/>
+                                <RouterLink text="Need an account?" link="/#/register"/>
                             </p>
                             { self.list_errors(&self.error) }
                             <form onsubmit=|ev| { ev.prevent_default(); Msg::Login }>

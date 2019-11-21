@@ -81,7 +81,7 @@ impl ArticleList {
                 <div class="article-meta">
                     <img src={ &article.author.image } />
                     <div class="info">
-                        <RouterLink text={ &article.author.username } link={ format!("/@{}", &article.author.username) } classes="author" />
+                        <RouterLink text={ &article.author.username } link={ format!("/#/@{}", &article.author.username) } classes="author" />
                         <span class="date">
                             { &article.created_at }
                         </span>
@@ -92,9 +92,9 @@ impl ArticleList {
                         </button>
                     </div>
                 </div>
-                <h1><RouterLink text={ &article.title } link={ format!("/article/{}", &article.slug) } classes="preview-link" /></h1>
+                <h1><RouterLink text={ &article.title } link={ format!("/#/article/{}", &article.slug) } classes="preview-link" /></h1>
                 <p>{ &article.description }</p>
-                <span><RouterLink text="Read more..." link={ format!("/article/{}", &article.slug) } /></span>
+                <span><RouterLink text="Read more..." link={ format!("/#/article/{}", &article.slug) } /></span>
                 <ul class="tag-list">
                     {for article.tag_list.iter().map(|tag| {
                         html! {

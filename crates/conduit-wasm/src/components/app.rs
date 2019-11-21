@@ -54,22 +54,22 @@ impl Component for App {
 
 #[derive(Switch, Debug, Clone)]
 pub enum AppRoute {
-    #[to = "/login"]
+    #[to = "/#/login"]
     Login,
-    #[to = "/register"]
+    #[to = "/#/register"]
     Register,
+    #[to = "/#/editor/{slug}"]
+    Editor(String),
+    #[to = "/#/editor"]
+    EditorCreate,
+    #[to = "/#/article/{id}"]
+    Article(String),
+    #[to = "/#/settings"]
+    Settings,
+    #[to = "/#/@{username}/favorites"]
+    ProfileFavorites(String),
+    #[to = "/#/@{username}"]
+    Profile(String),
     #[to = "/"]
     Home,
-    #[to = "/editor/{slug}"]
-    Editor(String),
-    #[to = "/editor"]
-    EditorCreate,
-    #[to = "/article/{id}"]
-    Article(String),
-    #[to = "/settings"]
-    Settings,
-    #[to = "/@{username}/favorites"]
-    ProfileFavorites(String),
-    #[to = "/@{username}"]
-    Profile(String),
 }
