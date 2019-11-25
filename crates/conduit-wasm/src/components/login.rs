@@ -1,16 +1,15 @@
 use stdweb::web::event::IEvent;
 use yew::services::fetch::FetchTask;
-use yew::{html, Callback, Component, ComponentLink, Html, ShouldRender};
+use yew::{html, Callback, Component, ComponentLink, Html, Properties ,ShouldRender};
 use yew_router::prelude::*;
 
-use crate::agent::Auth;
+use crate::agent::{Auth, set_token};
 use crate::error::Error;
 use crate::types::{LoginInfo, LoginInfoWrapper, UserInfoWrapper};
 
 pub struct Login {
     auth: Auth,
     login_info: LoginInfo,
-    user_info: Option<UserInfoWrapper>,
     login_callback: Callback<Result<UserInfoWrapper, Error>>,
     login_task: Option<FetchTask>,
     error: Option<Error>,
@@ -23,15 +22,20 @@ pub enum Msg {
     UpdatePassword(String),
 }
 
+#[derive(PartialEq, Properties)]
+pub struct Props {
+    //#[props(required)]
+    //pub callback: Callback<UserInfo>,
+}
+
 impl Component for Login {
     type Message = Msg;
-    type Properties = ();
+    type Properties = Props;
 
     fn create(_: Self::Properties, mut link: ComponentLink<Self>) -> Self {
         Login {
             auth: Auth::new(),
             login_info: LoginInfo::default(),
-            user_info: None,
             login_callback: link.send_back(Msg::LoginReady),
             login_task: None,
             error: None,
@@ -51,11 +55,11 @@ impl Component for Login {
                 self.login_task = Some(task);
             }
             Msg::LoginReady(Ok(user_info)) => {
-                self.user_info = Some(user_info);
+                set_token(Some(user_info.user.token.clone()));
+                let _user_info = user_info.user;
                 self.error = None;
             }
             Msg::LoginReady(Err(err)) => {
-                self.user_info = None;
                 self.error = Some(err);
             }
             Msg::UpdateEmail(email) => {

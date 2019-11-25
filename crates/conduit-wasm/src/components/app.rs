@@ -5,12 +5,15 @@ use super::{
     article::Article, editor::Editor, header::Header, home::Home, login::Login, profile::Profile,
     profile_favorites::ProfileFavorites, register::Register, settings::Settings,
 };
+use crate::types::UserInfo;
 
 /// The main app component
-pub struct App {}
+pub struct App {
+    current_user: Option<UserInfo>,
+}
 
 pub enum Msg {
-    DoIt,
+    LoginReady(UserInfo),
 }
 
 impl Component for App {
@@ -18,12 +21,16 @@ impl Component for App {
     type Properties = ();
 
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        App {}
+        App {
+            current_user: None,
+        }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::DoIt => {}
+            Msg::LoginReady(user_info) => {
+                self.current_user = Some(user_info);
+            }
         }
         true
     }
@@ -32,8 +39,9 @@ impl Component for App {
         html! {
             <>
                 <Header />
-                <Router<AppRoute, ()>
-                    render = Router::render(|switch: AppRoute| {
+                <Router<AppRoute, Msg>
+                    callback = From::from
+                    render = Router::render(|switch: AppRoute| -> Html<Router<AppRoute, Msg>>{
                         match switch {
                             AppRoute::Login => html!{<Login />},
                             AppRoute::Register => html!{<Register />},

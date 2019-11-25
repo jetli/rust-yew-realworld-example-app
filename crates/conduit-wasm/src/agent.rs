@@ -1,16 +1,47 @@
 #![allow(dead_code)]
 
+use lazy_static::lazy_static;
 use log::debug;
+use parking_lot::RwLock;
 use serde::{Deserialize, Serialize};
 use serde_json;
 use yew::callback::Callback;
 use yew::format::{Json, Nothing, Text};
 use yew::services::fetch::{FetchService, FetchTask, Request, Response};
+use yew::services::storage::{Area, StorageService};
 
 use crate::error::Error;
 use crate::types::*;
 
 const API_ROOT: &str = "https://conduit.productionready.io/api";
+const TOKEN_KEY: &str = "yew.token";
+
+lazy_static! {
+    pub static ref TOKEN: RwLock<Option<String>> = {
+        let storage = StorageService::new(Area::Local);
+        if let Ok(token) = storage.restore(TOKEN_KEY) {
+            RwLock::new(Some(token))
+        } else {
+            RwLock::new(None)
+        }
+    };
+}
+
+pub fn set_token(token: Option<String>) {
+    let mut storage = StorageService::new(Area::Local);
+    if let Some(t) = token.clone() {
+        storage.store(TOKEN_KEY, Ok(t));
+    } else {
+        storage.remove(TOKEN_KEY);
+    }
+    let mut token_lock = TOKEN.write();
+    *token_lock = token;
+}
+
+pub fn get_token() -> Option<String> {
+    let token_lock = TOKEN.read();
+    token_lock.clone()
+}
 
 #[derive(Default, Debug)]
 struct Requests {
@@ -35,7 +66,6 @@ impl Requests {
         for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
         B: Into<Text> + std::fmt::Debug,
     {
-        let url = format!("{}{}", API_ROOT, url);
         let handler = move |response: Response<Text>| {
             if let (meta, Ok(data)) = response.into_parts() {
                 debug!("Response: {:?}", data);
@@ -67,13 +97,18 @@ impl Requests {
                 callback.emit(Err(Error::RequestError))
             }
         };
-        let request = Request::builder()
-            .method(method)
+
+        let url = format!("{}{}", API_ROOT, url);
+        let mut builder = Request::builder();
+        builder.method(method)
             .uri(url.as_str())
-            .header("Content-Type", "application/json")
-            .body(body)
-            .unwrap();
+            .header("Content-Type", "application/json");
+        if let Some(token) = get_token() {
+            builder.header("Authorization", format!("Token {}", token));
+        }
+        let request = builder.body(body).unwrap();
         debug!("Request: {:?}", request);
+
         self.fetch.fetch(request, handler.into())
     }
 
