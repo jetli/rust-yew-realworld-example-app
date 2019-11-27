@@ -1,18 +1,23 @@
-use yew::{html, Component, ComponentLink, Html, ShouldRender};
-use yew_router::prelude::*;
+use yew::{agent::Bridged, html, Bridge, Component, ComponentLink, Html, ShouldRender};
+use yew_router::{agent::RouteAgent, prelude::*, route::Route, service::RouteService};
 
 use super::{
     article::Article, editor::Editor, header::Header, home::Home, login::Login, profile::Profile,
     profile_favorites::ProfileFavorites, register::Register, settings::Settings,
 };
+use crate::routes::AppRoute;
 use crate::types::UserInfo;
 
 /// The main app component
 pub struct App {
+    current_route: Option<AppRoute>,
+    #[allow(unused)]
+    router_agent: Box<dyn Bridge<RouteAgent<()>>>,
     current_user: Option<UserInfo>,
 }
 
 pub enum Msg {
+    Route(Route<()>),
     LoginReady(UserInfo),
 }
 
@@ -20,14 +25,21 @@ impl Component for App {
     type Message = Msg;
     type Properties = ();
 
-    fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
+    fn create(_: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+        let router_agent = RouteAgent::bridge(link.send_back(Msg::Route));
+        let route_service: RouteService<()> = RouteService::new();
+        let route = route_service.get_route();
+        let route = Route::<()>::from(route);
         App {
+            current_route: AppRoute::switch(route),
+            router_agent,
             current_user: None,
         }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
+            Msg::Route(route) => self.current_route = AppRoute::switch(route),
             Msg::LoginReady(user_info) => {
                 self.current_user = Some(user_info);
             }
@@ -39,11 +51,10 @@ impl Component for App {
         html! {
             <>
                 <Header />
-                <Router<AppRoute, Msg>
-                    callback = From::from
-                    render = Router::render(|switch: AppRoute| -> Html<Router<AppRoute, Msg>>{
-                        match switch {
-                            AppRoute::Login => html!{<Login />},
+                {
+                    if let Some(route) = &self.current_route {
+                        match route {
+                            AppRoute::Login => html!{<Login callback=Msg::LoginReady/>},
                             AppRoute::Register => html!{<Register />},
                             AppRoute::Home => html!{<Home />},
                             AppRoute::Editor(slug) => html!{<Editor />},
@@ -53,31 +64,11 @@ impl Component for App {
                             AppRoute::ProfileFavorites(username) => html!{<ProfileFavorites />},
                             AppRoute::Profile(username) => html!{<Profile />},
                         }
-                    })
-                />
+                    } else {
+                        html! { "No child component available" }
+                    }
+                }
             </>
         }
     }
-}
-
-#[derive(Switch, Debug, Clone)]
-pub enum AppRoute {
-    #[to = "/#/login"]
-    Login,
-    #[to = "/#/register"]
-    Register,
-    #[to = "/#/editor/{slug}"]
-    Editor(String),
-    #[to = "/#/editor"]
-    EditorCreate,
-    #[to = "/#/article/{id}"]
-    Article(String),
-    #[to = "/#/settings"]
-    Settings,
-    #[to = "/#/@{username}/favorites"]
-    ProfileFavorites(String),
-    #[to = "/#/@{username}"]
-    Profile(String),
-    #[to = "/"]
-    Home,
 }

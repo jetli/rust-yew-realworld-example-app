@@ -100,7 +100,8 @@ impl Requests {
 
         let url = format!("{}{}", API_ROOT, url);
         let mut builder = Request::builder();
-        builder.method(method)
+        builder
+            .method(method)
             .uri(url.as_str())
             .header("Content-Type", "application/json");
         if let Some(token) = get_token() {

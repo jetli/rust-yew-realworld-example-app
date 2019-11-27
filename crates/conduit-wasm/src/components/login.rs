@@ -1,73 +1,90 @@
 use stdweb::web::event::IEvent;
 use yew::services::fetch::FetchTask;
-use yew::{html, Callback, Component, ComponentLink, Html, Properties ,ShouldRender};
-use yew_router::prelude::*;
+use yew::{
+    agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, Properties,
+    ShouldRender,
+};
+use yew_router::{
+    agent::{RouteAgent, RouteRequest::ChangeRoute},
+    prelude::*,
+};
 
-use crate::agent::{Auth, set_token};
+use crate::agent::{set_token, Auth};
 use crate::error::Error;
-use crate::types::{LoginInfo, LoginInfoWrapper, UserInfoWrapper};
+use crate::routes::AppRoute;
+use crate::types::{LoginInfo, LoginInfoWrapper, UserInfo, UserInfoWrapper};
 
 pub struct Login {
     auth: Auth,
-    login_info: LoginInfo,
-    login_callback: Callback<Result<UserInfoWrapper, Error>>,
-    login_task: Option<FetchTask>,
     error: Option<Error>,
-}
-
-pub enum Msg {
-    Login,
-    LoginReady(Result<UserInfoWrapper, Error>),
-    UpdateEmail(String),
-    UpdatePassword(String),
+    login_request: LoginInfo,
+    login_response: Callback<Result<UserInfoWrapper, Error>>,
+    login_task: Option<FetchTask>,
+    props: Props,
+    router_agent: Box<dyn Bridge<RouteAgent<()>>>,
 }
 
 #[derive(PartialEq, Properties)]
 pub struct Props {
-    //#[props(required)]
-    //pub callback: Callback<UserInfo>,
+    #[props(required)]
+    pub callback: Callback<UserInfo>,
+}
+
+pub enum Msg {
+    LoginRequest,
+    LoginResponse(Result<UserInfoWrapper, Error>),
+    NoOp,
+    UpdateEmail(String),
+    UpdatePassword(String),
 }
 
 impl Component for Login {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(_: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+        let router_agent = RouteAgent::bridge(link.send_back(|_| Msg::NoOp));
         Login {
             auth: Auth::new(),
-            login_info: LoginInfo::default(),
-            login_callback: link.send_back(Msg::LoginReady),
-            login_task: None,
             error: None,
+            login_request: LoginInfo::default(),
+            login_response: link.send_back(Msg::LoginResponse),
+            login_task: None,
+            props,
+            router_agent,
         }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::Login => {
-                let login_info = LoginInfoWrapper {
+            Msg::LoginRequest => {
+                let login_request = LoginInfoWrapper {
                     user: LoginInfo {
-                        email: self.login_info.email.clone(),
-                        password: self.login_info.password.clone(),
+                        email: self.login_request.email.clone(),
+                        password: self.login_request.password.clone(),
                     },
                 };
-                let task = self.auth.login(login_info, self.login_callback.clone());
+                let task = self.auth.login(login_request, self.login_response.clone());
                 self.login_task = Some(task);
             }
-            Msg::LoginReady(Ok(user_info)) => {
+            Msg::LoginResponse(Ok(user_info)) => {
                 set_token(Some(user_info.user.token.clone()));
-                let _user_info = user_info.user;
+                self.props.callback.emit(user_info.user);
                 self.error = None;
+                self.login_task = None;
+                self.router_agent.send(ChangeRoute(AppRoute::Home.into()));
             }
-            Msg::LoginReady(Err(err)) => {
+            Msg::LoginResponse(Err(err)) => {
                 self.error = Some(err);
+                self.login_task = None;
             }
             Msg::UpdateEmail(email) => {
-                self.login_info.email = email;
+                self.login_request.email = email;
             }
             Msg::UpdatePassword(password) => {
-                self.login_info.password = password;
+                self.login_request.password = password;
             }
+            Msg::NoOp => {}
         }
         true
     }
@@ -83,14 +100,14 @@ impl Component for Login {
                                 <RouterLink text="Need an account?" link="/#/register"/>
                             </p>
                             { self.list_errors(&self.error) }
-                            <form onsubmit=|ev| { ev.prevent_default(); Msg::Login }>
+                            <form onsubmit=|ev| { ev.prevent_default(); Msg::LoginRequest }>
                                 <fieldset>
                                     <fieldset class="form-group">
                                         <input
                                             class="form-control form-control-lg"
                                             type="email"
                                             placeholder="Email"
-                                            value=&self.login_info.email
+                                            value=&self.login_request.email
                                             oninput=|ev| Msg::UpdateEmail(ev.value)
                                             />
                                     </fieldset>
@@ -99,7 +116,7 @@ impl Component for Login {
                                             class="form-control form-control-lg"
                                             type="password"
                                             placeholder="Password"
-                                            value=&self.login_info.password
+                                            value=&self.login_request.password
                                             oninput=|ev| Msg::UpdatePassword(ev.value)
                                             />
                                     </fieldset>
