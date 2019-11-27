@@ -1,22 +1,29 @@
-use yew::{agent::Bridged, html, Bridge, Component, ComponentLink, Html, ShouldRender};
+use yew::services::fetch::FetchTask;
+use yew::{agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, ShouldRender};
 use yew_router::{agent::RouteAgent, prelude::*, route::Route, service::RouteService};
 
 use super::{
     article::Article, editor::Editor, header::Header, home::Home, login::Login, profile::Profile,
     profile_favorites::ProfileFavorites, register::Register, settings::Settings,
 };
+use crate::agent::Auth;
+use crate::error::Error;
 use crate::routes::AppRoute;
-use crate::types::UserInfo;
+use crate::types::{UserInfo, UserInfoWrapper};
 
 /// The main app component
 pub struct App {
+    auth: Auth,
     current_route: Option<AppRoute>,
+    current_user: Option<UserInfo>,
+    current_user_response: Callback<Result<UserInfoWrapper, Error>>,
+    current_user_task: Option<FetchTask>,
     #[allow(unused)]
     router_agent: Box<dyn Bridge<RouteAgent<()>>>,
-    current_user: Option<UserInfo>,
 }
 
 pub enum Msg {
+    CurrentUserResponse(Result<UserInfoWrapper, Error>),
     Route(Route<()>),
     LoginReady(UserInfo),
 }
@@ -31,14 +38,27 @@ impl Component for App {
         let route = route_service.get_route();
         let route = Route::<()>::from(route);
         App {
+            auth: Auth::new(),
             current_route: AppRoute::switch(route),
             router_agent,
             current_user: None,
+            current_user_response: link.send_back(Msg::CurrentUserResponse),
+            current_user_task: None,
         }
+    }
+
+    fn mounted(&mut self) -> ShouldRender {
+        let task = self.auth.current(self.current_user_response.clone());
+        self.current_user_task = Some(task);
+        false
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
+            Msg::CurrentUserResponse(Ok(user_info)) => {
+                self.current_user = Some(user_info.user);
+            }
+            Msg::CurrentUserResponse(Err(_)) => {}
             Msg::Route(route) => self.current_route = AppRoute::switch(route),
             Msg::LoginReady(user_info) => {
                 self.current_user = Some(user_info);
@@ -50,7 +70,7 @@ impl Component for App {
     fn view(&self) -> Html<Self> {
         html! {
             <>
-                <Header />
+                <Header current_user=self.current_user.clone()/>
                 {
                     if let Some(route) = &self.current_route {
                         match route {
