@@ -43,6 +43,10 @@ pub fn get_token() -> Option<String> {
     token_lock.clone()
 }
 
+pub fn is_authenticated() -> bool {
+    get_token().is_some()
+}
+
 #[derive(Default, Debug)]
 struct Requests {
     fetch: FetchService,

@@ -6,7 +6,7 @@ use super::{
     article::Article, editor::Editor, header::Header, home::Home, login::Login, profile::Profile,
     profile_favorites::ProfileFavorites, register::Register, settings::Settings,
 };
-use crate::agent::Auth;
+use crate::agent::{is_authenticated, Auth};
 use crate::error::Error;
 use crate::routes::{fix_fragment_router, AppRoute};
 use crate::types::{UserInfo, UserInfoWrapper};
@@ -49,8 +49,10 @@ impl Component for App {
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        let task = self.auth.current(self.current_user_response.clone());
-        self.current_user_task = Some(task);
+        if is_authenticated() {
+            let task = self.auth.current(self.current_user_response.clone());
+            self.current_user_task = Some(task);
+        }
         false
     }
 
@@ -58,8 +60,11 @@ impl Component for App {
         match msg {
             Msg::CurrentUserResponse(Ok(user_info)) => {
                 self.current_user = Some(user_info.user);
+                self.current_user_task = None;
             }
-            Msg::CurrentUserResponse(Err(_)) => {}
+            Msg::CurrentUserResponse(Err(_)) => {
+                self.current_user_task = None;
+            }
             Msg::Route(mut route) => {
                 fix_fragment_router(&mut route);
                 self.current_route = AppRoute::switch(route)
