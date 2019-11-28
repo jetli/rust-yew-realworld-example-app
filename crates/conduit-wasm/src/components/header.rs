@@ -36,7 +36,7 @@ impl Component for Header {
         html! {
             <nav class="navbar navbar-light">
                 <div class="container">
-                    <RouterLink text="conduit" link="/" classes="navbar-brand"/>
+                    <RouterLink text="conduit" link="#/" classes="navbar-brand"/>
                     {
                         if let Some(user_info) = &self.props.current_user {
                             self.logged_in_view(&user_info)
@@ -55,13 +55,13 @@ impl Header {
         html! {
             <ul class="nav navbar-nav pull-xs-right">
                 <li class="nav-item">
-                    <RouterLink text="Home" link="/" classes="nav-link"/>
+                    <RouterLink text="Home" link="#/" classes="nav-link"/>
                 </li>
                 <li class="nav-item">
-                    <RouterLink text="Sign in" link="/#/login" classes="nav-link"/>
+                    <RouterLink text="Sign in" link="#/login" classes="nav-link"/>
                 </li>
                 <li class="nav-item">
-                    <RouterLink text="Sign up" link="/#/register" classes="nav-link"/>
+                    <RouterLink text="Sign up" link="#/register" classes="nav-link"/>
                 </li>
             </ul>
         }
@@ -71,16 +71,16 @@ impl Header {
         html! {
             <ul class="nav navbar-nav pull-xs-right">
                 <li class="nav-item">
-                    <RouterLink text="Home" link="/" classes="nav-link"/>
+                    <RouterLink text="Home" link="#/" classes="nav-link"/>
                 </li>
                 <li class="nav-item">
-                    <RouterLink text="New Post" link="/#/editor" classes="nav-link"/>
+                    <RouterLink text="New Post" link="#/editor" classes="nav-link"/>
                 </li>
                 <li class="nav-item">
-                    <RouterLink text="Settings" link="/#/settings" classes="nav-link"/>
+                    <RouterLink text="Settings" link="#/settings" classes="nav-link"/>
                 </li>
                 <li class="nav-item">
-                    <RouterLink text=&user_info.username link=format!("/#/@{}", &user_info.username)  classes="nav-link"/>
+                    <RouterLink text=&user_info.username link=format!("#/@{}", &user_info.username)  classes="nav-link"/>
                 </li>
             </ul>
         }

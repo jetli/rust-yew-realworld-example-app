@@ -4,10 +4,7 @@ use yew::{
     agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, Properties,
     ShouldRender,
 };
-use yew_router::{
-    agent::{RouteAgent, RouteRequest::ChangeRoute},
-    prelude::*,
-};
+use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
 
 use crate::agent::{set_token, Auth};
 use crate::error::Error;
@@ -21,7 +18,7 @@ pub struct Login {
     login_response: Callback<Result<UserInfoWrapper, Error>>,
     login_task: Option<FetchTask>,
     props: Props,
-    router_agent: Box<dyn Bridge<RouteAgent<()>>>,
+    router_agent: Box<dyn Bridge<RouteAgent>>,
 }
 
 #[derive(PartialEq, Properties)]
@@ -97,7 +94,7 @@ impl Component for Login {
                         <div class="col-md-6 offset-md-3 col-xs-12">
                             <h1 class="text-xs-center">{ "Sign In" }</h1>
                             <p class="text-xs-center">
-                                <RouterLink text="Need an account?" link="/#/register"/>
+                                <RouterLink text="Need an account?" link="#/register"/>
                             </p>
                             { self.list_errors(&self.error) }
                             <form onsubmit=|ev| { ev.prevent_default(); Msg::LoginRequest }>

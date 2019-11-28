@@ -1,6 +1,6 @@
 use yew::services::fetch::FetchTask;
 use yew::{agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, ShouldRender};
-use yew_router::{agent::RouteAgent, prelude::*, route::Route, service::RouteService};
+use yew_router::prelude::*;
 
 use super::{
     article::Article, editor::Editor, header::Header, home::Home, login::Login, profile::Profile,
@@ -8,7 +8,7 @@ use super::{
 };
 use crate::agent::Auth;
 use crate::error::Error;
-use crate::routes::AppRoute;
+use crate::routes::{fix_fragment_router, AppRoute};
 use crate::types::{UserInfo, UserInfoWrapper};
 
 /// The main app component
@@ -19,12 +19,12 @@ pub struct App {
     current_user_response: Callback<Result<UserInfoWrapper, Error>>,
     current_user_task: Option<FetchTask>,
     #[allow(unused)]
-    router_agent: Box<dyn Bridge<RouteAgent<()>>>,
+    router_agent: Box<dyn Bridge<RouteAgent>>,
 }
 
 pub enum Msg {
     CurrentUserResponse(Result<UserInfoWrapper, Error>),
-    Route(Route<()>),
+    Route(Route),
     LoginReady(UserInfo),
 }
 
@@ -34,9 +34,10 @@ impl Component for App {
 
     fn create(_: Self::Properties, mut link: ComponentLink<Self>) -> Self {
         let router_agent = RouteAgent::bridge(link.send_back(Msg::Route));
-        let route_service: RouteService<()> = RouteService::new();
+        let route_service: RouteService = RouteService::new();
         let route = route_service.get_route();
-        let route = Route::<()>::from(route);
+        let mut route = Route::from(route);
+        fix_fragment_router(&mut route);
         App {
             auth: Auth::new(),
             current_route: AppRoute::switch(route),
@@ -59,7 +60,10 @@ impl Component for App {
                 self.current_user = Some(user_info.user);
             }
             Msg::CurrentUserResponse(Err(_)) => {}
-            Msg::Route(route) => self.current_route = AppRoute::switch(route),
+            Msg::Route(mut route) => {
+                fix_fragment_router(&mut route);
+                self.current_route = AppRoute::switch(route)
+            }
             Msg::LoginReady(user_info) => {
                 self.current_user = Some(user_info);
             }

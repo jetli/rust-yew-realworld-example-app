@@ -2,22 +2,33 @@ use yew_router::prelude::*;
 
 #[derive(Switch, Debug, Clone)]
 pub enum AppRoute {
-    #[to = "/#/login"]
+    #[to = "#/login"]
     Login,
-    #[to = "/#/register"]
+    #[to = "#/register"]
     Register,
-    #[to = "/#/editor/{slug}"]
+    #[to = "#/editor/{slug}"]
     Editor(String),
-    #[to = "/#/editor"]
+    #[to = "#/editor"]
     EditorCreate,
-    #[to = "/#/article/{id}"]
+    #[to = "#/article/{id}"]
     Article(String),
-    #[to = "/#/settings"]
+    #[to = "#/settings"]
     Settings,
-    #[to = "/#/@{username}/favorites"]
+    #[to = "#/@{username}/favorites"]
     ProfileFavorites(String),
-    #[to = "/#/@{username}"]
+    #[to = "#/@{username}"]
     Profile(String),
-    #[to = "/"]
+    #[to = "#/"]
     Home,
+}
+
+pub fn fix_fragment_router(route: &mut Route) {
+    let r = route.route.as_str();
+    if r.eq("/") {
+        route.route = "#/".to_string();
+    } else {
+        if r.starts_with("/#") {
+            route.route = r[1..].to_string();
+        }
+    }
 }

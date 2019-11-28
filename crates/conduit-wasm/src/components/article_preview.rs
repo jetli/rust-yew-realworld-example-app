@@ -36,7 +36,7 @@ impl Component for ArticlePreview {
                 <div class="article-meta">
                     <img src="{article.author.image}" />
                     <div class="info">
-                        <RouterLink text="{article.author.username}" link="/#/@{article.author.username}" classes="author" />
+                        <RouterLink text="{article.author.username}" link="#/@{article.author.username}" classes="author" />
                         <span class="date">
                             { "{article.createdAt}" }
                         </span>
@@ -49,9 +49,9 @@ impl Component for ArticlePreview {
                 </div>
 
 
-                <h1><RouterLink text="{article.title}" link="/#/article/{article.slug}" classes="preview-link" /></h1>
+                <h1><RouterLink text="{article.title}" link="#/article/{article.slug}" classes="preview-link" /></h1>
                 <p>{ "{article.description}" }</p>
-                <span><RouterLink text="Read more..." link="/#/article/{article.slug}" /></span>
+                <span><RouterLink text="Read more..." link="#/article/{article.slug}" /></span>
                 <ul class="tag-list">
                     <li class="tag-default tag-pill tag-outline" key="{tag}">
                         { "{tag}" }
