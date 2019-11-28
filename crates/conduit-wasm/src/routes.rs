@@ -24,11 +24,9 @@ pub enum AppRoute {
 
 pub fn fix_fragment_router(route: &mut Route) {
     let r = route.route.as_str();
-    if r.eq("/") {
-        route.route = "#/".to_string();
+    if let Some(index) = r.find("#") {
+        route.route = r[index..].to_string();
     } else {
-        if r.starts_with("/#") {
-            route.route = r[1..].to_string();
-        }
+        route.route = "#/".to_string();
     }
 }
