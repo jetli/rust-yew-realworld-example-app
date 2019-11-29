@@ -12,6 +12,7 @@ use crate::error::Error;
 use crate::routes::AppRoute;
 use crate::types::{LoginInfo, LoginInfoWrapper, UserInfo, UserInfoWrapper};
 
+/// Login page
 pub struct Login {
     auth: Auth,
     error: Option<Error>,
@@ -24,6 +25,7 @@ pub struct Login {
 
 #[derive(PartialEq, Properties)]
 pub struct Props {
+    /// Callback when user is logged in successfully
     #[props(required)]
     pub callback: Callback<UserInfo>,
 }
@@ -66,10 +68,12 @@ impl Component for Login {
                 self.task = Some(task);
             }
             Msg::Response(Ok(user_info)) => {
+                // Set global token after logged in
                 set_token(Some(user_info.user.token.clone()));
                 self.props.callback.emit(user_info.user);
                 self.error = None;
                 self.task = None;
+                // Route to home page after logged in
                 self.router_agent.send(ChangeRoute(AppRoute::Home.into()));
             }
             Msg::Response(Err(err)) => {
@@ -98,7 +102,7 @@ impl Component for Login {
                                 <RouterLink text="Need an account?" link="#/register"/>
                             </p>
                             <ListErrors error=self.error.clone() />
-                            <form onsubmit=|ev| { ev.prevent_default(); Msg::Request }>
+                            <form onsubmit=|ev| { ev.prevent_default(); /* Prevent event propagation */ Msg::Request }>
                                 <fieldset>
                                     <fieldset class="form-group">
                                         <input

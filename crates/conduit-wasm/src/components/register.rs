@@ -12,6 +12,7 @@ use crate::error::Error;
 use crate::routes::AppRoute;
 use crate::types::{RegisterInfo, RegisterInfoWrapper, UserInfo, UserInfoWrapper};
 
+/// Register page
 pub struct Register {
     auth: Auth,
     error: Option<Error>,
@@ -24,6 +25,7 @@ pub struct Register {
 
 #[derive(PartialEq, Properties)]
 pub struct Props {
+    /// Callback when user is registered in successfully
     #[props(required)]
     pub callback: Callback<UserInfo>,
 }

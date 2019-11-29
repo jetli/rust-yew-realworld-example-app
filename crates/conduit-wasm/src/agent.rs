@@ -1,3 +1,5 @@
+//! Api request
+
 #![allow(dead_code)]
 
 use lazy_static::lazy_static;
@@ -17,6 +19,7 @@ const API_ROOT: &str = "https://conduit.productionready.io/api";
 const TOKEN_KEY: &str = "yew.token";
 
 lazy_static! {
+    /// Jwt token read from local storage.
     pub static ref TOKEN: RwLock<Option<String>> = {
         let storage = StorageService::new(Area::Local);
         if let Ok(token) = storage.restore(TOKEN_KEY) {
@@ -27,6 +30,7 @@ lazy_static! {
     };
 }
 
+/// Set jwt token to local storage.
 pub fn set_token(token: Option<String>) {
     let mut storage = StorageService::new(Area::Local);
     if let Some(t) = token.clone() {
@@ -38,15 +42,18 @@ pub fn set_token(token: Option<String>) {
     *token_lock = token;
 }
 
+/// Get jwt token from lazy static.
 pub fn get_token() -> Option<String> {
     let token_lock = TOKEN.read();
     token_lock.clone()
 }
 
+/// Check if current user is authenticated.
 pub fn is_authenticated() -> bool {
     get_token().is_some()
 }
 
+/// Http request
 #[derive(Default, Debug)]
 struct Requests {
     fetch: FetchService,
@@ -59,6 +66,7 @@ impl Requests {
         }
     }
 
+    /// build all kinds of http request: post/get/delete etc.
     fn builder<B, T>(
         &mut self,
         method: &str,
@@ -117,6 +125,7 @@ impl Requests {
         self.fetch.fetch(request, handler.into())
     }
 
+    /// Delete request
     fn delete<T>(&mut self, url: String, callback: Callback<Result<T, Error>>) -> FetchTask
     where
         for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
@@ -124,6 +133,7 @@ impl Requests {
         self.builder("DELETE", url, Nothing, callback)
     }
 
+    /// Get request
     fn get<T>(&mut self, url: String, callback: Callback<Result<T, Error>>) -> FetchTask
     where
         for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
@@ -131,6 +141,7 @@ impl Requests {
         self.builder("GET", url, Nothing, callback)
     }
 
+    /// Post request with a body
     fn post<B, T>(
         &mut self,
         url: String,
@@ -145,6 +156,7 @@ impl Requests {
         self.builder("POST", url, body, callback)
     }
 
+    /// Put request with a body
     fn put<B, T>(&mut self, url: String, body: B, callback: Callback<Result<T, Error>>) -> FetchTask
     where
         for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
@@ -155,11 +167,13 @@ impl Requests {
     }
 }
 
+/// Set limit for pagination
 fn limit(count: u32, p: u32) -> String {
     let offset = if p > 0 { p * count } else { 0 };
     format!("limit={}&offset={}", count, offset)
 }
 
+/// Apis for articles
 #[derive(Default, Debug)]
 pub struct Articles {
     requests: Requests,
@@ -172,6 +186,7 @@ impl Articles {
         }
     }
 
+    /// Get all articles
     pub fn all(
         &mut self,
         page: u32,
@@ -181,6 +196,7 @@ impl Articles {
             .get::<ArticleListInfo>(format!("/articles?{}", limit(10, page)), callback)
     }
 
+    /// Get articles filtered by author
     pub fn by_author(
         &mut self,
         author: String,
@@ -194,6 +210,7 @@ impl Articles {
     }
 }
 
+/// Apis for tags
 #[derive(Default, Debug)]
 pub struct Tags {
     requests: Requests,
@@ -206,12 +223,14 @@ impl Tags {
         }
     }
 
+    /// Get all tags
     pub fn get_all(&mut self, callback: Callback<Result<TagListInfo, Error>>) -> FetchTask {
         self.requests
             .get::<TagListInfo>("/tags".to_string(), callback)
     }
 }
 
+/// Apis for authentication
 #[derive(Default, Debug)]
 pub struct Auth {
     requests: Requests,
@@ -224,11 +243,13 @@ impl Auth {
         }
     }
 
+    /// Get current user info
     pub fn current(&mut self, callback: Callback<Result<UserInfoWrapper, Error>>) -> FetchTask {
         self.requests
             .get::<UserInfoWrapper>("/user".to_string(), callback)
     }
 
+    /// Login a user
     pub fn login(
         &mut self,
         login_info: LoginInfoWrapper,
@@ -241,6 +262,7 @@ impl Auth {
         )
     }
 
+    /// Register a new user
     pub fn register(
         &mut self,
         register_info: RegisterInfoWrapper,
@@ -253,6 +275,7 @@ impl Auth {
         )
     }
 
+    /// Save info of current user
     pub fn save(
         &mut self,
         user_update_info: UserUpdateInfoWrapper,

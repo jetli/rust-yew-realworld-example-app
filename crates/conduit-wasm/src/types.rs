@@ -1,7 +1,10 @@
+//! Common types
+
 use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
+/// Conduit api error info for Unprocessable Entity error
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct ErrorInfo {

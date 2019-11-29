@@ -1,3 +1,5 @@
+//! The root app contains initial authentication and url routes
+
 use yew::services::fetch::FetchTask;
 use yew::{agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, ShouldRender};
 use yew_router::prelude::*;
@@ -11,7 +13,7 @@ use crate::error::Error;
 use crate::routes::{fix_fragment_router, AppRoute};
 use crate::types::{UserInfo, UserInfoWrapper};
 
-/// The main app component
+/// The root app component
 pub struct App {
     auth: Auth,
     current_route: Option<AppRoute>,
@@ -49,6 +51,7 @@ impl Component for App {
     }
 
     fn mounted(&mut self) -> ShouldRender {
+        // Get current user info if a token is available when mounted
         if is_authenticated() {
             let task = self.auth.current(self.current_user_response.clone());
             self.current_user_task = Some(task);
@@ -81,6 +84,7 @@ impl Component for App {
             <>
                 <Header current_user=self.current_user.clone()/>
                 {
+                    // Routes to render sub components
                     if let Some(route) = &self.current_route {
                         match route {
                             AppRoute::Login => html!{<Login callback=Msg::Authenticated/>},
@@ -94,6 +98,7 @@ impl Component for App {
                             AppRoute::Profile(username) => html!{<Profile />},
                         }
                     } else {
+                        // 404 when route matches no component
                         html! { "No child component available" }
                     }
                 }
