@@ -3,8 +3,8 @@ use yew::{agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html
 use yew_router::prelude::*;
 
 use super::{
-    article::Article, editor::Editor, header::Header, home::Home, login::Login, profile::Profile,
-    profile_favorites::ProfileFavorites, register::Register, settings::Settings,
+    article::Article, editor::Editor, footer::Footer, header::Header, home::Home, login::Login,
+    profile::Profile, profile_favorites::ProfileFavorites, register::Register, settings::Settings,
 };
 use crate::agent::{is_authenticated, Auth};
 use crate::error::Error;
@@ -97,6 +97,7 @@ impl Component for App {
                         html! { "No child component available" }
                     }
                 }
+                <Footer />
             </>
         }
     }
