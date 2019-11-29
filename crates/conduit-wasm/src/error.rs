@@ -1,7 +1,7 @@
 use crate::types::ErrorInfo;
 use failure::Fail;
 
-#[derive(Fail, Debug)]
+#[derive(Fail, Clone, Debug)]
 pub enum Error {
     // 401
     #[fail(display = "Unauthorized")]

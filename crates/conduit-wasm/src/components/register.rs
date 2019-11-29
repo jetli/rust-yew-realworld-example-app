@@ -1,19 +1,94 @@
-use yew::{html, Component, ComponentLink, Html, ShouldRender};
-use yew_router::prelude::*;
+use stdweb::web::event::IEvent;
+use yew::services::fetch::FetchTask;
+use yew::{
+    agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, Properties,
+    ShouldRender,
+};
+use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
 
-pub struct Register {}
+use crate::agent::{set_token, Auth};
+use crate::components::list_errors::ListErrors;
+use crate::error::Error;
+use crate::routes::AppRoute;
+use crate::types::{RegisterInfo, RegisterInfoWrapper, UserInfo, UserInfoWrapper};
 
-pub enum Msg {}
+pub struct Register {
+    auth: Auth,
+    error: Option<Error>,
+    props: Props,
+    request: RegisterInfo,
+    response: Callback<Result<UserInfoWrapper, Error>>,
+    router_agent: Box<dyn Bridge<RouteAgent>>,
+    task: Option<FetchTask>,
+}
+
+#[derive(PartialEq, Properties)]
+pub struct Props {
+    #[props(required)]
+    pub callback: Callback<UserInfo>,
+}
+
+pub enum Msg {
+    Request,
+    Response(Result<UserInfoWrapper, Error>),
+    NoOp,
+    UpdateEmail(String),
+    UpdatePassword(String),
+    UpdateUsername(String),
+}
 
 impl Component for Register {
     type Message = Msg;
-    type Properties = ();
+    type Properties = Props;
 
-    fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Register {}
+    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+        let router_agent = RouteAgent::bridge(link.send_back(|_| Msg::NoOp));
+        Register {
+            auth: Auth::new(),
+            error: None,
+            request: RegisterInfo::default(),
+            response: link.send_back(Msg::Response),
+            task: None,
+            props,
+            router_agent,
+        }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            Msg::Request => {
+                let request = RegisterInfoWrapper {
+                    user: RegisterInfo {
+                        email: self.request.email.clone(),
+                        password: self.request.password.clone(),
+                        username: self.request.username.clone(),
+                    },
+                };
+                let task = self.auth.register(request, self.response.clone());
+                self.task = Some(task);
+            }
+            Msg::Response(Ok(user_info)) => {
+                set_token(Some(user_info.user.token.clone()));
+                self.props.callback.emit(user_info.user);
+                self.error = None;
+                self.task = None;
+                self.router_agent.send(ChangeRoute(AppRoute::Home.into()));
+            }
+            Msg::Response(Err(err)) => {
+                self.error = Some(err);
+                self.task = None;
+            }
+            Msg::UpdateEmail(email) => {
+                self.request.email = email;
+            }
+            Msg::UpdatePassword(password) => {
+                self.request.password = password;
+            }
+            Msg::UpdateUsername(username) => {
+                self.request.username = username;
+            }
+            Msg::NoOp => {}
+        }
         true
     }
 
@@ -27,14 +102,16 @@ impl Component for Register {
                             <p class="text-xs-center">
                                 <RouterLink text="Have an account?" link="#/login"/>
                             </p>
-                            <form>
+                            <ListErrors error=self.error.clone() />
+                            <form onsubmit=|ev| { ev.prevent_default(); Msg::Request }>
                                 <fieldset>
                                     <fieldset class="form-group">
                                         <input
                                             class="form-control form-control-lg"
                                             type="text"
                                             placeholder="Username"
-                                            value=""
+                                            value=&self.request.username
+                                            oninput=|ev| Msg::UpdateUsername(ev.value)
                                             />
                                     </fieldset>
                                     <fieldset class="form-group">
@@ -42,7 +119,8 @@ impl Component for Register {
                                             class="form-control form-control-lg"
                                             type="email"
                                             placeholder="Email"
-                                            value=""
+                                            value=&self.request.email
+                                            oninput=|ev| Msg::UpdateEmail(ev.value)
                                             />
                                     </fieldset>
                                     <fieldset class="form-group">
@@ -50,14 +128,15 @@ impl Component for Register {
                                             class="form-control form-control-lg"
                                             type="password"
                                             placeholder="Password"
-                                            value=""
+                                            value=&self.request.password
+                                            oninput=|ev| Msg::UpdatePassword(ev.value)
                                             />
                                     </fieldset>
                                     <button
                                         class="btn btn-lg btn-primary pull-xs-right"
                                         type="submit"
                                         disabled=false>
-                                        { "Sign in" }
+                                        { "Sign up" }
                                     </button>
                                 </fieldset>
                             </form>

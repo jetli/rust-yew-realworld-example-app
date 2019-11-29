@@ -25,7 +25,7 @@ pub struct App {
 pub enum Msg {
     CurrentUserResponse(Result<UserInfoWrapper, Error>),
     Route(Route),
-    LoginReady(UserInfo),
+    Authenticated(UserInfo),
 }
 
 impl Component for App {
@@ -69,7 +69,7 @@ impl Component for App {
                 fix_fragment_router(&mut route);
                 self.current_route = AppRoute::switch(route)
             }
-            Msg::LoginReady(user_info) => {
+            Msg::Authenticated(user_info) => {
                 self.current_user = Some(user_info);
             }
         }
@@ -83,8 +83,8 @@ impl Component for App {
                 {
                     if let Some(route) = &self.current_route {
                         match route {
-                            AppRoute::Login => html!{<Login callback=Msg::LoginReady/>},
-                            AppRoute::Register => html!{<Register />},
+                            AppRoute::Login => html!{<Login callback=Msg::Authenticated/>},
+                            AppRoute::Register => html!{<Register callback=Msg::Authenticated />},
                             AppRoute::Home => html!{<Home />},
                             AppRoute::Editor(slug) => html!{<Editor />},
                             AppRoute::EditorCreate => html!{<Editor />},

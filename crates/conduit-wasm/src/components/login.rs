@@ -7,6 +7,7 @@ use yew::{
 use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
 
 use crate::agent::{set_token, Auth};
+use crate::components::list_errors::ListErrors;
 use crate::error::Error;
 use crate::routes::AppRoute;
 use crate::types::{LoginInfo, LoginInfoWrapper, UserInfo, UserInfoWrapper};
@@ -14,9 +15,9 @@ use crate::types::{LoginInfo, LoginInfoWrapper, UserInfo, UserInfoWrapper};
 pub struct Login {
     auth: Auth,
     error: Option<Error>,
-    login_request: LoginInfo,
-    login_response: Callback<Result<UserInfoWrapper, Error>>,
-    login_task: Option<FetchTask>,
+    request: LoginInfo,
+    response: Callback<Result<UserInfoWrapper, Error>>,
+    task: Option<FetchTask>,
     props: Props,
     router_agent: Box<dyn Bridge<RouteAgent>>,
 }
@@ -28,8 +29,8 @@ pub struct Props {
 }
 
 pub enum Msg {
-    LoginRequest,
-    LoginResponse(Result<UserInfoWrapper, Error>),
+    Request,
+    Response(Result<UserInfoWrapper, Error>),
     NoOp,
     UpdateEmail(String),
     UpdatePassword(String),
@@ -44,42 +45,42 @@ impl Component for Login {
         Login {
             auth: Auth::new(),
             error: None,
-            login_request: LoginInfo::default(),
-            login_response: link.send_back(Msg::LoginResponse),
-            login_task: None,
             props,
+            request: LoginInfo::default(),
+            response: link.send_back(Msg::Response),
             router_agent,
+            task: None,
         }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::LoginRequest => {
-                let login_request = LoginInfoWrapper {
+            Msg::Request => {
+                let request = LoginInfoWrapper {
                     user: LoginInfo {
-                        email: self.login_request.email.clone(),
-                        password: self.login_request.password.clone(),
+                        email: self.request.email.clone(),
+                        password: self.request.password.clone(),
                     },
                 };
-                let task = self.auth.login(login_request, self.login_response.clone());
-                self.login_task = Some(task);
+                let task = self.auth.login(request, self.response.clone());
+                self.task = Some(task);
             }
-            Msg::LoginResponse(Ok(user_info)) => {
+            Msg::Response(Ok(user_info)) => {
                 set_token(Some(user_info.user.token.clone()));
                 self.props.callback.emit(user_info.user);
                 self.error = None;
-                self.login_task = None;
+                self.task = None;
                 self.router_agent.send(ChangeRoute(AppRoute::Home.into()));
             }
-            Msg::LoginResponse(Err(err)) => {
+            Msg::Response(Err(err)) => {
                 self.error = Some(err);
-                self.login_task = None;
+                self.task = None;
             }
             Msg::UpdateEmail(email) => {
-                self.login_request.email = email;
+                self.request.email = email;
             }
             Msg::UpdatePassword(password) => {
-                self.login_request.password = password;
+                self.request.password = password;
             }
             Msg::NoOp => {}
         }
@@ -96,15 +97,15 @@ impl Component for Login {
                             <p class="text-xs-center">
                                 <RouterLink text="Need an account?" link="#/register"/>
                             </p>
-                            { self.list_errors(&self.error) }
-                            <form onsubmit=|ev| { ev.prevent_default(); Msg::LoginRequest }>
+                            <ListErrors error=self.error.clone() />
+                            <form onsubmit=|ev| { ev.prevent_default(); Msg::Request }>
                                 <fieldset>
                                     <fieldset class="form-group">
                                         <input
                                             class="form-control form-control-lg"
                                             type="email"
                                             placeholder="Email"
-                                            value=&self.login_request.email
+                                            value=&self.request.email
                                             oninput=|ev| Msg::UpdateEmail(ev.value)
                                             />
                                     </fieldset>
@@ -113,7 +114,7 @@ impl Component for Login {
                                             class="form-control form-control-lg"
                                             type="password"
                                             placeholder="Password"
-                                            value=&self.login_request.password
+                                            value=&self.request.password
                                             oninput=|ev| Msg::UpdatePassword(ev.value)
                                             />
                                     </fieldset>
@@ -129,50 +130,6 @@ impl Component for Login {
                     </div>
                 </div>
             </div>
-        }
-    }
-}
-
-impl Login {
-    fn list_errors(&self, error: &Option<Error>) -> Html<Self> {
-        if let Some(error) = error {
-            html! {
-                <ul class="error-messages">
-                    {
-                        match error {
-                            Error::UnprocessableEntity(error_info) => {
-                                html! {
-                                    <>
-                                    {for error_info.errors.iter().map(|(key, value)| {
-                                        html! {
-                                            <li>
-                                            { key }
-                                            {for value.iter().map(|e| {
-                                                html! {
-                                                    <>{" "} {e}</>
-                                                }
-                                            })}
-                                            </li>
-                                        }
-                                    })}
-                                    </>
-                                }
-                            }
-                            _ => {
-                                html! {
-                                    <li>{error}</li>
-                                }
-                            }
-
-                        }
-                    }
-                </ul>
-            }
-        } else {
-            html! {
-                <>
-                </>
-            }
         }
     }
 }
