@@ -82,7 +82,7 @@ impl Component for App {
     fn view(&self) -> Html<Self> {
         html! {
             <>
-                <Header current_user=self.current_user.clone()/>
+                <Header current_user=&self.current_user/>
                 {
                     // Routes to render sub components
                     if let Some(route) = &self.current_route {
