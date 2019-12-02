@@ -7,16 +7,17 @@ use crate::agent::Articles;
 use crate::error::Error;
 use crate::types::ArticleListInfo;
 
+/// List of articles components
 pub struct ArticleList {
     articles: Articles,
     article_list: Option<ArticleListInfo>,
-    article_list_callback: Callback<Result<ArticleListInfo, Error>>,
-    article_list_task: Option<FetchTask>,
+    response: Callback<Result<ArticleListInfo, Error>>,
+    task: Option<FetchTask>,
     current_page: u32,
 }
 
 pub enum Msg {
-    ArticleListReady(Result<ArticleListInfo, Error>),
+    Response(Result<ArticleListInfo, Error>),
     PaginationChanged(u32),
 }
 
@@ -28,35 +29,31 @@ impl Component for ArticleList {
         ArticleList {
             articles: Articles::new(),
             article_list: None,
-            article_list_callback: link.send_back(Msg::ArticleListReady),
-            article_list_task: None,
+            response: link.send_back(Msg::Response),
+            task: None,
             current_page: 0,
         }
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        let task = self
-            .articles
-            .all(self.current_page, self.article_list_callback.clone());
-        self.article_list_task = Some(task);
+        let task = self.articles.all(self.current_page, self.response.clone());
+        self.task = Some(task);
         false
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::ArticleListReady(Ok(article_list)) => {
+            Msg::Response(Ok(article_list)) => {
                 self.article_list = Some(article_list);
-                self.article_list_task = None;
+                self.task = None;
             }
-            Msg::ArticleListReady(Err(_)) => {
-                self.article_list_task = None;
+            Msg::Response(Err(_)) => {
+                self.task = None;
             }
             Msg::PaginationChanged(current_page) => {
                 self.current_page = current_page;
-                let task = self
-                    .articles
-                    .all(self.current_page, self.article_list_callback.clone());
-                self.article_list_task = Some(task);
+                let task = self.articles.all(self.current_page, self.response.clone());
+                self.task = Some(task);
             }
         }
         true

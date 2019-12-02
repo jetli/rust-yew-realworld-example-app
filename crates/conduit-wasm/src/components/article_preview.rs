@@ -1,17 +1,27 @@
-use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
+use stdweb::web::event::IEvent;
+use yew::services::fetch::FetchTask;
+use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
 use yew_router::prelude::*;
 
-use crate::types::ArticleInfo;
+use crate::agent::Articles;
+use crate::error::Error;
+use crate::types::{ArticleInfo, ArticleInfoWrapper};
 
 const FAVORITED_CLASS: &str = "btn btn-sm btn-primary";
 const NOT_FAVORITED_CLASS: &str = "btn btn-sm btn-outline-primary";
 
 /// Single article preview component used by article list.
 pub struct ArticlePreview {
+    articles: Articles,
     props: Props,
+    response: Callback<Result<ArticleInfoWrapper, Error>>,
+    task: Option<FetchTask>,
 }
 
-pub enum Msg {}
+pub enum Msg {
+    Request,
+    Response(Result<ArticleInfoWrapper, Error>),
+}
 
 #[derive(Properties)]
 pub struct Props {
@@ -23,11 +33,38 @@ impl Component for ArticlePreview {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
-        ArticlePreview { props }
+    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+        ArticlePreview {
+            articles: Articles::new(),
+            props,
+            response: link.send_back(Msg::Response),
+            task: None,
+        }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            Msg::Request => {
+                if self.props.article.favorited {
+                    let task = self
+                        .articles
+                        .unfavorite(self.props.article.slug.clone(), self.response.clone());
+                    self.task = Some(task);
+                } else {
+                    let task = self
+                        .articles
+                        .favorite(self.props.article.slug.clone(), self.response.clone());
+                    self.task = Some(task);
+                }
+            }
+            Msg::Response(Ok(article_info)) => {
+                self.props.article = article_info.article;
+                self.task = None;
+            }
+            Msg::Response(Err(_)) => {
+                self.task = None;
+            }
+        }
         true
     }
 
@@ -50,7 +87,7 @@ impl Component for ArticlePreview {
                         </span>
                     </div>
                     <div class="pull-xs-right">
-                        <button class=favorite_button_class>
+                        <button class=favorite_button_class onclick=|ev| { ev.prevent_default(); Msg::Request }>
                             <i class="ion-heart"></i> { article.favorites_count }
                         </button>
                     </div>

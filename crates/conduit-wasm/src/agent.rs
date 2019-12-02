@@ -208,6 +208,27 @@ impl Articles {
             callback,
         )
     }
+
+    pub fn favorite(
+        &mut self,
+        slug: String,
+        callback: Callback<Result<ArticleInfoWrapper, Error>>,
+    ) -> FetchTask {
+        self.requests.post::<(), ArticleInfoWrapper>(
+            format!("/articles/{}/favorite", slug),
+            (),
+            callback,
+        )
+    }
+
+    pub fn unfavorite(
+        &mut self,
+        slug: String,
+        callback: Callback<Result<ArticleInfoWrapper, Error>>,
+    ) -> FetchTask {
+        self.requests
+            .delete::<ArticleInfoWrapper>(format!("/articles/{}/favorite", slug), callback)
+    }
 }
 
 /// Apis for tags
