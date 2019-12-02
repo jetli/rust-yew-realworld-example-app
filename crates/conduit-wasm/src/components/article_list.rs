@@ -7,7 +7,7 @@ use crate::agent::Articles;
 use crate::error::Error;
 use crate::types::ArticleListInfo;
 
-/// List of articles components
+/// List of articles component
 pub struct ArticleList {
     articles: Articles,
     article_list: Option<ArticleListInfo>,

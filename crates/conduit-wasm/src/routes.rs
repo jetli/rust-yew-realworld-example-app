@@ -13,7 +13,7 @@ pub enum AppRoute {
     Editor(String),
     #[to = "#/editor"]
     EditorCreate,
-    #[to = "#/article/{id}"]
+    #[to = "#/article/{slug}"]
     Article(String),
     #[to = "#/settings"]
     Settings,

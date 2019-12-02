@@ -92,7 +92,7 @@ impl Component for App {
                             AppRoute::Home => html!{<Home />},
                             AppRoute::Editor(slug) => html!{<Editor />},
                             AppRoute::EditorCreate => html!{<Editor />},
-                            AppRoute::Article(id) => html!{<Article />},
+                            AppRoute::Article(slug) => html!{<Article slug=slug />},
                             AppRoute::Settings => html!{<Settings />},
                             AppRoute::ProfileFavorites(username) => html!{<ProfileFavorites />},
                             AppRoute::Profile(username) => html!{<Profile />},

@@ -1,4 +1,4 @@
-//! Api request
+//! Api requests via yew FetchService
 
 #![allow(dead_code)]
 
@@ -228,6 +228,38 @@ impl Articles {
     ) -> FetchTask {
         self.requests
             .delete::<ArticleInfoWrapper>(format!("/articles/{}/favorite", slug), callback)
+    }
+
+    pub fn get(
+        &mut self,
+        slug: String,
+        callback: Callback<Result<ArticleInfoWrapper, Error>>,
+    ) -> FetchTask {
+        self.requests
+            .get::<ArticleInfoWrapper>(format!("/articles/{}", slug), callback)
+    }
+}
+
+/// Apis for comments
+#[derive(Default, Debug)]
+pub struct Comments {
+    requests: Requests,
+}
+
+impl Comments {
+    pub fn new() -> Self {
+        Self {
+            requests: Requests::new(),
+        }
+    }
+
+    pub fn for_article(
+        &mut self,
+        slug: String,
+        callback: Callback<Result<CommentListInfo, Error>>,
+    ) -> FetchTask {
+        self.requests
+            .get::<CommentListInfo>(format!("/articles/{}/comments", slug), callback)
     }
 }
 
