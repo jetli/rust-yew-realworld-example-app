@@ -68,6 +68,11 @@ impl Component for ArticlePreview {
         true
     }
 
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+        self.props = props;
+        true
+    }
+
     fn view(&self) -> Html<Self> {
         let article = &self.props.article;
         let favorite_button_class = if article.favorited {
