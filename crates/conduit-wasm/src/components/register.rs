@@ -33,7 +33,7 @@ pub struct Props {
 pub enum Msg {
     Request,
     Response(Result<UserInfoWrapper, Error>),
-    NoOp,
+    Ignore,
     UpdateEmail(String),
     UpdatePassword(String),
     UpdateUsername(String),
@@ -44,7 +44,7 @@ impl Component for Register {
     type Properties = Props;
 
     fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
-        let router_agent = RouteAgent::bridge(link.send_back(|_| Msg::NoOp));
+        let router_agent = RouteAgent::bridge(link.send_back(|_| Msg::Ignore));
         Register {
             auth: Auth::new(),
             error: None,
@@ -89,7 +89,7 @@ impl Component for Register {
             Msg::UpdateUsername(username) => {
                 self.request.username = username;
             }
-            Msg::NoOp => {}
+            Msg::Ignore => {}
         }
         true
     }

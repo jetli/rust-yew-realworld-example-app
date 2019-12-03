@@ -6,6 +6,7 @@ mod comment_input;
 mod comment_list;
 mod delete_button;
 
+use pulldown_cmark;
 use stdweb::js;
 use stdweb::unstable::TryFrom;
 use stdweb::web::Node;
@@ -138,9 +139,13 @@ impl Component for Article {
 impl Article {
     /// Dangerously set innerHTML for article body
     fn view_body(&self, body: &String) -> Html<Self> {
+        let parser = pulldown_cmark::Parser::new(body);
+        let mut html_text = String::new();
+        pulldown_cmark::html::push_html(&mut html_text, parser);
+
         let js_body = js! {
             var div = document.createElement("div");
-            div.innerHTML = @{&body};
+            div.innerHTML = @{&html_text};
             return div;
         };
         let node = Node::try_from(js_body).expect("convert js");

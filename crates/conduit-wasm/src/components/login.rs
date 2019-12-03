@@ -33,7 +33,7 @@ pub struct Props {
 pub enum Msg {
     Request,
     Response(Result<UserInfoWrapper, Error>),
-    NoOp,
+    Ignore,
     UpdateEmail(String),
     UpdatePassword(String),
 }
@@ -43,7 +43,7 @@ impl Component for Login {
     type Properties = Props;
 
     fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
-        let router_agent = RouteAgent::bridge(link.send_back(|_| Msg::NoOp));
+        let router_agent = RouteAgent::bridge(link.send_back(|_| Msg::Ignore));
         Login {
             auth: Auth::new(),
             error: None,
@@ -86,7 +86,7 @@ impl Component for Login {
             Msg::UpdatePassword(password) => {
                 self.request.password = password;
             }
-            Msg::NoOp => {}
+            Msg::Ignore => {}
         }
         true
     }
