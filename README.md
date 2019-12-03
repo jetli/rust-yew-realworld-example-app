@@ -21,8 +21,12 @@ This is an application written in [Rust] that utilizes [Yew] and [WebAssembly] f
 
 You can view a full list of crates being used in [Cargo.toml], but here are some of the main ones of note:
 
-* [Yew] - a modern Rust framework for creating multi-threaded frontend apps with WebAssembly.
+* [yew] - a modern Rust framework for creating multi-threaded frontend apps with WebAssembly.
 * [yew-router] - a routing library for the [Yew] framework.
+* [lazy_static] - a macro for declaring lazily evaluated statics in Rust.
+* [parking_lot] - provides implementations of `Mutex`, `RwLock`, `Condvar` and `Once` etc.
+* [pulldown-cmark] - a pull parser for CommonMark, used to parse Markdown.
+* [serde] - a generic serialization/deserialization framework.
 
 # Getting started
 
@@ -60,9 +64,13 @@ See [LICENSE] for details
 [Cargo.toml]: ./crates/conduit-wasm/Cargo.toml
 [Demo]: https://jetli.github.io/rust-yew-realworld-example-app/
 [gh-pages]: https://github.com/jetli/rust-yew-realworld-example-app/tree/gh-pages
+[lazy_static]: https://github.com/rust-lang-nursery/lazy-static.rs
 [LICENSE]: ./LICENSE
+[parking_lot]: https://github.com/Amanieu/parking_lot
+[pulldown-cmark]: https://github.com/raphlinus/pulldown-cmark
 [RealWorld]: https://github.com/gothinkster/realworld
 [Rust]: https://www.rust-lang.org/
+[serde]: https://github.com/serde-rs/serde
 [WebAssembly]: https://webassembly.org
 [Yew]: https://github.com/yewstack/yew
 [yew-router]: https://github.com/yewstack/yew_router
