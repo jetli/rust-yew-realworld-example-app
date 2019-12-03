@@ -588,6 +588,9 @@ Module.STDWEB_PRIVATE.acquire_tmp = function( dummy ) {
             "__cargo_web_snippet_1edaec034bdcb0a749c6d5de76c29f6371afb5a0": function($0) {
                 var o = Module.STDWEB_PRIVATE.acquire_js_reference( $0 );return (o instanceof Event && o.type === "input");
             },
+            "__cargo_web_snippet_1f5074114789b8eec87679253d2888fbe3fb3f2d": function($0, $1) {
+                $1 = Module.STDWEB_PRIVATE.to_js($1);Module.STDWEB_PRIVATE.from_js($0, (function(){var div=document.createElement("div");div.innerHTML=($1);return div;})());
+            },
             "__cargo_web_snippet_1fdc316ef6b228cc2c741ea31c7d11c236c835c7": function($0) {
                 $0 = Module.STDWEB_PRIVATE.to_js($0);var handle=($0);handle.active=false;handle.callback.drop();if(handle.abortController){handle.abortController.abort();}
             },
