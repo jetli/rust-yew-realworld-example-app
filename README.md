@@ -27,6 +27,7 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
 * [parking_lot] - provides implementations of `Mutex`, `RwLock`, `Condvar` and `Once` etc.
 * [pulldown-cmark] - a pull parser for CommonMark, used to parse Markdown.
 * [serde] - a generic serialization/deserialization framework.
+* [chrono] - date and time library for Rust.
 
 # Getting started
 
@@ -61,6 +62,7 @@ Apache License (Version 2.0)
 See [LICENSE] for details
 
 [cargo-web]: https://github.com/koute/cargo-web
+[chrono]: https://github.com/chronotope/chrono
 [Cargo.toml]: ./crates/conduit-wasm/Cargo.toml
 [Demo]: https://jetli.github.io/rust-yew-realworld-example-app/
 [gh-pages]: https://github.com/jetli/rust-yew-realworld-example-app/tree/gh-pages

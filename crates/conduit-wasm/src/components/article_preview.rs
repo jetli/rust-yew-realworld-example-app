@@ -88,7 +88,7 @@ impl Component for ArticlePreview {
                     <div class="info">
                         <RouterLink text={ &article.author.username } link={ format!("#/@{}", &article.author.username) } classes="author" />
                         <span class="date">
-                            { &article.created_at }
+                            { &article.created_at.format("%B %e, %Y") }
                         </span>
                     </div>
                     <div class="pull-xs-right">
