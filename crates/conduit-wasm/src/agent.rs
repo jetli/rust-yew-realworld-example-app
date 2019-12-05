@@ -209,6 +209,26 @@ impl Articles {
         )
     }
 
+    /// Get articles filtered by tag
+    pub fn by_tag(
+        &mut self,
+        tag: String,
+        page: u32,
+        callback: Callback<Result<ArticleListInfo, Error>>,
+    ) -> FetchTask {
+        self.requests.get::<ArticleListInfo>(
+            format!("/articles?tag={}&{}", tag, limit(10, page)),
+            callback,
+        )
+    }
+
+    /// Delete an article
+    pub fn del(&mut self, slug: String, callback: Callback<Result<(), Error>>) -> FetchTask {
+        self.requests
+            .delete::<()>(format!("/articles/{}", slug), callback)
+    }
+
+    /// Favorite and article
     pub fn favorite(
         &mut self,
         slug: String,
@@ -221,6 +241,7 @@ impl Articles {
         )
     }
 
+    /// Unfavorite an article
     pub fn unfavorite(
         &mut self,
         slug: String,
@@ -230,6 +251,26 @@ impl Articles {
             .delete::<ArticleInfoWrapper>(format!("/articles/{}/favorite", slug), callback)
     }
 
+    /// Get articles favorited by an author
+    pub fn favorited_by(
+        &mut self,
+        author: String,
+        page: u32,
+        callback: Callback<Result<ArticleListInfo, Error>>,
+    ) -> FetchTask {
+        self.requests.get::<ArticleListInfo>(
+            format!("/articles?favorited={}&{}", author, limit(10, page)),
+            callback,
+        )
+    }
+
+    /// Get feed of articles
+    pub fn feed(&mut self, callback: Callback<Result<ArticleListInfo, Error>>) -> FetchTask {
+        self.requests
+            .get::<ArticleListInfo>(format!("/articles/feed?{}", limit(10, 0)), callback)
+    }
+
+    /// Get an article
     pub fn get(
         &mut self,
         slug: String,
@@ -237,6 +278,35 @@ impl Articles {
     ) -> FetchTask {
         self.requests
             .get::<ArticleInfoWrapper>(format!("/articles/{}", slug), callback)
+    }
+
+    /// Update an article
+    pub fn update(
+        &mut self,
+        slug: String,
+        article: ArticleUpdateInfoWrapper,
+        callback: Callback<Result<ArticleInfoWrapper, Error>>,
+    ) -> FetchTask {
+        self.requests
+            .put::<ArticleUpdateInfoWrapper, ArticleInfoWrapper>(
+                format!("/articles/{}", slug),
+                article,
+                callback,
+            )
+    }
+
+    /// Create an article
+    pub fn create(
+        &mut self,
+        article: ArticleCreateInfoWrapper,
+        callback: Callback<Result<ArticleInfoWrapper, Error>>,
+    ) -> FetchTask {
+        self.requests
+            .post::<ArticleCreateInfoWrapper, ArticleInfoWrapper>(
+                format!("/articles"),
+                article,
+                callback,
+            )
     }
 }
 
@@ -251,6 +321,32 @@ impl Comments {
         Self {
             requests: Requests::new(),
         }
+    }
+
+    pub fn create(
+        &mut self,
+        slug: String,
+        comment: CommentCreateInfoWrapper,
+        callback: Callback<Result<CommentInfoWrapper, Error>>,
+    ) -> FetchTask {
+        self.requests
+            .post::<CommentCreateInfoWrapper, CommentInfoWrapper>(
+                format!("/articles/{}/comments", slug),
+                comment,
+                callback,
+            )
+    }
+
+    pub fn delete(
+        &mut self,
+        slug: String,
+        comment_id: u32,
+        callback: Callback<Result<(), Error>>,
+    ) -> FetchTask {
+        self.requests.delete::<()>(
+            format!("/articles/{}/comments/{}", slug, comment_id),
+            callback
+        )
     }
 
     pub fn for_article(
@@ -340,5 +436,53 @@ impl Auth {
                 user_update_info,
                 callback,
             )
+    }
+}
+
+/// Apis for authentication
+#[derive(Default, Debug)]
+pub struct Profile {
+    requests: Requests,
+}
+
+impl Profile {
+    pub fn new() -> Self {
+        Self {
+            requests: Requests::new(),
+        }
+    }
+
+    pub fn follow(
+        &mut self,
+        username: String,
+        callback: Callback<Result<ProfileInfoWrapper, Error>>,
+    ) -> FetchTask {
+        self.requests.post::<(), ProfileInfoWrapper>(
+            format!("/profiles/{}/follow", username),
+            (),
+            callback
+        )
+    }
+
+    pub fn unfollow(
+        &mut self,
+        username: String,
+        callback: Callback<Result<ProfileInfoWrapper, Error>>,
+    ) -> FetchTask {
+        self.requests.delete::<ProfileInfoWrapper>(
+            format!("/profiles/{}/follow", username),
+            callback
+        )
+    }
+
+    pub fn get(
+        &mut self,
+        username: String,
+        callback: Callback<Result<ProfileInfoWrapper, Error>>,
+    ) -> FetchTask {
+        self.requests.get::<ProfileInfoWrapper>(
+            format!("/profiles/{}", username),
+            callback
+        )
     }
 }
