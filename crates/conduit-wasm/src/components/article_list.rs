@@ -28,6 +28,7 @@ pub enum Msg {
     PaginationChanged(u32),
 }
 
+/// Filters for article list
 #[derive(Clone, Debug)]
 pub enum ArticleListFilter {
     All,
@@ -109,6 +110,7 @@ impl Component for ArticleList {
 }
 
 impl ArticleList {
+    /// Request apis for filters
     fn request(&mut self) {
         match self.props.filter.clone() {
             ArticleListFilter::All => {

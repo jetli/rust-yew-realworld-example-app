@@ -6,6 +6,7 @@ use crate::agent::Tags as TagsAgent;
 use crate::error::Error;
 use crate::types::TagListInfo;
 
+/// A tag list component with a callback to notify that some tag is clicked.
 pub struct Tags {
     tags: TagsAgent,
     tag_list: Option<TagListInfo>,

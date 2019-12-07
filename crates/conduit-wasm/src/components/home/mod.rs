@@ -8,6 +8,7 @@ use banner::Banner;
 use main_view::MainView;
 use tags::Tags;
 
+/// Home page with an article list and a tag list.
 pub struct Home {
     tag: Option<String>,
 }

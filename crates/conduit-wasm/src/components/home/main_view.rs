@@ -4,6 +4,7 @@ use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
 use crate::agent::is_authenticated;
 use crate::components::article_list::{ArticleList, ArticleListFilter};
 
+/// Main content with tabs of article list for home page
 pub struct MainView {
     props: Props,
     tab: Tab,
@@ -148,6 +149,7 @@ impl MainView {
 }
 
 impl MainView {
+    /// Get Msg and css class for tabs
     fn get_tab_msg_class(&self, tab: Tab) -> (Msg, &str) {
         let class = if self.tab == tab {
             "nav-link active"
