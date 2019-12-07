@@ -23,15 +23,15 @@ use comment_container::CommentContainer;
 
 /// Article detail page
 pub struct Article {
-    pub articles: Articles,
-    pub article: Option<ArticleInfo>,
-    pub article_response: Callback<Result<ArticleInfoWrapper, Error>>,
-    pub article_task: Option<FetchTask>,
-    pub comments: Comments,
-    pub comment_list: Option<Vec<CommentInfo>>,
-    pub comment_response: Callback<Result<CommentListInfo, Error>>,
-    pub comment_task: Option<FetchTask>,
-    pub props: Props,
+    articles: Articles,
+    article: Option<ArticleInfo>,
+    article_response: Callback<Result<ArticleInfoWrapper, Error>>,
+    article_task: Option<FetchTask>,
+    comments: Comments,
+    comment_list: Option<Vec<CommentInfo>>,
+    comment_response: Callback<Result<CommentListInfo, Error>>,
+    comment_task: Option<FetchTask>,
+    props: Props,
 }
 
 #[derive(Properties)]

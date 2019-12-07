@@ -8,19 +8,28 @@ use banner::Banner;
 use main_view::MainView;
 use tags::Tags;
 
-pub struct Home {}
+pub struct Home {
+    tag: Option<String>,
+}
 
-pub enum Msg {}
+pub enum Msg {
+    TagFiltered(String),
+}
 
 impl Component for Home {
     type Message = Msg;
     type Properties = ();
 
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Home {}
+        Home { tag: None }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            Msg::TagFiltered(tag) => {
+                self.tag = Some(tag);
+            }
+        }
         true
     }
 
@@ -30,11 +39,11 @@ impl Component for Home {
                 <Banner />
                 <div class="container page">
                     <div class="row">
-                        <MainView />
+                        <MainView tag=&self.tag />
                         <div class="col-md-3">
                             <div class="sidebar">
                                 <p>{ "Popular Tags" }</p>
-                                <Tags />
+                                <Tags callback=Msg::TagFiltered />
                             </div>
                         </div>
                     </div>

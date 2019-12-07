@@ -5,7 +5,7 @@ const ITEMS_PER_PAGE: u32 = 10;
 
 /// Pagination component
 pub struct ListPagination {
-    pub props: Props,
+    props: Props,
 }
 
 #[derive(Properties)]

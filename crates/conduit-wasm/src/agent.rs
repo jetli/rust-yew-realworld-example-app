@@ -345,7 +345,7 @@ impl Comments {
     ) -> FetchTask {
         self.requests.delete::<()>(
             format!("/articles/{}/comments/{}", slug, comment_id),
-            callback
+            callback,
         )
     }
 
@@ -439,7 +439,7 @@ impl Auth {
     }
 }
 
-/// Apis for authentication
+/// Apis for profile
 #[derive(Default, Debug)]
 pub struct Profile {
     requests: Requests,
@@ -460,7 +460,7 @@ impl Profile {
         self.requests.post::<(), ProfileInfoWrapper>(
             format!("/profiles/{}/follow", username),
             (),
-            callback
+            callback,
         )
     }
 
@@ -469,10 +469,8 @@ impl Profile {
         username: String,
         callback: Callback<Result<ProfileInfoWrapper, Error>>,
     ) -> FetchTask {
-        self.requests.delete::<ProfileInfoWrapper>(
-            format!("/profiles/{}/follow", username),
-            callback
-        )
+        self.requests
+            .delete::<ProfileInfoWrapper>(format!("/profiles/{}/follow", username), callback)
     }
 
     pub fn get(
@@ -480,9 +478,7 @@ impl Profile {
         username: String,
         callback: Callback<Result<ProfileInfoWrapper, Error>>,
     ) -> FetchTask {
-        self.requests.get::<ProfileInfoWrapper>(
-            format!("/profiles/{}", username),
-            callback
-        )
+        self.requests
+            .get::<ProfileInfoWrapper>(format!("/profiles/{}", username), callback)
     }
 }

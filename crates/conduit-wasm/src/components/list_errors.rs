@@ -3,7 +3,7 @@ use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
 use crate::error::Error;
 
 pub struct ListErrors {
-    pub props: Props,
+    props: Props,
 }
 
 #[derive(Properties)]
