@@ -47,7 +47,7 @@ impl Component for ArticleMeta {
                 <div class="info">
                     <RouterLink text={ &self.props.author.username } link={ format!("#/@{}", &self.props.author.username) } classes="author" />
                     <span class="date">
-                    { &self.props.created_at }
+                        { &self.props.created_at }
                     </span>
                 </div>
 
