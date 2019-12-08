@@ -14,9 +14,9 @@ use yew::services::fetch::FetchTask;
 use yew::virtual_dom::VNode;
 use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
 
-use crate::agent::{Articles, Comments};
+use crate::agent::Articles;
 use crate::error::Error;
-use crate::types::{ArticleInfo, ArticleInfoWrapper, CommentInfo, CommentListInfo};
+use crate::types::{ArticleInfo, ArticleInfoWrapper, UserInfo};
 
 use article_meta::ArticleMeta;
 use comment_container::CommentContainer;
@@ -25,12 +25,8 @@ use comment_container::CommentContainer;
 pub struct Article {
     articles: Articles,
     article: Option<ArticleInfo>,
-    article_response: Callback<Result<ArticleInfoWrapper, Error>>,
-    article_task: Option<FetchTask>,
-    comments: Comments,
-    comment_list: Option<Vec<CommentInfo>>,
-    comment_response: Callback<Result<CommentListInfo, Error>>,
-    comment_task: Option<FetchTask>,
+    response: Callback<Result<ArticleInfoWrapper, Error>>,
+    task: Option<FetchTask>,
     props: Props,
 }
 
@@ -38,11 +34,12 @@ pub struct Article {
 pub struct Props {
     #[props(required)]
     pub slug: String,
+    #[props(required)]
+    pub current_user: Option<UserInfo>,
 }
 
 pub enum Msg {
-    ArticleResponse(Result<ArticleInfoWrapper, Error>),
-    CommentResponse(Result<CommentListInfo, Error>),
+    Response(Result<ArticleInfoWrapper, Error>),
 }
 
 impl Component for Article {
@@ -53,56 +50,57 @@ impl Component for Article {
         Article {
             articles: Articles::new(),
             article: None,
-            article_response: link.send_back(Msg::ArticleResponse),
-            article_task: None,
-            comments: Comments::new(),
-            comment_list: None,
-            comment_response: link.send_back(Msg::CommentResponse),
-            comment_task: None,
+            response: link.send_back(Msg::Response),
+            task: None,
             props,
         }
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        self.article_task = Some(
+        self.task = Some(
             self.articles
-                .get(self.props.slug.clone(), self.article_response.clone()),
-        );
-        self.comment_task = Some(
-            self.comments
-                .for_article(self.props.slug.clone(), self.comment_response.clone()),
+                .get(self.props.slug.clone(), self.response.clone()),
         );
         false
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::ArticleResponse(Ok(article_info)) => {
+            Msg::Response(Ok(article_info)) => {
                 self.article = Some(article_info.article);
-                self.article_task = None;
+                self.task = None;
             }
-            Msg::ArticleResponse(Err(_)) => {
-                self.article_task = None;
-            }
-            Msg::CommentResponse(Ok(comment_list)) => {
-                self.comment_list = Some(comment_list.comments);
-                self.comment_task = None;
-            }
-            Msg::CommentResponse(Err(_)) => {
-                self.comment_task = None;
+            Msg::Response(Err(_)) => {
+                self.task = None;
             }
         }
         true
     }
 
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+        self.props = props;
+        true
+    }
+
     fn view(&self) -> Html<Self> {
         if let Some(article) = &self.article {
+            let can_modify = if let Some(user_info) = &self.props.current_user {
+                user_info.username == article.author.username
+            } else {
+                false
+            };
+            let created_at = article.created_at.format("%B %e, %Y").to_string();
+
             html! {
                 <div class="article-page">
                     <div class="banner">
                         <div class="container">
                             <h1>{&article.title}</h1>
-                            <ArticleMeta />
+                            <ArticleMeta
+                                slug=&article.slug
+                                author=&article.author
+                                can_modify=can_modify
+                                created_at=created_at />
                         </div>
                     </div>
                     <div class="container page">
@@ -125,7 +123,7 @@ impl Component for Article {
                         <div class="article-actions">
                         </div>
                         <div class="row">
-                            <CommentContainer />
+                            <CommentContainer slug=&self.props.slug current_user=&self.props.current_user />
                         </div>
                     </div>
                 </div>

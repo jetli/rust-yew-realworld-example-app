@@ -1,26 +1,84 @@
-use yew::{html, Component, ComponentLink, Html, ShouldRender};
+use yew::services::fetch::FetchTask;
+use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
 
-pub struct CommentList {}
+use super::comment::Comment;
+use crate::agent::Comments;
+use crate::error::Error;
+use crate::types::{CommentInfo, CommentListInfo, UserInfo};
 
-pub enum Msg {}
+pub struct CommentList {
+    comments: Comments,
+    comment_list: Option<Vec<CommentInfo>>,
+    response: Callback<Result<CommentListInfo, Error>>,
+    task: Option<FetchTask>,
+    props: Props,
+}
+
+#[derive(Properties)]
+pub struct Props {
+    #[props(required)]
+    pub slug: String,
+    #[props(required)]
+    pub current_user: Option<UserInfo>,
+}
+
+pub enum Msg {
+    Response(Result<CommentListInfo, Error>),
+}
 
 impl Component for CommentList {
     type Message = Msg;
-    type Properties = ();
+    type Properties = Props;
 
-    fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        CommentList {}
+    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+        CommentList {
+            comments: Comments::new(),
+            comment_list: None,
+            response: link.send_back(Msg::Response),
+            task: None,
+            props,
+        }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn mounted(&mut self) -> ShouldRender {
+        self.task = Some(
+            self.comments
+                .for_article(self.props.slug.clone(), self.response.clone()),
+        );
+        false
+    }
+
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            Msg::Response(Ok(comment_list)) => {
+                self.comment_list = Some(comment_list.comments);
+                self.task = None;
+            }
+            Msg::Response(Err(_)) => {
+                self.task = None;
+            }
+        }
+        true
+    }
+
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+        self.props = props;
         true
     }
 
     fn view(&self) -> Html<Self> {
-        html! {
-            <>
-                { "CommentList" }
-            </>
+        if let Some(comment_list) = &self.comment_list {
+            html! {
+                <div>
+                    {for comment_list.iter().map(|comment| {
+                        html! {
+                            <Comment slug=&self.props.slug comment=comment current_user=&self.props.current_user />
+                        }
+                    })}
+                </div>
+            }
+        } else {
+            html! {}
         }
     }
 }
