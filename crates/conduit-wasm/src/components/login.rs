@@ -43,14 +43,13 @@ impl Component for Login {
     type Properties = Props;
 
     fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
-        let router_agent = RouteAgent::bridge(link.send_back(|_| Msg::Ignore));
         Login {
             auth: Auth::new(),
             error: None,
             props,
             request: LoginInfo::default(),
             response: link.send_back(Msg::Response),
-            router_agent,
+            router_agent: RouteAgent::bridge(link.send_back(|_| Msg::Ignore)),
             task: None,
         }
     }

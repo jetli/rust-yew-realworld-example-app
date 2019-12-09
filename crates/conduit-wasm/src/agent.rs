@@ -223,9 +223,13 @@ impl Articles {
     }
 
     /// Delete an article
-    pub fn del(&mut self, slug: String, callback: Callback<Result<(), Error>>) -> FetchTask {
+    pub fn del(
+        &mut self,
+        slug: String,
+        callback: Callback<Result<DeleteWrapper, Error>>,
+    ) -> FetchTask {
         self.requests
-            .delete::<()>(format!("/articles/{}", slug), callback)
+            .delete::<DeleteWrapper>(format!("/articles/{}", slug), callback)
     }
 
     /// Favorite and article
@@ -341,9 +345,9 @@ impl Comments {
         &mut self,
         slug: String,
         comment_id: u32,
-        callback: Callback<Result<(), Error>>,
+        callback: Callback<Result<DeleteWrapper, Error>>,
     ) -> FetchTask {
-        self.requests.delete::<()>(
+        self.requests.delete::<DeleteWrapper>(
             format!("/articles/{}/comments/{}", slug, comment_id),
             callback,
         )

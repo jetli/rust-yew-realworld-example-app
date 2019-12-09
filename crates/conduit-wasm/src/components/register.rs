@@ -44,7 +44,6 @@ impl Component for Register {
     type Properties = Props;
 
     fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
-        let router_agent = RouteAgent::bridge(link.send_back(|_| Msg::Ignore));
         Register {
             auth: Auth::new(),
             error: None,
@@ -52,7 +51,7 @@ impl Component for Register {
             response: link.send_back(Msg::Response),
             task: None,
             props,
-            router_agent,
+            router_agent: RouteAgent::bridge(link.send_back(|_| Msg::Ignore)),
         }
     }
 

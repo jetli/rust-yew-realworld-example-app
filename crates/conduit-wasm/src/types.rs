@@ -182,3 +182,5 @@ pub struct ProfileInfo {
 pub struct ProfileInfoWrapper {
     pub profile: ProfileInfo,
 }
+
+pub type DeleteWrapper = HashMap<(), ()>;

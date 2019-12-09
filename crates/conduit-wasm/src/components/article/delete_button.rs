@@ -3,10 +3,11 @@ use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRend
 
 use crate::agent::Comments;
 use crate::error::Error;
+use crate::types::DeleteWrapper;
 
 pub struct DeleteButton {
     comments: Comments,
-    response: Callback<Result<(), Error>>,
+    response: Callback<Result<DeleteWrapper, Error>>,
     task: Option<FetchTask>,
     props: Props,
 }
@@ -21,7 +22,7 @@ pub struct Props {
 
 pub enum Msg {
     DeleteComment,
-    Response(Result<(), Error>),
+    Response(Result<DeleteWrapper, Error>),
 }
 
 impl Component for DeleteButton {

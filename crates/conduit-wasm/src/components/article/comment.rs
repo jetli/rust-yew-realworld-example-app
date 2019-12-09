@@ -53,7 +53,7 @@ impl Component for Comment {
                 <div class="card-footer">
                     <span class="comment-author">
                         <img src={ &comment.author.image } class="comment-author-img" alt={ &comment.author.username } />
-                    </span> 
+                    </span>
                     { " " }
                     <RouterLink text={ &comment.author.username } link={ format!("#/@{}", &comment.author.username) } classes="comment-author" />
                     <span class="date-posted">
