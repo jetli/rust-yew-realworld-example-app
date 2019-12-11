@@ -5,6 +5,7 @@ use crate::agent::Comments;
 use crate::error::Error;
 use crate::types::DeleteWrapper;
 
+/// A component to delete a comment from an article.
 pub struct DeleteButton {
     comments: Comments,
     response: Callback<Result<DeleteWrapper, Error>>,
@@ -18,6 +19,8 @@ pub struct Props {
     pub slug: String,
     #[props(required)]
     pub comment_id: u32,
+    #[props(required)]
+    pub callback: Callback<u32>,
 }
 
 pub enum Msg {
@@ -47,7 +50,9 @@ impl Component for DeleteButton {
                     self.response.clone(),
                 ));
             }
-            Msg::Response(Ok(_)) => {}
+            Msg::Response(Ok(_)) => {
+                self.props.callback.emit(self.props.comment_id);
+            }
             Msg::Response(Err(_)) => {}
         }
         true

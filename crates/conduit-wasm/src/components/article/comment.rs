@@ -62,7 +62,13 @@ impl Component for Comment {
                         { &comment.created_at.format("%B %e, %Y") }
                     </span>
                     { if show {
-                        html! { <DeleteButton slug=&self.props.slug comment_id=&comment.id/> }
+                        html! {
+                                <DeleteButton
+                                    slug=&self.props.slug
+                                    comment_id=&comment.id
+                                    callback=&self.props.callback
+                                    />
+                            }
                     } else {
                         html! { }
                     }}

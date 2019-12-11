@@ -67,7 +67,10 @@ impl Component for CommentList {
                     comment_list.insert(0, comment_info);
                 }
             }
-            Msg::CommentDeleted(_) => {
+            Msg::CommentDeleted(comment_id) => {
+                if let Some(comment_list) = &mut self.comment_list {
+                    comment_list.retain(|c| c.id != comment_id);
+                }
             }
         }
         true
