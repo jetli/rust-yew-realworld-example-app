@@ -1,7 +1,9 @@
 use yew::services::fetch::FetchTask;
 use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew_router::prelude::*;
 
 use super::comment::Comment;
+use super::comment_input::CommentInput;
 use crate::agent::Comments;
 use crate::error::Error;
 use crate::types::{CommentInfo, CommentListInfo, UserInfo};
@@ -69,12 +71,32 @@ impl Component for CommentList {
     fn view(&self) -> Html<Self> {
         if let Some(comment_list) = &self.comment_list {
             html! {
-                <div>
-                    {for comment_list.iter().map(|comment| {
-                        html! {
-                            <Comment slug=&self.props.slug comment=comment current_user=&self.props.current_user />
+                <div class="col-xs-12 col-md-8 offset-md-2">
+                    {
+                        if let Some(user_info) = &self.props.current_user {
+                            html! {
+                                <div>
+                                    <CommentInput slug=&self.props.slug current_user=user_info />
+                                </div>
+                            }
+                        } else {
+                            html! {
+                                <p>
+                                    <RouterLink text="Sign in" link="#/login"/>
+                                    { " or " }
+                                    <RouterLink text="sign up" link="#/register"/   >
+                                    { " to add comments on this article." }
+                                </p>
+                            }
                         }
-                    })}
+                    }
+                    <div>
+                        {for comment_list.iter().map(|comment| {
+                            html! {
+                                <Comment slug=&self.props.slug comment=comment current_user=&self.props.current_user />
+                            }
+                        })}
+                    </div>
                 </div>
             }
         } else {

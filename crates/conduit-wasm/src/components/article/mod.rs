@@ -1,7 +1,6 @@
 mod article_actions;
 mod article_meta;
 mod comment;
-mod comment_container;
 mod comment_input;
 mod comment_list;
 mod delete_button;
@@ -19,7 +18,7 @@ use crate::error::Error;
 use crate::types::{ArticleInfo, ArticleInfoWrapper, UserInfo};
 
 use article_meta::ArticleMeta;
-use comment_container::CommentContainer;
+use comment_list::CommentList;
 
 /// Article detail page
 pub struct Article {
@@ -123,7 +122,7 @@ impl Component for Article {
                         <div class="article-actions">
                         </div>
                         <div class="row">
-                            <CommentContainer slug=&self.props.slug current_user=&self.props.current_user />
+                            <CommentList slug=&self.props.slug current_user=&self.props.current_user />
                         </div>
                     </div>
                 </div>
