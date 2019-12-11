@@ -1,4 +1,4 @@
-use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
 use yew_router::prelude::*;
 
 use super::delete_button::DeleteButton;
@@ -16,6 +16,8 @@ pub struct Props {
     pub comment: CommentInfo,
     #[props(required)]
     pub current_user: Option<UserInfo>,
+    #[props(required)]
+    pub callback: Callback<u32>,
 }
 
 pub enum Msg {}

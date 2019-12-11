@@ -59,14 +59,9 @@ impl Component for Register {
         match msg {
             Msg::Request => {
                 let request = RegisterInfoWrapper {
-                    user: RegisterInfo {
-                        email: self.request.email.clone(),
-                        password: self.request.password.clone(),
-                        username: self.request.username.clone(),
-                    },
+                    user: self.request.clone(),
                 };
-                let task = self.auth.register(request, self.response.clone());
-                self.task = Some(task);
+                self.task = Some(self.auth.register(request, self.response.clone()));
             }
             Msg::Response(Ok(user_info)) => {
                 set_token(Some(user_info.user.token.clone()));
@@ -103,7 +98,7 @@ impl Component for Register {
                             <p class="text-xs-center">
                                 <RouterLink text="Have an account?" link="#/login"/>
                             </p>
-                            <ListErrors error=self.error.clone() />
+                            <ListErrors error=&self.error />
                             <form onsubmit=|ev| { ev.prevent_default(); Msg::Request }>
                                 <fieldset>
                                     <fieldset class="form-group">

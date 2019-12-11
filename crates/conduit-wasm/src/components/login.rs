@@ -58,13 +58,9 @@ impl Component for Login {
         match msg {
             Msg::Request => {
                 let request = LoginInfoWrapper {
-                    user: LoginInfo {
-                        email: self.request.email.clone(),
-                        password: self.request.password.clone(),
-                    },
+                    user: self.request.clone(),
                 };
-                let task = self.auth.login(request, self.response.clone());
-                self.task = Some(task);
+                self.task = Some(self.auth.login(request, self.response.clone()));
             }
             Msg::Response(Ok(user_info)) => {
                 // Set global token after logged in
@@ -100,7 +96,7 @@ impl Component for Login {
                             <p class="text-xs-center">
                                 <RouterLink text="Need an account?" link="#/register"/>
                             </p>
-                            <ListErrors error=self.error.clone() />
+                            <ListErrors error=&self.error />
                             <form onsubmit=|ev| { ev.prevent_default(); /* Prevent event propagation */ Msg::Request }>
                                 <fieldset>
                                     <fieldset class="form-group">

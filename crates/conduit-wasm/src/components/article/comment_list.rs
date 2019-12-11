@@ -8,6 +8,7 @@ use crate::agent::Comments;
 use crate::error::Error;
 use crate::types::{CommentInfo, CommentListInfo, UserInfo};
 
+/// A comment list component of an article.
 pub struct CommentList {
     comments: Comments,
     comment_list: Option<Vec<CommentInfo>>,
@@ -26,6 +27,8 @@ pub struct Props {
 
 pub enum Msg {
     Response(Result<CommentListInfo, Error>),
+    CommentAdded(CommentInfo),
+    CommentDeleted(u32),
 }
 
 impl Component for CommentList {
@@ -59,6 +62,13 @@ impl Component for CommentList {
             Msg::Response(Err(_)) => {
                 self.task = None;
             }
+            Msg::CommentAdded(comment_info) => {
+                if let Some(comment_list) = &mut self.comment_list {
+                    comment_list.insert(0, comment_info);
+                }
+            }
+            Msg::CommentDeleted(_) => {
+            }
         }
         true
     }
@@ -76,7 +86,10 @@ impl Component for CommentList {
                         if let Some(user_info) = &self.props.current_user {
                             html! {
                                 <div>
-                                    <CommentInput slug=&self.props.slug current_user=user_info />
+                                    <CommentInput
+                                        slug=&self.props.slug
+                                        current_user=user_info
+                                        callback=Msg::CommentAdded />
                                 </div>
                             }
                         } else {
@@ -93,7 +106,11 @@ impl Component for CommentList {
                     <div>
                         {for comment_list.iter().map(|comment| {
                             html! {
-                                <Comment slug=&self.props.slug comment=comment current_user=&self.props.current_user />
+                                <Comment
+                                    slug=&self.props.slug
+                                    comment=comment
+                                    current_user=&self.props.current_user
+                                    callback=Msg::CommentDeleted />
                             }
                         })}
                     </div>

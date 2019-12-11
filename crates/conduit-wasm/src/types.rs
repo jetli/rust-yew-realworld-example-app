@@ -91,7 +91,7 @@ pub struct CommentInfoWrapper {
     pub comment: CommentInfo,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct CommentCreateInfo {
     pub body: String,
