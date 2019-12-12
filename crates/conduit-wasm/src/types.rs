@@ -40,9 +40,9 @@ pub struct ArticleListInfo {
     pub articles_count: u32,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default)]
 #[serde(rename_all = "camelCase")]
-pub struct ArticleCreateInfo {
+pub struct ArticleCreateUpdateInfo {
     pub title: String,
     pub description: String,
     pub body: String,
@@ -51,22 +51,8 @@ pub struct ArticleCreateInfo {
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct ArticleCreateInfoWrapper {
-    pub article: ArticleCreateInfo,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct ArticleUpdateInfo {
-    pub title: Option<String>,
-    pub description: Option<String>,
-    pub body: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct ArticleUpdateInfoWrapper {
-    pub article: ArticleUpdateInfo,
+pub struct ArticleCreateUpdateInfoWrapper {
+    pub article: ArticleCreateUpdateInfo,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

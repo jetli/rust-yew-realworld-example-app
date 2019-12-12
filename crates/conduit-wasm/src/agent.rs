@@ -288,11 +288,11 @@ impl Articles {
     pub fn update(
         &mut self,
         slug: String,
-        article: ArticleUpdateInfoWrapper,
+        article: ArticleCreateUpdateInfoWrapper,
         callback: Callback<Result<ArticleInfoWrapper, Error>>,
     ) -> FetchTask {
         self.requests
-            .put::<ArticleUpdateInfoWrapper, ArticleInfoWrapper>(
+            .put::<ArticleCreateUpdateInfoWrapper, ArticleInfoWrapper>(
                 format!("/articles/{}", slug),
                 article,
                 callback,
@@ -302,11 +302,11 @@ impl Articles {
     /// Create an article
     pub fn create(
         &mut self,
-        article: ArticleCreateInfoWrapper,
+        article: ArticleCreateUpdateInfoWrapper,
         callback: Callback<Result<ArticleInfoWrapper, Error>>,
     ) -> FetchTask {
         self.requests
-            .post::<ArticleCreateInfoWrapper, ArticleInfoWrapper>(
+            .post::<ArticleCreateUpdateInfoWrapper, ArticleInfoWrapper>(
                 format!("/articles"),
                 article,
                 callback,

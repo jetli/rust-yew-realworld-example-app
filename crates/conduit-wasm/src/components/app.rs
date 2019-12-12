@@ -90,7 +90,7 @@ impl Component for App {
                             AppRoute::Login => html!{<Login callback=Msg::Authenticated/>},
                             AppRoute::Register => html!{<Register callback=Msg::Authenticated />},
                             AppRoute::Home => html!{<Home />},
-                            AppRoute::Editor(slug) => html!{<Editor />},
+                            AppRoute::Editor(slug) => html!{<Editor slug=Some(slug.clone())/>},
                             AppRoute::EditorCreate => html!{<Editor />},
                             AppRoute::Article(slug) => html!{<Article slug=slug current_user=&self.current_user />},
                             AppRoute::Settings => html!{<Settings />},

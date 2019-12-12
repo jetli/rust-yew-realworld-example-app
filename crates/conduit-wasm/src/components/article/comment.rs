@@ -63,12 +63,12 @@ impl Component for Comment {
                     </span>
                     { if show {
                         html! {
-                                <DeleteButton
-                                    slug=&self.props.slug
-                                    comment_id=&comment.id
-                                    callback=&self.props.callback
-                                    />
-                            }
+                            <DeleteButton
+                                slug=&self.props.slug
+                                comment_id=&comment.id
+                                callback=&self.props.callback
+                                />
+                        }
                     } else {
                         html! { }
                     }}
