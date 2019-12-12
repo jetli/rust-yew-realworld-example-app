@@ -434,12 +434,11 @@ impl Auth {
         user_update_info: UserUpdateInfoWrapper,
         callback: Callback<Result<UserInfoWrapper, Error>>,
     ) -> FetchTask {
-        self.requests
-            .post::<UserUpdateInfoWrapper, UserInfoWrapper>(
-                "/user".to_string(),
-                user_update_info,
-                callback,
-            )
+        self.requests.put::<UserUpdateInfoWrapper, UserInfoWrapper>(
+            "/user".to_string(),
+            user_update_info,
+            callback,
+        )
     }
 }
 

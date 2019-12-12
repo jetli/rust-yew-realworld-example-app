@@ -138,14 +138,14 @@ pub struct UserInfoWrapper {
     pub user: UserInfo,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct UserUpdateInfo {
-    pub email: Option<String>,
-    pub username: Option<String>,
+    pub email: String,
+    pub username: String,
     pub password: Option<String>,
-    pub image: Option<String>,
-    pub bio: Option<String>,
+    pub image: String,
+    pub bio: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

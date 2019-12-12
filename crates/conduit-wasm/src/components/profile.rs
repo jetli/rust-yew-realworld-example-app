@@ -5,7 +5,7 @@ use yew_router::prelude::*;
 use crate::agent::Profiles;
 use crate::components::article_list::{ArticleList, ArticleListFilter};
 use crate::error::Error;
-use crate::types::{UserInfo, ProfileInfo, ProfileInfoWrapper};
+use crate::types::{ProfileInfo, ProfileInfoWrapper, UserInfo};
 
 /// Profile for an author
 pub struct Profile {
@@ -54,23 +54,32 @@ impl Component for Profile {
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        self.task = Some(self.profiles.get(self.props.username.clone(), self.response.clone()));
+        self.task = Some(
+            self.profiles
+                .get(self.props.username.clone(), self.response.clone()),
+        );
         false
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Follow => {
-                self.task = Some(self.profiles.follow(self.props.username.clone(), self.response.clone()));
+                self.task = Some(
+                    self.profiles
+                        .follow(self.props.username.clone(), self.response.clone()),
+                );
             }
             Msg::UnFollow => {
-                self.task = Some(self.profiles.unfollow(self.props.username.clone(), self.response.clone()));
+                self.task = Some(
+                    self.profiles
+                        .unfollow(self.props.username.clone(), self.response.clone()),
+                );
             }
             Msg::Response(Ok(profile_info)) => {
                 self.profile = Some(profile_info.profile);
                 self.task = None;
             }
-            Msg::Response(Err(_)) => { 
+            Msg::Response(Err(_)) => {
                 self.task = None;
             }
         }
@@ -99,18 +108,18 @@ impl Component for Profile {
                                     <img src={ &profile.image } class="user-img" alt={ &profile.username } />
                                     <h4>{ &profile.username }</h4>
                                     <p>
-                                        { 
+                                        {
                                             if let Some(bio) = &profile.bio {
                                                 html! { bio }
                                             } else {
                                                 html! { }
                                         }}
                                     </p>
-                                    { 
+                                    {
                                         if is_current_user {
-                                            self.view_edit_profile_settings() 
+                                            self.view_edit_profile_settings()
                                         } else {
-                                            self.view_follow_user_button() 
+                                            self.view_follow_user_button()
                                     }}
                                 </div>
                             </div>
@@ -138,7 +147,7 @@ impl Component for Profile {
                 </div>
             }
         } else {
-            html! { }
+            html! {}
         }
     }
 }
@@ -181,7 +190,7 @@ impl Profile {
                 </button>
             }
         } else {
-            html! { }
+            html! {}
         }
     }
 
@@ -210,7 +219,7 @@ impl Profile {
                 </ul>
             }
         } else {
-            html! { }
+            html! {}
         }
     }
 }

@@ -5,8 +5,15 @@ use yew::{agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html
 use yew_router::prelude::*;
 
 use super::{
-    article::Article, editor::Editor, footer::Footer, header::Header, home::Home, login::Login,
-    profile::{Profile, ProfileTab}, register::Register, settings::Settings,
+    article::Article,
+    editor::Editor,
+    footer::Footer,
+    header::Header,
+    home::Home,
+    login::Login,
+    profile::{Profile, ProfileTab},
+    register::Register,
+    settings::Settings,
 };
 use crate::agent::{is_authenticated, Auth};
 use crate::error::Error;
@@ -28,6 +35,7 @@ pub enum Msg {
     CurrentUserResponse(Result<UserInfoWrapper, Error>),
     Route(Route),
     Authenticated(UserInfo),
+    Logout,
 }
 
 impl Component for App {
@@ -75,6 +83,9 @@ impl Component for App {
             Msg::Authenticated(user_info) => {
                 self.current_user = Some(user_info);
             }
+            Msg::Logout => {
+                self.current_user = None;
+            }
         }
         true
     }
@@ -93,7 +104,7 @@ impl Component for App {
                             AppRoute::Editor(slug) => html!{<Editor slug=Some(slug.clone())/>},
                             AppRoute::EditorCreate => html!{<Editor />},
                             AppRoute::Article(slug) => html!{<Article slug=slug current_user=&self.current_user />},
-                            AppRoute::Settings => html!{<Settings />},
+                            AppRoute::Settings => html!{<Settings callback=|_| Msg::Logout />},
                             AppRoute::ProfileFavorites(username) => html!{
                                 <Profile username=username current_user=&self.current_user tab=ProfileTab::FavoritedBy />
                             },
