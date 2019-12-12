@@ -6,7 +6,7 @@ use yew_router::prelude::*;
 
 use super::{
     article::Article, editor::Editor, footer::Footer, header::Header, home::Home, login::Login,
-    profile::Profile, profile_favorites::ProfileFavorites, register::Register, settings::Settings,
+    profile::{Profile, ProfileTab}, register::Register, settings::Settings,
 };
 use crate::agent::{is_authenticated, Auth};
 use crate::error::Error;
@@ -94,8 +94,12 @@ impl Component for App {
                             AppRoute::EditorCreate => html!{<Editor />},
                             AppRoute::Article(slug) => html!{<Article slug=slug current_user=&self.current_user />},
                             AppRoute::Settings => html!{<Settings />},
-                            AppRoute::ProfileFavorites(username) => html!{<ProfileFavorites />},
-                            AppRoute::Profile(username) => html!{<Profile />},
+                            AppRoute::ProfileFavorites(username) => html!{
+                                <Profile username=username current_user=&self.current_user tab=ProfileTab::FavoritedBy />
+                            },
+                            AppRoute::Profile(username) => html!{
+                                <Profile username=username current_user=&self.current_user tab=ProfileTab::ByAuthor />
+                            },
                         }
                     } else {
                         // 404 when route matches no component

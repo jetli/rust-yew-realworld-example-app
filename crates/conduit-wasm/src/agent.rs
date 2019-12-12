@@ -445,11 +445,11 @@ impl Auth {
 
 /// Apis for profile
 #[derive(Default, Debug)]
-pub struct Profile {
+pub struct Profiles {
     requests: Requests,
 }
 
-impl Profile {
+impl Profiles {
     pub fn new() -> Self {
         Self {
             requests: Requests::new(),
