@@ -2,3 +2,7 @@
 members = [
     "crates/conduit-wasm",
 ]
+
+[profile.release]
+lto = true
+opt-level = 'z'

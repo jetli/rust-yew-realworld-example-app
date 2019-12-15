@@ -21,3 +21,4 @@ yew = "0.10.0"
 #yew = {git = "https://github.com/yewstack/yew", branch = "master"}
 yew-router = "0.7.0"
 #yew-router = {git = "https://github.com/yewstack/yew_router", branch = "master"}
+wee_alloc = "0.4.5"
