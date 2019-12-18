@@ -1,0 +1,24 @@
+name: Rust
+
+on:
+  push:
+    tags: 
+      - "v*.*.*"
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install cargo-web
+      run: cargo install cargo-web
+    - name: Build
+      run: cargo web deploy --verbose -p conduit-wasm --release
+    - name: Deploy to gh-pages
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: target/deploy
