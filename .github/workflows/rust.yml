@@ -1,4 +1,4 @@
-name: Rust
+name: Continuous Integration
 
 on: 
   push:
