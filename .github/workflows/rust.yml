@@ -12,6 +12,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: cargo fmt & clippy
+      run: cargo fmt --all -- --check
+      run: cargo clippy -- --deny=warnings
     - name: Install cargo-web
       run: cargo install cargo-web
     - name: Build
