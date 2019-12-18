@@ -135,7 +135,7 @@ impl Component for Article {
 
 impl Article {
     /// Dangerously set innerHTML for article body
-    fn view_body(&self, body: &String) -> Html<Self> {
+    fn view_body(&self, body: &str) -> Html<Self> {
         let parser = pulldown_cmark::Parser::new(body);
         let mut html_text = String::new();
         pulldown_cmark::html::push_html(&mut html_text, parser);
@@ -146,7 +146,6 @@ impl Article {
             return div;
         };
         let node = Node::try_from(js_body).expect("convert js");
-        let vnode = VNode::VRef(node);
-        vnode
+        VNode::VRef(node)
     }
 }

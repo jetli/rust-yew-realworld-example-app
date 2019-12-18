@@ -96,8 +96,8 @@ impl Component for Settings {
                     email: user_info.user.email,
                     username: user_info.user.username,
                     password: None,
-                    image: user_info.user.image.unwrap_or(String::default()),
-                    bio: user_info.user.bio.unwrap_or(String::default()),
+                    image: user_info.user.image.unwrap_or_default(),
+                    bio: user_info.user.bio.unwrap_or_default(),
                 };
             }
             Msg::Loaded(Err(err)) => {

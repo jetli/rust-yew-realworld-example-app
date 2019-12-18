@@ -307,7 +307,7 @@ impl Articles {
     ) -> FetchTask {
         self.requests
             .post::<ArticleCreateUpdateInfoWrapper, ArticleInfoWrapper>(
-                format!("/articles"),
+                "/articles".to_string(),
                 article,
                 callback,
             )
