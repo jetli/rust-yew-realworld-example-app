@@ -12,10 +12,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - uses: nanasess/setup-chromedriver@v1.0.0
     - name: Install cargo-web
       run: cargo install cargo-web
     - name: Build
       run: cargo web build --verbose -p conduit-wasm
     - name: Run tests
-      run: cargo web test --verbose  -p conduit-wasm
+      run: cargo web test --verbose --nodejs -p conduit-wasm
