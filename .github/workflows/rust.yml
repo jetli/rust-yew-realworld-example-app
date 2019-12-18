@@ -1,0 +1,24 @@
+name: Rust
+
+on: 
+  push:
+    branches: 
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install cargo-web
+      run: cargo install cargo-web
+    - name: Build
+      run: cargo web build --verbose -p conduit-wasm
+    - name: Run tests
+      run: cargo web test --verbose --nodejs -p conduit-wasm
+    - name: cargo fmt & clippy
+      run: |
+        cargo fmt --all -- --check
+        cargo clippy -- --deny=warnings
