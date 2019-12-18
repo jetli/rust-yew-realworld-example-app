@@ -27,12 +27,16 @@ jobs:
       run: |
         cd target
         tar czvf conduit-wasm.tar.gz deploy
-        shasum -a 256 conduit-wasm.tar.gz > conduit-wasm.sha256
+        zip -r conduit-wasm.zip deploy
+        shasum -a 256 conduit-wasm.tar.gz > conduit-wasm.tar.gz.sha256
+        shasum -a 256 conduit-wasm.zip > conduit-wasm.zip.sha256
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
           target/conduit-wasm.tar.gz
-          target/conduit-wasm.sha256
+          target/conduit-wasm.tar.gz.sha256
+          target/conduit-wasm.zip
+          target/conduit-wasm.zip.sha256
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
