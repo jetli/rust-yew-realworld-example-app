@@ -22,3 +22,17 @@ jobs:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         BRANCH: gh-pages
         FOLDER: target/deploy
+    - name: Package
+      shell: bash
+      run: |
+        cd target
+        tar czvf conduit-wasm.tar.gz deploy
+        shasum -a 256 conduit-wasm.tar.gz > conduit-wasm.sha256
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          target/conduit-wasm.tar.gz
+          target/conduit-wasm.sha256
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
