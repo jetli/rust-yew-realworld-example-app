@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "crates/conduit-wasm",
+    "crates/conduit-webview",
 ]
 
 [profile.release]

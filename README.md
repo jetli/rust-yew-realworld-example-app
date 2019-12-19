@@ -49,6 +49,12 @@ You can view a live demo over at [Demo]
   ```
   You should find static files at `target/deploy` folder now, they are hosted in [gh-pages] branch as a demo.
 
+* Build and develop for desktop
+  ```
+  cargo web deploy -p conduit-wasm --release --output crates/conduit-webview/static
+  cargo run -p conduit-webview
+  ```
+
 # Contributing
 
 Feel free to take a look at the current issues in this repo for anything that currently needs to be worked on.
