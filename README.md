@@ -14,6 +14,17 @@ We've gone to great lengths to adhere to the [Yew] community styleguides & best 
 
 For more information on how to this works with other frontends/backends, head over to the [RealWorld] repo.
 
+# How it looks
+
+You can view a live demo over at [Demo]
+
+| Home | Article |
+| :---:         |     :---:      |
+| ![Home](screenshots/home.png) | ![Article](screenshots/article.png) |
+
+| Edit | Sign Up |
+| :---:         |     :---:      |
+| ![Edit](screenshots/edit.png) | ![Sign Up](screenshots/sign_up.png) |
 
 # How it works
 
@@ -31,9 +42,10 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
 
 # Getting started
 
-You can view a live demo over at [Demo]
-
 * Install [Rust]
+  ```
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  ```
 * Install [cargo-web]
   ```
   cargo install cargo-web
