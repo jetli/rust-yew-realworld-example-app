@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Installing needed Ubuntu dependencies
+      run: |
+        sudo add-apt-repository ppa:webkit-team/ppa
+        sudo apt-get update
+        sudo apt-get install libwebkit2gtk-4.0-37 libwebkit2gtk-4.0-dev
     - uses: actions/checkout@v1
     - name: Install cargo-web
       run: cargo install cargo-web
