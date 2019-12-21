@@ -41,7 +41,7 @@ impl Component for Home {
                 <div class="container page">
                     <div class="row">
                         <MainView tag=&self.tag />
-                        <div class="col-md-3">
+                        <div class="col-md-3 col-xs-12">
                             <div class="sidebar">
                                 <p>{ "Popular Tags" }</p>
                                 <Tags callback=Msg::TagFiltered />

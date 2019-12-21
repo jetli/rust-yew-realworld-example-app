@@ -79,7 +79,7 @@ impl Component for MainView {
 
     fn view(&self) -> Html<Self> {
         html! {
-            <div class="col-md-9">
+            <div class="col-md-9 col-xs-12">
                 <div class="feed-toggle">
                     <ul class="nav nav-pills outline-active">
                         { self.your_feed_tab() }
