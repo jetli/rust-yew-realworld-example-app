@@ -62,6 +62,13 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
   You should find static files at `target/deploy` folder now, they are hosted in [gh-pages] branch as a demo.
 
 * Build and develop for desktop
+
+  If you're planning on targeting Linux you must ensure that Webkit2gtk is already installed and available for discovery via the pkg-config command.
+  ```
+  sudo apt-get update
+  sudo apt-get install libwebkit2gtk-4.0-37 libwebkit2gtk-4.0-dev
+  ```
+
   ```
   cargo web deploy -p conduit-wasm --release --output crates/conduit-webview/static
   cargo run -p conduit-webview
