@@ -19,7 +19,10 @@ jobs:
     - name: Install cargo-web
       run: cargo install cargo-web
     - name: Build
-      run: cargo web build --verbose -p conduit-wasm
+      run: |
+        cargo version
+        cargo web build --verbose -p conduit-wasm
+        cargo build --verbose -p conduit-webview
     - name: Run tests
       run: cargo web test --verbose --nodejs -p conduit-wasm
     - name: cargo fmt & clippy
