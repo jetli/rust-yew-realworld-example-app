@@ -1,6 +1,6 @@
 # ![RealWorld Example App](logo.png)
 
-[![Continuous Integration](https://github.com/jetli/rust-yew-realworld-example-app/workflows/Continuous%20Integration/badge.svg)](https://github.com/jetli/rust-yew-realworld-example-app/actions)
+[![Continuous Integration](https://github.com/jetli/rust-yew-realworld-example-app/workflows/build/badge.svg)](https://github.com/jetli/rust-yew-realworld-example-app/actions)
 [![RealWorld Frontend](https://img.shields.io/badge/realworld-frontend-%23783578.svg)](http://realworld.io)
 
 > ### [Rust] + [Yew] + [WebAssembly] codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld] spec and API.
