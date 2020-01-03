@@ -25,7 +25,7 @@ impl Component for Footer {
                     <span class="attribution">
                         { "© 2019. An interactive learning project from" }
                         <a href="https://thinkster.io"> { "Thinkster" } </a>
-                        { ". Code licensed under MIT." }
+                        { ". Code licensed under MIT.aaa" }
                     </span>
                 </div>
             </footer>

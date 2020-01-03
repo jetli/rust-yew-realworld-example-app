@@ -44,23 +44,21 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
 # Getting started
 
 * Install [Rust]
+* Install [node]
+* Install npm packages
   ```
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-  ```
-* Install [cargo-web]
-  ```
-  cargo install cargo-web
+  npm run install
   ```
 * Build and develop
   ```
-  cargo web start -p conduit-wasm
+  npm start
   ```
-  You can visit `http://[::1]:8000` in your browser now.
+  You can visit `http://localhost:8000` in your browser now.
 * Build and release
   ```
-  cargo web deploy -p conduit-wasm --release
+  npm run build
   ```
-  You should find static files at `target/deploy` folder now, they are hosted in [gh-pages] branch as a demo.
+  You should find static files at `crates/conduit-wasm/dist` folder now, they are hosted in [gh-pages] branch as a demo.
 
 * Build and develop for desktop
 
@@ -71,7 +69,7 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
   ```
 
   ```
-  cargo web deploy -p conduit-wasm --release --output crates/conduit-webview/static
+  npm run build:webview
   cargo run -p conduit-webview
   ```
 
@@ -87,13 +85,13 @@ Apache License (Version 2.0)
 
 See [LICENSE] for details
 
-[cargo-web]: https://github.com/koute/cargo-web
 [chrono]: https://github.com/chronotope/chrono
 [Cargo.toml]: ./crates/conduit-wasm/Cargo.toml
 [Demo]: https://jetli.github.io/rust-yew-realworld-example-app/
 [gh-pages]: https://github.com/jetli/rust-yew-realworld-example-app/tree/gh-pages
 [lazy_static]: https://github.com/rust-lang-nursery/lazy-static.rs
 [LICENSE]: ./LICENSE
+[node]: https://nodejs.org
 [parking_lot]: https://github.com/Amanieu/parking_lot
 [pulldown-cmark]: https://github.com/raphlinus/pulldown-cmark
 [RealWorld]: https://github.com/gothinkster/realworld

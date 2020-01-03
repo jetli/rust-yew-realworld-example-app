@@ -2,10 +2,25 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::eval_order_dependence)]
 
-pub mod agent;
-pub mod components;
-pub mod error;
-pub mod routes;
-pub mod types;
+mod agent;
+mod components;
+mod error;
+mod routes;
+mod types;
 
-pub use components::app::App;
+use wasm_bindgen::prelude::*;
+use web_logger;
+
+use components::app::App;
+
+// Use `wee_alloc` as the global allocator.
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
+// This is the entry point for the web app
+#[wasm_bindgen]
+pub fn run_app() -> Result<(), JsValue> {
+    web_logger::init();
+    yew::start_app::<App>();
+    Ok(())
+}

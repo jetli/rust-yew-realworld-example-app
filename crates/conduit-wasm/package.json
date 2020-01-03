@@ -1,0 +1,23 @@
+{
+  "author": "Jet Li <jing.i.qin@icloud.com>",
+  "name": "conduit-wasm",
+  "version": "0.1.0",
+  "description": "Exemplary real world app built with Rust + Yew + WebAssembly",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jetli/rust-yew-realworld-example-app.git",
+    "directory": "crates/conduit-wasm"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "WASM_PACK_PROFILE=release parcel build static/index.html --public-url ./",
+    "build:webview": "WASM_PACK_PROFILE=release parcel build static/index.html --public-url ./ --out-dir ../conduit-webview/static",
+    "start": "WASM_PACK_PROFILE=dev parcel static/index.html -p 8000 --open",
+    "test": "wasm-pack test --headless --safari --chrome --firefox"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-wasm.rs": "^1.2.15",
+    "typescript": "^3.7.4"
+  }
+}

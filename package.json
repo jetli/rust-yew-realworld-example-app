@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "install": "cd crates/conduit-wasm && npm install",
+    "build": "cd crates/conduit-wasm && npm run build",
+    "build:webview": "cd crates/conduit-wasm && npm run build:webview",
+    "start": "cd crates/conduit-wasm && npm start",
+    "test": "cd crates/conduit-wasm && npm run test"
+  }
+}
