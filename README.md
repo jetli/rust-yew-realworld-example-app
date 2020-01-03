@@ -44,7 +44,7 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
 # Getting started
 
 * Install [Rust]
-* Install wasm-pack
+* Install [wasm-pack]
   ```
   cargo install wasm-pack
   ```
@@ -102,5 +102,6 @@ See [LICENSE] for details
 [Rust]: https://www.rust-lang.org/
 [serde]: https://github.com/serde-rs/serde
 [WebAssembly]: https://webassembly.org
+[wasm-pack]: https://github.com/rustwasm/wasm-pack
 [Yew]: https://github.com/yewstack/yew
 [yew-router]: https://github.com/yewstack/yew_router
