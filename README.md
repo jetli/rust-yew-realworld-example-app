@@ -19,11 +19,11 @@ For more information on how to this works with other frontends/backends, head ov
 
 You can view a live demo over at [Demo]
 
-| Home | Article |
+| Home(Web) | Article(Web) |
 | :---:         |     :---:      |
 | ![Home](screenshots/home.png) | ![Article](screenshots/article.png) |
 
-| Edit | Sign Up |
+| Edit(Desktop) | Sign Up(Desktop) |
 | :---:         |     :---:      |
 | ![Edit](screenshots/edit.png) | ![Sign Up](screenshots/sign_up.png) |
 
