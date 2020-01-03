@@ -16,12 +16,18 @@ jobs:
         sudo apt-get update
         sudo apt-get install libwebkit2gtk-4.0-37 libwebkit2gtk-4.0-dev
     - uses: actions/checkout@v1
+    - name: Install wasm-pack
+      run: cargo install wasm-pack
     - name: Build
       run: |
         npm run install
         npm run build
+        npm run build:webview
+        cargo build --verbose -p conduit-webview
     - name: Run tests
-      run: npm run test
+      run: |
+        npm run test
+        cargo test --verbose -p conduit-webview
     - name: cargo fmt & clippy
       run: |
         cargo fmt --all -- --check

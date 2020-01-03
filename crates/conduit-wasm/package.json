@@ -13,7 +13,7 @@
     "build": "WASM_PACK_PROFILE=release parcel build static/index.html --public-url ./",
     "build:webview": "WASM_PACK_PROFILE=release parcel build static/index.html --public-url ./ --out-dir ../conduit-webview/static",
     "start": "WASM_PACK_PROFILE=dev parcel static/index.html -p 8000 --open",
-    "test": "wasm-pack test --headless --safari --chrome --firefox"
+    "test": "wasm-pack test --node"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.4",

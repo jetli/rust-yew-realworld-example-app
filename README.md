@@ -44,6 +44,10 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
 # Getting started
 
 * Install [Rust]
+* Install wasm-pack
+  ```
+  cargo install wasm-pack
+  ```
 * Install [node]
 * Install npm packages
   ```
