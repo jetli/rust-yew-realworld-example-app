@@ -16,15 +16,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install libwebkit2gtk-4.0-37 libwebkit2gtk-4.0-dev
     - uses: actions/checkout@v1
-    - name: Install cargo-web
-      run: cargo install cargo-web
     - name: Build
       run: |
-        cargo version
-        cargo web build --verbose -p conduit-wasm
-        cargo build --verbose -p conduit-webview
+        npm run install
+        npm run build
     - name: Run tests
-      run: cargo web test --verbose --nodejs -p conduit-wasm
+      run: npm run test
     - name: cargo fmt & clippy
       run: |
         cargo fmt --all -- --check
