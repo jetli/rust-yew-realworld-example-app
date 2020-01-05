@@ -1,5 +1,13 @@
 //! Routes by yew_router
 
+pub mod article;
+pub mod editor;
+pub mod home;
+pub mod login;
+pub mod profile;
+pub mod register;
+pub mod settings;
+
 use yew_router::prelude::*;
 
 /// App routes
@@ -26,7 +34,7 @@ pub enum AppRoute {
 }
 
 /// Fix fragment handling problem for yew_router
-pub fn fix_fragment_router(route: &mut Route) {
+pub fn fix_fragment_routes(route: &mut Route) {
     let r = route.route.as_str();
     if let Some(index) = r.find('#') {
         route.route = r[index..].to_string();

@@ -1,14 +1,8 @@
-pub mod app;
-pub mod article;
+//! Components used by route pages
+
 pub mod article_list;
 pub mod article_preview;
-pub mod editor;
 pub mod footer;
 pub mod header;
-pub mod home;
 pub mod list_errors;
 pub mod list_pagination;
-pub mod login;
-pub mod profile;
-pub mod register;
-pub mod settings;

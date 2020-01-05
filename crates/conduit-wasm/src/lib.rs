@@ -3,6 +3,7 @@
 #![allow(clippy::eval_order_dependence)]
 
 mod agent;
+mod app;
 mod components;
 mod error;
 mod routes;
@@ -11,7 +12,7 @@ mod types;
 use wasm_bindgen::prelude::*;
 use web_logger;
 
-use components::app::App;
+use app::App;
 
 // Use `wee_alloc` as the global allocator.
 #[global_allocator]

@@ -4,20 +4,20 @@ use yew::services::fetch::FetchTask;
 use yew::{agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, ShouldRender};
 use yew_router::prelude::*;
 
-use super::{
+use crate::agent::{is_authenticated, Auth};
+use crate::components::{footer::Footer, header::Header};
+use crate::error::Error;
+use crate::routes::{
     article::Article,
     editor::Editor,
-    footer::Footer,
-    header::Header,
+    fix_fragment_routes,
     home::Home,
     login::Login,
     profile::{Profile, ProfileTab},
     register::Register,
     settings::Settings,
+    AppRoute,
 };
-use crate::agent::{is_authenticated, Auth};
-use crate::error::Error;
-use crate::routes::{fix_fragment_router, AppRoute};
 use crate::types::{UserInfo, UserInfoWrapper};
 
 /// The root app component
@@ -47,7 +47,7 @@ impl Component for App {
         let route_service: RouteService = RouteService::new();
         let route = route_service.get_route();
         let mut route = Route::from(route);
-        fix_fragment_router(&mut route);
+        fix_fragment_routes(&mut route);
         App {
             auth: Auth::new(),
             current_route: AppRoute::switch(route),
@@ -77,7 +77,7 @@ impl Component for App {
                 self.current_user_task = None;
             }
             Msg::Route(mut route) => {
-                fix_fragment_router(&mut route);
+                fix_fragment_routes(&mut route);
                 self.current_route = AppRoute::switch(route)
             }
             Msg::Authenticated(user_info) => {
