@@ -46,8 +46,7 @@ impl Component for App {
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
         let router_agent = RouteAgent::bridge(link.callback(Msg::Route));
         let route_service: RouteService = RouteService::new();
-        let route = route_service.get_route();
-        let mut route = Route::from(route);
+        let mut route = route_service.get_route();
         fix_fragment_routes(&mut route);
         App {
             auth: Auth::new(),
