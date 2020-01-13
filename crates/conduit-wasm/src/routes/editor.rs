@@ -99,18 +99,18 @@ impl Component for Editor {
                 if let Some(slug) = &self.props.slug {
                     self.task = Some(self.articles.update(
                         slug.clone(),
-                        request.clone(),
+                        request,
                         self.response.clone(),
                     ));
                 } else {
-                    self.task = Some(self.articles.create(request.clone(), self.response.clone()));
+                    self.task = Some(self.articles.create(request, self.response.clone()));
                 }
             }
             Msg::Response(Ok(article_info)) => {
                 self.error = None;
                 self.task = None;
                 self.router_agent.send(ChangeRoute(
-                    AppRoute::Article(article_info.article.slug.clone()).into(),
+                    AppRoute::Article(article_info.article.slug).into(),
                 ));
             }
             Msg::Response(Err(err)) => {
