@@ -1,8 +1,8 @@
 use stdweb::web::event::{IEvent, IKeyboardEvent};
 use yew::services::fetch::FetchTask;
 use yew::{
-    agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, Properties,
-    ShouldRender,
+    agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, InputData,
+    KeyPressEvent, KeyUpEvent, Properties, ShouldRender, SubmitEvent,
 };
 use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
 
@@ -23,9 +23,10 @@ pub struct Editor {
     task: Option<FetchTask>,
     props: Props,
     router_agent: Box<dyn Bridge<RouteAgent>>,
+    link: ComponentLink<Self>,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     pub slug: Option<String>,
 }
@@ -47,17 +48,18 @@ impl Component for Editor {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Editor {
             articles: Articles::new(),
             error: None,
             request: ArticleCreateUpdateInfo::default(),
             tag_input: String::default(),
-            response: link.send_back(Msg::Response),
-            loaded: link.send_back(Msg::Loaded),
+            response: link.callback(Msg::Response),
+            loaded: link.callback(Msg::Loaded),
             task: None,
             props,
-            router_agent: RouteAgent::bridge(link.send_back(|_| Msg::Ignore)),
+            router_agent: RouteAgent::bridge(link.callback(|_| Msg::Ignore)),
+            link,
         }
     }
 
@@ -146,14 +148,47 @@ impl Component for Editor {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
+        let onsubmit = self.link.callback(|ev: SubmitEvent| {
+            ev.prevent_default();
+            Msg::Request
+        });
+        let oninput_title = self
+            .link
+            .callback(|ev: InputData| Msg::UpdateTitle(ev.value));
+        let oninput_description = self
+            .link
+            .callback(|ev: InputData| Msg::UpdateDescription(ev.value));
+        let oninput_body = self
+            .link
+            .callback(|ev: InputData| Msg::UpdateBody(ev.value));
+        let oninput_tag = self
+            .link
+            .callback(|ev: InputData| Msg::UpdateTagInput(ev.value));
+        let onkeypress = self.link.callback(|ev: KeyPressEvent| {
+            // Prevent submit the form when press Enter
+            if ev.code() == "Enter" {
+                ev.prevent_default();
+            }
+            Msg::Ignore
+        });
+        let onkeyup = self.link.callback(|ev: KeyUpEvent| {
+            // Add a new tag when press Enter
+            if ev.code() == "Enter" {
+                ev.prevent_default();
+                Msg::AddTag
+            } else {
+                Msg::Ignore
+            }
+        });
+
         html! {
             <div class="editor-page">
                 <div class="container page">
                     <div class="row">
                         <div class="col-md-10 offset-md-1 col-xs-12">
                             <ListErrors error=&self.error />
-                            <form onsubmit=|ev| { ev.prevent_default(); Msg::Request }>
+                            <form onsubmit=onsubmit>
                                 <fieldset>
                                     <fieldset class="form-group">
                                         <input
@@ -161,7 +196,7 @@ impl Component for Editor {
                                             type="text"
                                             placeholder="Article Title"
                                             value={ &self.request.title }
-                                            oninput=|ev| Msg::UpdateTitle(ev.value) />
+                                            oninput=oninput_title />
                                     </fieldset>
                                     <fieldset class="form-group">
                                         <input
@@ -169,7 +204,7 @@ impl Component for Editor {
                                             type="text"
                                             placeholder="What's this article about?"
                                             value={ &self.request.description }
-                                            oninput=|ev| Msg::UpdateDescription(ev.value) />
+                                            oninput=oninput_description />
                                     </fieldset>
                                     <fieldset class="form-group">
                                         <textarea
@@ -177,7 +212,7 @@ impl Component for Editor {
                                             rows="8"
                                             placeholder="Write your article (in markdown)"
                                             value={ &self.request.body}
-                                            oninput=|ev| Msg::UpdateBody(ev.value) >
+                                            oninput=oninput_body >
                                         </textarea>
                                     </fieldset>
                                     <fieldset class="form-group">
@@ -186,31 +221,19 @@ impl Component for Editor {
                                             type="text"
                                             placeholder="Enter tags"
                                             value={ &self.tag_input }
-                                            oninput=|ev| Msg::UpdateTagInput(ev.value)
-                                            onkeypress=|ev| {
-                                                // Prevent submit the form when press Enter
-                                                if ev.code() == "Enter" {
-                                                    ev.prevent_default();
-                                                }
-                                                Msg::Ignore
-                                            }
-                                            onkeyup=|ev| {
-                                                // Add a new tag when press Enter
-                                                if ev.code() == "Enter" {
-                                                    ev.prevent_default();
-                                                    Msg::AddTag
-                                                } else {
-                                                    Msg::Ignore
-                                                }} />
+                                            oninput=oninput_tag
+                                            onkeypress=onkeypress
+                                            onkeyup=onkeyup />
                                         <div class="tag-list">
                                             {
                                                 if let Some(tag_list) = &self.request.tag_list {
                                                     html! {for tag_list.iter().map(|tag| {
                                                         let tag_to_remove = tag.clone();
+                                                        let onclick_remove = self.link.callback(move |ev| Msg::RemoveTag(tag_to_remove.to_string()));
                                                         html! {
                                                             <span class="tag-default tag-pill">
                                                                 <i class="ion-close-round"
-                                                                    onclick=|ev| Msg::RemoveTag(tag_to_remove.clone())>
+                                                                    onclick=onclick_remove>
                                                                 </i>
                                                                 { &tag }
                                                             </span>

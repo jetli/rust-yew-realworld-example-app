@@ -1,14 +1,15 @@
 use stdweb::web::event::IEvent;
-use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::{html, Callback, ClickEvent, Component, ComponentLink, Html, Properties, ShouldRender};
 
 const ITEMS_PER_PAGE: u32 = 10;
 
 /// Pagination component
 pub struct ListPagination {
     props: Props,
+    link: ComponentLink<Self>,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub articles_count: u32,
@@ -26,8 +27,8 @@ impl Component for ListPagination {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
-        ListPagination { props }
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        ListPagination { props, link }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -44,7 +45,7 @@ impl Component for ListPagination {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         if self.props.articles_count < ITEMS_PER_PAGE {
             return html! {};
         }
@@ -67,10 +68,11 @@ impl Component for ListPagination {
                         "page-item"
                     };
                     let page = page.clone();
+                    let onclick = self.link.callback(move |ev: ClickEvent| {ev.prevent_default(); Msg::PaginationChanged(page)});
                     html! {
                         <li
                             class=page_item_class
-                            onclick=|ev| {ev.prevent_default(); Msg::PaginationChanged(page)} >
+                            onclick=onclick>
                             <a class="page-link" href="">{page + 1}</a>
 
                         </li>

@@ -1,8 +1,8 @@
 use stdweb::web::event::IEvent;
 use yew::services::fetch::FetchTask;
 use yew::{
-    agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, Properties,
-    ShouldRender,
+    agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, InputData, Properties,
+    ShouldRender, SubmitEvent,
 };
 use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
 
@@ -21,9 +21,10 @@ pub struct Register {
     response: Callback<Result<UserInfoWrapper, Error>>,
     router_agent: Box<dyn Bridge<RouteAgent>>,
     task: Option<FetchTask>,
+    link: ComponentLink<Self>,
 }
 
-#[derive(PartialEq, Properties)]
+#[derive(PartialEq, Properties, Clone)]
 pub struct Props {
     /// Callback when user is registered in successfully
     #[props(required)]
@@ -43,15 +44,16 @@ impl Component for Register {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Register {
             auth: Auth::new(),
             error: None,
             request: RegisterInfo::default(),
-            response: link.send_back(Msg::Response),
+            response: link.callback(Msg::Response),
             task: None,
             props,
-            router_agent: RouteAgent::bridge(link.send_back(|_| Msg::Ignore)),
+            router_agent: RouteAgent::bridge(link.callback(|_| Msg::Ignore)),
+            link,
         }
     }
 
@@ -88,7 +90,21 @@ impl Component for Register {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
+        let onsubmit = self.link.callback(|ev: SubmitEvent| {
+            ev.prevent_default();
+            Msg::Request
+        });
+        let oninput_username = self
+            .link
+            .callback(|ev: InputData| Msg::UpdateUsername(ev.value));
+        let oninput_email = self
+            .link
+            .callback(|ev: InputData| Msg::UpdateEmail(ev.value));
+        let oninput_password = self
+            .link
+            .callback(|ev: InputData| Msg::UpdatePassword(ev.value));
+
         html! {
             <div class="auth-page">
                 <div class="container page">
@@ -96,10 +112,12 @@ impl Component for Register {
                         <div class="col-md-6 offset-md-3 col-xs-12">
                             <h1 class="text-xs-center">{ "Sign Up" }</h1>
                             <p class="text-xs-center">
-                                <RouterLink text="Have an account?" link="#/login"/>
+                                <RouterAnchor<AppRoute> route=AppRoute::Login>
+                                    { "Have an account?" }
+                                </RouterAnchor<AppRoute>>
                             </p>
                             <ListErrors error=&self.error />
-                            <form onsubmit=|ev| { ev.prevent_default(); Msg::Request }>
+                            <form onsubmit=onsubmit>
                                 <fieldset>
                                     <fieldset class="form-group">
                                         <input
@@ -107,7 +125,7 @@ impl Component for Register {
                                             type="text"
                                             placeholder="Username"
                                             value=&self.request.username
-                                            oninput=|ev| Msg::UpdateUsername(ev.value)
+                                            oninput=oninput_username
                                             />
                                     </fieldset>
                                     <fieldset class="form-group">
@@ -116,7 +134,7 @@ impl Component for Register {
                                             type="email"
                                             placeholder="Email"
                                             value=&self.request.email
-                                            oninput=|ev| Msg::UpdateEmail(ev.value)
+                                            oninput=oninput_email
                                             />
                                     </fieldset>
                                     <fieldset class="form-group">
@@ -125,7 +143,7 @@ impl Component for Register {
                                             type="password"
                                             placeholder="Password"
                                             value=&self.request.password
-                                            oninput=|ev| Msg::UpdatePassword(ev.value)
+                                            oninput=oninput_password
                                             />
                                     </fieldset>
                                     <button

@@ -18,7 +18,7 @@ impl Component for Banner {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         if is_authenticated() {
             html! {}
         } else {

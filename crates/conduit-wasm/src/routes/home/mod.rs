@@ -11,6 +11,7 @@ use tags::Tags;
 /// Home page with an article list and a tag list.
 pub struct Home {
     tag: Option<String>,
+    link: ComponentLink<Self>,
 }
 
 pub enum Msg {
@@ -21,8 +22,8 @@ impl Component for Home {
     type Message = Msg;
     type Properties = ();
 
-    fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Home { tag: None }
+    fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
+        Home { tag: None, link }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -34,7 +35,9 @@ impl Component for Home {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
+        let callback = self.link.callback(Msg::TagFiltered);
+
         html! {
             <div class="home-page">
                 <Banner />
@@ -44,7 +47,7 @@ impl Component for Home {
                         <div class="col-md-3 col-xs-12">
                             <div class="sidebar">
                                 <p>{ "Popular Tags" }</p>
-                                <Tags callback=Msg::TagFiltered />
+                                <Tags callback=callback />
                             </div>
                         </div>
                     </div>

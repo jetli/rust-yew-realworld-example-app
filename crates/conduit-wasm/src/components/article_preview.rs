@@ -1,10 +1,11 @@
 use stdweb::web::event::IEvent;
 use yew::services::fetch::FetchTask;
-use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::{html, Callback, ClickEvent, Component, ComponentLink, Html, Properties, ShouldRender};
 use yew_router::prelude::*;
 
 use crate::agent::Articles;
 use crate::error::Error;
+use crate::routes::AppRoute;
 use crate::types::{ArticleInfo, ArticleInfoWrapper};
 
 const FAVORITED_CLASS: &str = "btn btn-sm btn-primary";
@@ -16,6 +17,7 @@ pub struct ArticlePreview {
     props: Props,
     response: Callback<Result<ArticleInfoWrapper, Error>>,
     task: Option<FetchTask>,
+    link: ComponentLink<Self>,
 }
 
 pub enum Msg {
@@ -23,7 +25,7 @@ pub enum Msg {
     Response(Result<ArticleInfoWrapper, Error>),
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub article: ArticleInfo,
@@ -33,12 +35,13 @@ impl Component for ArticlePreview {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         ArticlePreview {
             articles: Articles::new(),
             props,
-            response: link.send_back(Msg::Response),
+            response: link.callback(Msg::Response),
             task: None,
+            link,
         }
     }
 
@@ -73,33 +76,53 @@ impl Component for ArticlePreview {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         let article = &self.props.article;
         let favorite_button_class = if article.favorited {
             FAVORITED_CLASS
         } else {
             NOT_FAVORITED_CLASS
         };
+        let onclick = self.link.callback(|ev: ClickEvent| {
+            ev.prevent_default();
+            Msg::Request
+        });
 
         html! {
             <div class="article-preview">
                 <div class="article-meta">
                     <img src={ &article.author.image } />
                     <div class="info">
-                        <RouterLink text={ &article.author.username } link={ format!("#/@{}", &article.author.username) } classes="author" />
+                        <RouterAnchor<AppRoute>
+                            route=AppRoute::Profile(article.author.username.clone())
+                            classes="author" >
+                            { &article.author.username }
+                        </RouterAnchor<AppRoute>>
                         <span class="date">
                             { &article.created_at.format("%B %e, %Y") }
                         </span>
                     </div>
                     <div class="pull-xs-right">
-                        <button class=favorite_button_class onclick=|ev| { ev.prevent_default(); Msg::Request }>
+                        <button class=favorite_button_class onclick=onclick>
                             <i class="ion-heart"></i> { article.favorites_count }
                         </button>
                     </div>
                 </div>
-                <h1><RouterLink text={ &article.title } link={ format!("#/article/{}", &article.slug) } classes="preview-link" /></h1>
+                <h1>
+                    <RouterAnchor<AppRoute>
+                        route=AppRoute::Article(article.slug.clone())
+                        classes="preview-link" >
+                    { &article.title }
+                    </RouterAnchor<AppRoute>>
+                </h1>
                 <p>{ &article.description }</p>
-                <span><RouterLink text="Read more..." link={ format!("#/article/{}", &article.slug) } /></span>
+                <span>
+                    <RouterAnchor<AppRoute>
+                        route=AppRoute::Article(article.slug.clone())
+                        classes="preview-link" >
+                        { "Read more..." }
+                    </RouterAnchor<AppRoute>>
+                </span>
                 <ul class="tag-list">
                     {for article.tag_list.iter().map(|tag| {
                         html! {

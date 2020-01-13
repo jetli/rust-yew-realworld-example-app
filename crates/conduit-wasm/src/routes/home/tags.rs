@@ -1,6 +1,6 @@
 use stdweb::web::event::IEvent;
 use yew::services::fetch::FetchTask;
-use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::{html, Callback, ClickEvent, Component, ComponentLink, Html, Properties, ShouldRender};
 
 use crate::agent::Tags as TagsAgent;
 use crate::error::Error;
@@ -13,9 +13,10 @@ pub struct Tags {
     response: Callback<Result<TagListInfo, Error>>,
     task: Option<FetchTask>,
     props: Props,
+    link: ComponentLink<Self>,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub callback: Callback<String>,
@@ -30,13 +31,14 @@ impl Component for Tags {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Tags {
             tags: TagsAgent::new(),
             tag_list: None,
-            response: link.send_back(Msg::Response),
+            response: link.callback(Msg::Response),
             task: None,
             props,
+            link,
         }
     }
 
@@ -59,17 +61,18 @@ impl Component for Tags {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         if let Some(tag_list) = &self.tag_list {
             html! {
                 <div className="tag-list">
                     {for tag_list.tags.iter().map(|tag| {
                         let tag_filtered = tag.clone();
+                        let onclick = self.link.callback(move |ev: ClickEvent| { ev.prevent_default(); Msg::TagFiltered(tag_filtered.to_string()) });
                         html! {
                             <a
                                 href=""
                                 class="tag-default tag-pill"
-                                onclick=|ev| { ev.prevent_default(); Msg::TagFiltered(tag_filtered.clone()) }>
+                                onclick=onclick>
                                 { &tag }
                             </a>
                         }

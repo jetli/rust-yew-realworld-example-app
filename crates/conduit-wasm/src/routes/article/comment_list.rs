@@ -6,6 +6,7 @@ use super::comment::Comment;
 use super::comment_input::CommentInput;
 use crate::agent::Comments;
 use crate::error::Error;
+use crate::routes::AppRoute;
 use crate::types::{CommentInfo, CommentListInfo, UserInfo};
 
 /// A comment list component of an article.
@@ -15,9 +16,10 @@ pub struct CommentList {
     response: Callback<Result<CommentListInfo, Error>>,
     task: Option<FetchTask>,
     props: Props,
+    link: ComponentLink<Self>,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub slug: String,
@@ -35,13 +37,14 @@ impl Component for CommentList {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         CommentList {
             comments: Comments::new(),
             comment_list: None,
-            response: link.send_back(Msg::Response),
+            response: link.callback(Msg::Response),
             task: None,
             props,
+            link,
         }
     }
 
@@ -81,26 +84,31 @@ impl Component for CommentList {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         if let Some(comment_list) = &self.comment_list {
             html! {
                 <div class="col-xs-12 col-md-8 offset-md-2">
                     {
                         if let Some(user_info) = &self.props.current_user {
+                            let callback = self.link.callback(Msg::CommentAdded);
                             html! {
                                 <div>
                                     <CommentInput
                                         slug=&self.props.slug
                                         current_user=user_info
-                                        callback=Msg::CommentAdded />
+                                        callback=callback />
                                 </div>
                             }
                         } else {
                             html! {
                                 <p>
-                                    <RouterLink text="Sign in" link="#/login"/>
+                                    <RouterAnchor<AppRoute> route=AppRoute::Login classes="nav-link">
+                                        { "Sign in" }
+                                    </RouterAnchor<AppRoute>>
                                     { " or " }
-                                    <RouterLink text="sign up" link="#/register"/   >
+                                    <RouterAnchor<AppRoute> route=AppRoute::Register classes="nav-link">
+                                        { "sign up" }
+                                    </RouterAnchor<AppRoute>>
                                     { " to add comments on this article." }
                                 </p>
                             }
@@ -108,12 +116,13 @@ impl Component for CommentList {
                     }
                     <div>
                         {for comment_list.iter().map(|comment| {
+                            let callback = self.link.callback(Msg::CommentDeleted);
                             html! {
                                 <Comment
                                     slug=&self.props.slug
                                     comment=comment
                                     current_user=&self.props.current_user
-                                    callback=Msg::CommentDeleted />
+                                    callback=callback />
                             }
                         })}
                     </div>

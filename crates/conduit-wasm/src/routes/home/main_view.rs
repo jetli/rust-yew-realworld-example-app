@@ -1,5 +1,5 @@
 use stdweb::web::event::IEvent;
-use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::{html, ClickEvent, Component, ComponentLink, Html, Properties, ShouldRender};
 
 use crate::agent::is_authenticated;
 use crate::components::article_list::{ArticleList, ArticleListFilter};
@@ -9,9 +9,10 @@ pub struct MainView {
     props: Props,
     tab: Tab,
     filter: ArticleListFilter,
+    link: ComponentLink<Self>,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     pub tag: Option<String>,
 }
@@ -33,7 +34,7 @@ impl Component for MainView {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let tab = if is_authenticated() {
             Tab::Feed
         } else {
@@ -46,7 +47,12 @@ impl Component for MainView {
             ArticleListFilter::All
         };
 
-        MainView { props, tab, filter }
+        MainView {
+            props,
+            tab,
+            filter,
+            link,
+        }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -77,7 +83,7 @@ impl Component for MainView {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         html! {
             <div class="col-md-9 col-xs-12">
                 <div class="feed-toggle">
@@ -95,15 +101,19 @@ impl Component for MainView {
 }
 
 impl MainView {
-    fn your_feed_tab(&self) -> Html<Self> {
+    fn your_feed_tab(&self) -> Html {
         if is_authenticated() {
             let (msg, class) = self.get_tab_msg_class(Tab::Feed);
+            let onclick = self.link.callback(move |ev: ClickEvent| {
+                ev.prevent_default();
+                msg.clone()
+            });
 
             html! {
                 <li class="nav-item">
                     <a  href=""
                         class=class
-                        onclick=|ev| { ev.prevent_default(); msg.clone() }>
+                        onclick=onclick>
                         { "Your Feed" }
                     </a>
                 </li>
@@ -113,31 +123,39 @@ impl MainView {
         }
     }
 
-    fn global_feed_tab(&self) -> Html<Self> {
+    fn global_feed_tab(&self) -> Html {
         let (msg, class) = self.get_tab_msg_class(Tab::All);
+        let onclick = self.link.callback(move |ev: ClickEvent| {
+            ev.prevent_default();
+            msg.clone()
+        });
 
         html! {
             <li class="nav-item">
                 <a
                     href=""
                     class=class
-                    onclick=|ev| { ev.prevent_default(); msg.clone() }>
+                    onclick=onclick>
                     { "Global Feed" }
                 </a>
             </li>
         }
     }
 
-    fn tag_filter_tab(&self) -> Html<Self> {
+    fn tag_filter_tab(&self) -> Html {
         if let Some(tag) = &self.props.tag {
             let (msg, class) = self.get_tab_msg_class(Tab::Tag);
+            let onclick = self.link.callback(move |ev: ClickEvent| {
+                ev.prevent_default();
+                msg.clone()
+            });
 
             html! {
                 <li class="nav-item">
                     <a
                         href=""
                         class=class
-                        onclick=|ev| { ev.prevent_default(); msg.clone() }>
+                        onclick=onclick>
                         <i class="ion-pound"></i> { &tag }
                     </a>
                 </li>
