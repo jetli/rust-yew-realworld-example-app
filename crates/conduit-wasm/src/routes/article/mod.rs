@@ -29,7 +29,7 @@ pub struct Article {
     props: Props,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub slug: String,
@@ -45,11 +45,11 @@ impl Component for Article {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Article {
             articles: Articles::new(),
             article: None,
-            response: link.send_back(Msg::Response),
+            response: link.callback(Msg::Response),
             task: None,
             props,
         }
@@ -81,7 +81,7 @@ impl Component for Article {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         if let Some(article) = &self.article {
             let can_modify = if let Some(user_info) = &self.props.current_user {
                 user_info.username == article.author.username
@@ -135,7 +135,7 @@ impl Component for Article {
 
 impl Article {
     /// Dangerously set innerHTML for article body
-    fn view_body(&self, body: &str) -> Html<Self> {
+    fn view_body(&self, body: &str) -> Html {
         let parser = pulldown_cmark::Parser::new(body);
         let mut html_text = String::new();
         pulldown_cmark::html::push_html(&mut html_text, parser);

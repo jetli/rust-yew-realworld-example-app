@@ -2,13 +2,14 @@ use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRend
 use yew_router::prelude::*;
 
 use super::delete_button::DeleteButton;
+use crate::routes::AppRoute;
 use crate::types::{CommentInfo, UserInfo};
 
 pub struct Comment {
     props: Props,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub slug: String,
@@ -39,7 +40,7 @@ impl Component for Comment {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         let comment = &self.props.comment;
         let show = if let Some(user_info) = &self.props.current_user {
             user_info.username == comment.author.username
@@ -57,7 +58,9 @@ impl Component for Comment {
                         <img src={ &comment.author.image } class="comment-author-img" alt={ &comment.author.username } />
                     </span>
                     { " " }
-                    <RouterLink text={ &comment.author.username } link={ format!("#/@{}", &comment.author.username) } classes="comment-author" />
+                    <RouterAnchor<AppRoute> route=AppRoute::Profile(comment.author.username.clone()) classes="comment-author">
+                        { &comment.author.username }
+                    </RouterAnchor<AppRoute>>
                     <span class="date-posted">
                         { &comment.created_at.format("%B %e, %Y") }
                     </span>

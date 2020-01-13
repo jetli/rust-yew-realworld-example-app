@@ -11,9 +11,10 @@ pub struct DeleteButton {
     response: Callback<Result<DeleteWrapper, Error>>,
     task: Option<FetchTask>,
     props: Props,
+    link: ComponentLink<Self>,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub slug: String,
@@ -32,12 +33,13 @@ impl Component for DeleteButton {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         DeleteButton {
             comments: Comments::new(),
-            response: link.send_back(Msg::Response),
+            response: link.callback(Msg::Response),
             task: None,
             props,
+            link,
         }
     }
 
@@ -63,10 +65,11 @@ impl Component for DeleteButton {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
+        let onclick = self.link.callback(|_| Msg::DeleteComment);
         html! {
             <span class="mod-options">
-                <i class="ion-trash-a" onclick=|_| Msg::DeleteComment ></i>
+                <i class="ion-trash-a" onclick=onclick ></i>
             </span>
         }
     }

@@ -1,6 +1,8 @@
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 use yew_router::prelude::*;
 
+use crate::routes::AppRoute;
+
 pub struct Footer {}
 
 pub enum Msg {}
@@ -17,11 +19,11 @@ impl Component for Footer {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         html! {
             <footer>
                 <div class="container">
-                    <RouterLink text="conduit" link="#/" classes="logo-font"/>
+                    <RouterAnchor<AppRoute> route=AppRoute::Home classes="logo-font">{ "conduit" }</RouterAnchor<AppRoute>>
                     <span class="attribution">
                         { "© 2019. An interactive learning project from" }
                         <a href="https://thinkster.io"> { "Thinkster" } </a>

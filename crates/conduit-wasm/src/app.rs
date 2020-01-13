@@ -29,6 +29,7 @@ pub struct App {
     current_user_task: Option<FetchTask>,
     #[allow(unused)]
     router_agent: Box<dyn Bridge<RouteAgent>>,
+    link: ComponentLink<Self>,
 }
 
 pub enum Msg {
@@ -42,8 +43,8 @@ impl Component for App {
     type Message = Msg;
     type Properties = ();
 
-    fn create(_: Self::Properties, mut link: ComponentLink<Self>) -> Self {
-        let router_agent = RouteAgent::bridge(link.send_back(Msg::Route));
+    fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
+        let router_agent = RouteAgent::bridge(link.callback(Msg::Route));
         let route_service: RouteService = RouteService::new();
         let route = route_service.get_route();
         let mut route = Route::from(route);
@@ -53,8 +54,9 @@ impl Component for App {
             current_route: AppRoute::switch(route),
             router_agent,
             current_user: None,
-            current_user_response: link.send_back(Msg::CurrentUserResponse),
+            current_user_response: link.callback(Msg::CurrentUserResponse),
             current_user_task: None,
+            link,
         }
     }
 
@@ -90,7 +92,11 @@ impl Component for App {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
+        let callback_login = self.link.callback(Msg::Authenticated);
+        let callback_register = self.link.callback(Msg::Authenticated);
+        let callback_logout = self.link.callback(|_| Msg::Logout);
+
         html! {
             <>
                 <Header current_user=&self.current_user/>
@@ -98,13 +104,13 @@ impl Component for App {
                     // Routes to render sub components
                     if let Some(route) = &self.current_route {
                         match route {
-                            AppRoute::Login => html!{<Login callback=Msg::Authenticated/>},
-                            AppRoute::Register => html!{<Register callback=Msg::Authenticated />},
+                            AppRoute::Login => html!{<Login callback=callback_login />},
+                            AppRoute::Register => html!{<Register callback=callback_register />},
                             AppRoute::Home => html!{<Home />},
                             AppRoute::Editor(slug) => html!{<Editor slug=Some(slug.clone())/>},
                             AppRoute::EditorCreate => html!{<Editor />},
                             AppRoute::Article(slug) => html!{<Article slug=slug current_user=&self.current_user />},
-                            AppRoute::Settings => html!{<Settings callback=|_| Msg::Logout />},
+                            AppRoute::Settings => html!{<Settings callback=callback_logout />},
                             AppRoute::ProfileFavorites(username) => html!{
                                 <Profile username=username current_user=&self.current_user tab=ProfileTab::FavoritedBy />
                             },

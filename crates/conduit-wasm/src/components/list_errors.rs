@@ -6,7 +6,7 @@ pub struct ListErrors {
     props: Props,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub error: Option<Error>,
@@ -31,7 +31,7 @@ impl Component for ListErrors {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         if let Some(error) = &self.props.error {
             html! {
                 <ul class="error-messages">

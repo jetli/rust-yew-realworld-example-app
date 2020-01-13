@@ -1,6 +1,9 @@
 use stdweb::web::event::IEvent;
 use yew::services::fetch::FetchTask;
-use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::{
+    html, Callback, Component, ComponentLink, Html, InputData, Properties, ShouldRender,
+    SubmitEvent,
+};
 
 use crate::agent::Comments;
 use crate::components::list_errors::ListErrors;
@@ -17,9 +20,10 @@ pub struct CommentInput {
     response: Callback<Result<CommentInfoWrapper, Error>>,
     task: Option<FetchTask>,
     props: Props,
+    link: ComponentLink<Self>,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub slug: String,
@@ -39,14 +43,15 @@ impl Component for CommentInput {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         CommentInput {
             error: None,
             comments: Comments::new(),
             request: CommentCreateInfo::default(),
-            response: link.send_back(Msg::Response),
+            response: link.callback(Msg::Response),
             task: None,
             props,
+            link,
         }
     }
 
@@ -84,17 +89,24 @@ impl Component for CommentInput {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
+        let onsubmit = self.link.callback(|ev: SubmitEvent| {
+            ev.prevent_default();
+            Msg::Request
+        });
+        let oninput = self
+            .link
+            .callback(|ev: InputData| Msg::UpdateComment(ev.value));
         html! {
             <>
                 <ListErrors error=&self.error />
-                <form class="card comment-form" onsubmit=|ev| { ev.prevent_default(); Msg::Request }>
+                <form class="card comment-form" onsubmit=onsubmit>
                     <div class="card-block">
                         <textarea class="form-control"
                             placeholder="Write a comment..."
                             rows="3"
                             value=&self.request.body
-                            oninput=|ev| Msg::UpdateComment(ev.value) >
+                            oninput=oninput >
                         </textarea>
                     </div>
                     <div class="card-footer">

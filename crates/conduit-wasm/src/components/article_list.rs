@@ -15,9 +15,10 @@ pub struct ArticleList {
     task: Option<FetchTask>,
     current_page: u32,
     props: Props,
+    link: ComponentLink<Self>,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub filter: ArticleListFilter,
@@ -42,14 +43,15 @@ impl Component for ArticleList {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         ArticleList {
             articles: Articles::new(),
             article_list: None,
-            response: link.send_back(Msg::Response),
+            response: link.callback(Msg::Response),
             task: None,
             current_page: 0,
             props,
+            link,
         }
     }
 
@@ -82,9 +84,10 @@ impl Component for ArticleList {
         false
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         if let Some(article_list) = &self.article_list {
             if !article_list.articles.is_empty() {
+                let callback = self.link.callback(Msg::PaginationChanged);
                 html! {
                     <>
                         {for article_list.articles.iter().map(|article| {
@@ -93,7 +96,7 @@ impl Component for ArticleList {
                         <ListPagination
                             articles_count=article_list.articles_count
                             current_page=self.current_page
-                            callback=Msg::PaginationChanged />
+                            callback=callback />
                     </>
                 }
             } else {

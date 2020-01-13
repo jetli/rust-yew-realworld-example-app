@@ -2,13 +2,14 @@ use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
 use yew_router::prelude::*;
 
 use super::article_actions::ArticleActions;
+use crate::routes::AppRoute;
 use crate::types::ProfileInfo;
 
 pub struct ArticleMeta {
     props: Props,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub slug: String,
@@ -39,13 +40,15 @@ impl Component for ArticleMeta {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         html! {
             <div class="article-meta">
                 <img src={ &self.props.author.image } alt={ &self.props.author.username } />
 
                 <div class="info">
-                    <RouterLink text={ &self.props.author.username } link={ format!("#/@{}", &self.props.author.username) } classes="author" />
+                    <RouterAnchor<AppRoute> route=AppRoute::Profile(self.props.author.username.clone()) classes="author" >
+                        { &self.props.author.username }
+                    </RouterAnchor<AppRoute>>
                     <span class="date">
                         { &self.props.created_at }
                     </span>

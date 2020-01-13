@@ -1,8 +1,8 @@
 use stdweb::web::event::IEvent;
 use yew::services::fetch::FetchTask;
 use yew::{
-    agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, Properties,
-    ShouldRender,
+    agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, InputData, Properties,
+    ShouldRender, SubmitEvent,
 };
 use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
 
@@ -23,9 +23,10 @@ pub struct Settings {
     task: Option<FetchTask>,
     router_agent: Box<dyn Bridge<RouteAgent>>,
     props: Props,
+    link: ComponentLink<Self>,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub callback: Callback<()>,
@@ -48,17 +49,18 @@ impl Component for Settings {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Settings {
             auth: Auth::new(),
             error: None,
             request: UserUpdateInfo::default(),
             password: String::default(),
-            response: link.send_back(Msg::Response),
-            loaded: link.send_back(Msg::Loaded),
+            response: link.callback(Msg::Response),
+            loaded: link.callback(Msg::Loaded),
             task: None,
-            router_agent: RouteAgent::bridge(link.send_back(|_| Msg::Ignore)),
+            router_agent: RouteAgent::bridge(link.callback(|_| Msg::Ignore)),
             props,
+            link,
         }
     }
 
@@ -132,7 +134,26 @@ impl Component for Settings {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
+        let onsubmit = self.link.callback(|ev: SubmitEvent| {
+            ev.prevent_default();
+            Msg::Request
+        });
+        let oninput_image = self
+            .link
+            .callback(|ev: InputData| Msg::UpdateImage(ev.value));
+        let oninput_username = self
+            .link
+            .callback(|ev: InputData| Msg::UpdateUsername(ev.value));
+        let oninput_bio = self.link.callback(|ev: InputData| Msg::UpdateBio(ev.value));
+        let oninput_email = self
+            .link
+            .callback(|ev: InputData| Msg::UpdateEmail(ev.value));
+        let oninput_password = self
+            .link
+            .callback(|ev: InputData| Msg::UpdatePassword(ev.value));
+        let onclick = self.link.callback(|_| Msg::Logout);
+
         html! {
             <div class="settings-page">
                 <div class="container page">
@@ -140,7 +161,7 @@ impl Component for Settings {
                         <div class="col-md-6 offset-md-3 col-xs-12">
                             <h1 class="text-xs-center">{ "Your Settings" }</h1>
                             <ListErrors error=&self.error/>
-                            <form onsubmit=|ev| { ev.prevent_default(); Msg::Request }>
+                            <form onsubmit=onsubmit>
                                 <fieldset>
                                     <fieldset class="form-group">
                                         <input
@@ -148,7 +169,7 @@ impl Component for Settings {
                                             type="text"
                                             placeholder="URL of profile picture"
                                             value={&self.request.image}
-                                            oninput=|ev| Msg::UpdateImage(ev.value) />
+                                            oninput=oninput_image />
                                     </fieldset>
                                     <fieldset class="form-group">
                                         <input
@@ -156,7 +177,7 @@ impl Component for Settings {
                                             type="text"
                                             placeholder="Username"
                                             value={&self.request.username}
-                                            oninput=|ev| Msg::UpdateUsername(ev.value) />
+                                            oninput=oninput_username />
                                     </fieldset>
                                     <fieldset class="form-group">
                                         <textarea
@@ -164,7 +185,7 @@ impl Component for Settings {
                                             rows="8"
                                             placeholder="Short bio about you"
                                             value={&self.request.bio }
-                                            oninput=|ev| Msg::UpdateBio(ev.value) >
+                                            oninput=oninput_bio >
                                         </textarea>
                                     </fieldset>
                                     <fieldset class="form-group">
@@ -173,7 +194,7 @@ impl Component for Settings {
                                             type="email"
                                             placeholder="Email"
                                             value={&self.request.email}
-                                            oninput=|ev| Msg::UpdateEmail(ev.value) />
+                                            oninput=oninput_email />
                                     </fieldset>
                                     <fieldset class="form-group">
                                         <input
@@ -181,7 +202,7 @@ impl Component for Settings {
                                             type="password"
                                             placeholder="New Password"
                                             value={&self.password}
-                                            oninput=|ev| Msg::UpdatePassword(ev.value) />
+                                            oninput=oninput_password />
                                     </fieldset>
                                     <button
                                         class="btn btn-lg btn-primary pull-xs-right"
@@ -194,7 +215,7 @@ impl Component for Settings {
                             <hr />
                             <button
                                 class="btn btn-outline-danger"
-                                onclick=|_| Msg::Logout >
+                                onclick=onclick >
                                 { "Or click here to logout."}
                             </button>
                         </div>

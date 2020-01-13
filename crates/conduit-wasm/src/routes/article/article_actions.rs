@@ -17,9 +17,10 @@ pub struct ArticleActions {
     task: Option<FetchTask>,
     props: Props,
     router_agent: Box<dyn Bridge<RouteAgent>>,
+    link: ComponentLink<Self>,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub slug: String,
@@ -37,13 +38,14 @@ impl Component for ArticleActions {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         ArticleActions {
             articles: Articles::new(),
-            response: link.send_back(Msg::Response),
+            response: link.callback(Msg::Response),
             task: None,
             props,
-            router_agent: RouteAgent::bridge(link.send_back(|_| Msg::Ignore)),
+            router_agent: RouteAgent::bridge(link.callback(|_| Msg::Ignore)),
+            link,
         }
     }
 
@@ -72,13 +74,16 @@ impl Component for ArticleActions {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         if self.props.can_modify {
+            let onclick = self.link.callback(|_| Msg::DeleteArticle);
             html! {
                 <span>
-                    <RouterLink text={ "Edit Article" } link={ format!("#/editor/{}", &self.props.slug) } classes="btn btn-outline-secondary btn-sm" />
+                    <RouterAnchor<AppRoute> route=AppRoute::Editor(self.props.slug.clone()) classes="btn btn-outline-secondary btn-sm" >
+                        { "Edit Article" }
+                    </RouterAnchor<AppRoute>>
                     { " " }
-                    <button class="btn btn-outline-danger btn-sm" onclick=|_| Msg::DeleteArticle >
+                    <button class="btn btn-outline-danger btn-sm" onclick=onclick >
                         <i class="ion-trash-a"></i> { "Delete Article" }
                     </button>
                 </span>

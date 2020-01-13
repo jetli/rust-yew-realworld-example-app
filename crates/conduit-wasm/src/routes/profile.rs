@@ -5,6 +5,7 @@ use yew_router::prelude::*;
 use crate::agent::Profiles;
 use crate::components::article_list::{ArticleList, ArticleListFilter};
 use crate::error::Error;
+use crate::routes::AppRoute;
 use crate::types::{ProfileInfo, ProfileInfoWrapper, UserInfo};
 
 /// Profile for an author
@@ -14,9 +15,10 @@ pub struct Profile {
     response: Callback<Result<ProfileInfoWrapper, Error>>,
     task: Option<FetchTask>,
     props: Props,
+    link: ComponentLink<Self>,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     #[props(required)]
     pub username: String,
@@ -43,13 +45,14 @@ impl Component for Profile {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Profile {
             profiles: Profiles::new(),
             profile: None,
-            response: link.send_back(Msg::Response),
+            response: link.callback(Msg::Response),
             task: None,
             props,
+            link,
         }
     }
 
@@ -91,7 +94,7 @@ impl Component for Profile {
         true
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         let is_current_user = if let Some(current_user) = &self.props.current_user {
             current_user.username == self.props.username
         } else {
@@ -153,16 +156,17 @@ impl Component for Profile {
 }
 
 impl Profile {
-    fn view_edit_profile_settings(&self) -> Html<Self> {
+    fn view_edit_profile_settings(&self) -> Html {
         html! {
-            <RouterLink
-                link={ format!("#/settings") }
-                classes="btn btn-sm btn-outline-secondary action-btn"
-                text={ "Edit Profile Settings" } />
+            <RouterAnchor<AppRoute>
+                route=AppRoute::Settings
+                classes="btn btn-sm btn-outline-secondary action-btn">
+                { "Edit Profile Settings" }
+            </RouterAnchor<AppRoute>>
         }
     }
 
-    fn view_follow_user_button(&self) -> Html<Self> {
+    fn view_follow_user_button(&self) -> Html {
         if let Some(profile) = &self.profile {
             let class = if profile.following {
                 "btn btn-sm action-btn btn-secondary"
@@ -171,9 +175,9 @@ impl Profile {
             };
 
             let onclick = if profile.following {
-                Msg::UnFollow
+                self.link.callback(|_| Msg::UnFollow)
             } else {
-                Msg::Follow
+                self.link.callback(|_| Msg::Follow)
             };
 
             let text = if profile.following {
@@ -185,7 +189,7 @@ impl Profile {
             html! {
                 <button
                     class=class
-                    onclick=|_| onclick.clone() >
+                    onclick=onclick >
                     { text }
                 </button>
             }
@@ -194,7 +198,7 @@ impl Profile {
         }
     }
 
-    fn view_tabs(&self) -> Html<Self> {
+    fn view_tabs(&self) -> Html {
         if let Some(profile) = &self.profile {
             let classes = if self.props.tab == ProfileTab::ByAuthor {
                 ("nav-link active", "nav-link")
@@ -205,16 +209,18 @@ impl Profile {
             html! {
                 <ul class="nav nav-pills outline-active">
                     <li class="nav-item">
-                        <RouterLink
+                        <RouterAnchor<AppRoute>
                             classes=classes.0
-                            link={ format!("#/@{}", &profile.username) }
-                            text={ "My Articles" } />
+                            route=AppRoute::Profile(profile.username.clone())>
+                            { "My Articles" }
+                        </RouterAnchor<AppRoute>>
                     </li>
                     <li className="nav-item">
-                        <RouterLink
+                        <RouterAnchor<AppRoute>
                             classes=classes.1
-                            link={ format!("#/@{}/favorites", &profile.username) }
-                            text={ "Favorited Articles" } />
+                            route=AppRoute::ProfileFavorites(profile.username.clone())>
+                            { "Favorited Articles" }
+                        </RouterAnchor<AppRoute>>
                     </li>
                 </ul>
             }
