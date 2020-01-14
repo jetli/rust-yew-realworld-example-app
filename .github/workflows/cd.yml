@@ -32,7 +32,7 @@ jobs:
         BRANCH: gh-pages
         FOLDER: crates/conduit-wasm/dist
         CLEAN: true
-        CLEAN_EXCLUDE: '[".gitignore", "README.md"]'
+        CLEAN_EXCLUDE: "[\".gitignore\", \"README.md\"]"
     - name: Package
       shell: bash
       run: |
