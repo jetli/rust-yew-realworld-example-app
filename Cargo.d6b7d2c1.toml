@@ -1,0 +1,31 @@
+[package]
+name = "conduit-wasm"
+version = "0.1.0"
+authors = ["Jet Li <jing.i.qin@icloud.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+chrono = { version = "0.4.10", features = ["serde"] }
+failure = "0.1.6"
+lazy_static = "1.4.0"
+log = "0.4.8"
+parking_lot = "0.10.0"
+pulldown-cmark = "0.6.1"
+serde = "1.0.104"
+serde_json = "1.0.44"
+stdweb = "0.4.20"
+web_logger = "0.2.0"
+yew = "0.11.0"
+#yew = {git = "https://github.com/yewstack/yew", branch = "master"}
+yew-router = "0.8.1"
+#yew-router = {git = "https://github.com/yewstack/yew_router", branch = "master"}
+wasm-bindgen = "0.2.58"
+wee_alloc = "0.4.5"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.8"
