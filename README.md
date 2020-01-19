@@ -77,6 +77,16 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
   cargo run -p conduit-webview
   ```
 
+# Create Yew App
+
+If you want to quickly setup a new Yew web app for your own, you might try [Create Yew App], an unofficial tool to set up a modern Yew web app by simply running one command. 
+
+```bash
+npx create-yew-app my-app
+cd my-app
+npm start
+```
+
 # Contributing
 
 Feel free to take a look at the current issues in this repo for anything that currently needs to be worked on.
@@ -91,6 +101,7 @@ See [LICENSE] for details
 
 [chrono]: https://github.com/chronotope/chrono
 [Cargo.toml]: ./crates/conduit-wasm/Cargo.toml
+[Create Yew App]: https://github.com/jetli/create-yew-app
 [Demo]: https://jetli.github.io/rust-yew-realworld-example-app/
 [gh-pages]: https://github.com/jetli/rust-yew-realworld-example-app/tree/gh-pages
 [lazy_static]: https://github.com/rust-lang-nursery/lazy-static.rs
