@@ -79,7 +79,7 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
 
 # Create Yew App
 
-If you want to quickly setup a new Yew web app for your own, you might try [Create Yew App], an unofficial tool to set up a modern Yew web app by simply running one command. 
+This project was bootstrapped with [Create Yew App], if you want to quickly setup a new Yew web app for your own, you might try [Create Yew App], an unofficial tool to set up a modern Yew web app by simply running one command. 
 
 ```bash
 npx create-yew-app my-app
