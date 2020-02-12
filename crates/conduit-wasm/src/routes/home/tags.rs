@@ -1,6 +1,5 @@
-use stdweb::web::event::IEvent;
 use yew::services::fetch::FetchTask;
-use yew::{html, Callback, ClickEvent, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::{html, Callback, MouseEvent, Component, ComponentLink, Html, Properties, ShouldRender};
 
 use crate::agent::Tags as TagsAgent;
 use crate::error::Error;
@@ -67,7 +66,7 @@ impl Component for Tags {
                 <div className="tag-list">
                     {for tag_list.tags.iter().map(|tag| {
                         let tag_filtered = tag.clone();
-                        let onclick = self.link.callback(move |ev: ClickEvent| { ev.prevent_default(); Msg::TagFiltered(tag_filtered.to_string()) });
+                        let onclick = self.link.callback(move |ev: MouseEvent| { ev.prevent_default(); Msg::TagFiltered(tag_filtered.to_string()) });
                         html! {
                             <a
                                 href=""

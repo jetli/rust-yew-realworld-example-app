@@ -6,9 +6,7 @@ mod comment_list;
 mod delete_button;
 
 use pulldown_cmark;
-use stdweb::js;
-use stdweb::unstable::TryFrom;
-use stdweb::web::Node;
+use web_sys::Node;
 use yew::services::fetch::FetchTask;
 use yew::virtual_dom::VNode;
 use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
@@ -140,12 +138,14 @@ impl Article {
         let mut html_text = String::new();
         pulldown_cmark::html::push_html(&mut html_text, parser);
 
-        let js_body = js! {
-            var div = document.createElement("div");
-            div.innerHTML = @{&html_text};
-            return div;
-        };
-        let node = Node::try_from(js_body).expect("convert js");
+        let div = web_sys::window()
+            .unwrap()
+            .document()
+            .unwrap()
+            .create_element("div")
+            .unwrap();
+        div.set_inner_html(html_text.as_str());
+        let node = Node::from(div);
         VNode::VRef(node)
     }
 }

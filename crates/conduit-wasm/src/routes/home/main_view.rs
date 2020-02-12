@@ -1,5 +1,4 @@
-use stdweb::web::event::IEvent;
-use yew::{html, ClickEvent, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::{html, MouseEvent, Component, ComponentLink, Html, Properties, ShouldRender};
 
 use crate::agent::is_authenticated;
 use crate::components::article_list::{ArticleList, ArticleListFilter};
@@ -104,7 +103,7 @@ impl MainView {
     fn your_feed_tab(&self) -> Html {
         if is_authenticated() {
             let (msg, class) = self.get_tab_msg_class(Tab::Feed);
-            let onclick = self.link.callback(move |ev: ClickEvent| {
+            let onclick = self.link.callback(move |ev: MouseEvent| {
                 ev.prevent_default();
                 msg.clone()
             });
@@ -125,7 +124,7 @@ impl MainView {
 
     fn global_feed_tab(&self) -> Html {
         let (msg, class) = self.get_tab_msg_class(Tab::All);
-        let onclick = self.link.callback(move |ev: ClickEvent| {
+        let onclick = self.link.callback(move |ev: MouseEvent| {
             ev.prevent_default();
             msg.clone()
         });
@@ -145,7 +144,7 @@ impl MainView {
     fn tag_filter_tab(&self) -> Html {
         if let Some(tag) = &self.props.tag {
             let (msg, class) = self.get_tab_msg_class(Tab::Tag);
-            let onclick = self.link.callback(move |ev: ClickEvent| {
+            let onclick = self.link.callback(move |ev: MouseEvent| {
                 ev.prevent_default();
                 msg.clone()
             });

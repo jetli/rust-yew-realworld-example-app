@@ -1,8 +1,7 @@
-use stdweb::web::event::{IEvent, IKeyboardEvent};
 use yew::services::fetch::FetchTask;
 use yew::{
     agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, InputData,
-    KeyPressEvent, KeyUpEvent, Properties, ShouldRender, SubmitEvent,
+    KeyboardEvent, Properties, ShouldRender, Event,
 };
 use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
 
@@ -149,7 +148,7 @@ impl Component for Editor {
     }
 
     fn view(&self) -> Html {
-        let onsubmit = self.link.callback(|ev: SubmitEvent| {
+        let onsubmit = self.link.callback(|ev: Event| {
             ev.prevent_default();
             Msg::Request
         });
@@ -165,14 +164,14 @@ impl Component for Editor {
         let oninput_tag = self
             .link
             .callback(|ev: InputData| Msg::UpdateTagInput(ev.value));
-        let onkeypress = self.link.callback(|ev: KeyPressEvent| {
+        let onkeypress = self.link.callback(|ev: KeyboardEvent| {
             // Prevent submit the form when press Enter
             if ev.code() == "Enter" {
                 ev.prevent_default();
             }
             Msg::Ignore
         });
-        let onkeyup = self.link.callback(|ev: KeyUpEvent| {
+        let onkeyup = self.link.callback(|ev: KeyboardEvent| {
             // Add a new tag when press Enter
             if ev.code() == "Enter" {
                 ev.prevent_default();
