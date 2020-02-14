@@ -2,6 +2,7 @@
 
 #![allow(dead_code)]
 
+use dotenv_codegen::dotenv;
 use lazy_static::lazy_static;
 use log::debug;
 use parking_lot::RwLock;
@@ -15,7 +16,7 @@ use yew::services::storage::{Area, StorageService};
 use crate::error::Error;
 use crate::types::*;
 
-const API_ROOT: &str = "https://conduit.productionready.io/api";
+const API_ROOT: &str = dotenv!("API_ROOT");
 const TOKEN_KEY: &str = "yew.token";
 
 lazy_static! {
