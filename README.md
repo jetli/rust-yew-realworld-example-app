@@ -54,6 +54,7 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
   npm run install
   ```
 * Build and develop
+
   Copy `.env.example` to `.env`, and you can change the environment variables if you like.
   ```
   cp .env.example .env
