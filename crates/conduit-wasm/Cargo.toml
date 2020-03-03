@@ -1,8 +1,12 @@
 [package]
-name = "conduit-wasm"
-version = "0.1.0"
 authors = ["Jet Li <jing.i.qin@icloud.com>"]
+categories = ["wasm"]
+description = "Exemplary real world app built with Rust + Yew + WebAssembly."
 edition = "2018"
+license = "Apache-2.0/MIT"
+name = "conduit-wasm"
+repository = "https://github.com/jetli/rust-yew-realworld-example-app.git"
+version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -11,13 +15,14 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 chrono = { version = "0.4.10", features = ["serde"] }
-failure = "0.1.6"
+dotenv_codegen = "0.15.0"
 lazy_static = "1.4.0"
 log = "0.4.8"
 parking_lot = "0.10.0"
 pulldown-cmark = "0.6.1"
 serde = "1.0.104"
 serde_json = "1.0.44"
+thiserror = "1"
 web_logger = "0.2.0"
 yew = { version="0.13.0", features = ["web_sys"] }
 yew-router = { version="0.10.0", features = ["web_sys"] }

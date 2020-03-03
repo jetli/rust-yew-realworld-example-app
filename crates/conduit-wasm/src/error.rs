@@ -1,36 +1,36 @@
 //! Error type for error handling
 
 use crate::types::ErrorInfo;
-use failure::Fail;
+use thiserror::Error as ThisError;
 
 /// Define all possible errors
-#[derive(Fail, Clone, Debug)]
+#[derive(ThisError, Clone, Debug)]
 pub enum Error {
     /// 401
-    #[fail(display = "Unauthorized")]
+    #[error("Unauthorized")]
     Unauthorized,
 
     /// 403
-    #[fail(display = "Forbidden")]
+    #[error("Forbidden")]
     Forbidden,
 
     /// 404
-    #[fail(display = "Not Found")]
+    #[error("Not Found")]
     NotFound,
 
     /// 422
-    #[fail(display = "Unprocessable Entity: {:?}", _0)]
+    #[error("Unprocessable Entity: {0:?}")]
     UnprocessableEntity(ErrorInfo),
 
     /// 500
-    #[fail(display = "Internal Server Error")]
+    #[error("Internal Server Error")]
     InternalServerError,
 
     /// serde deserialize error
-    #[fail(display = "Deserialize Error")]
+    #[error("Deserialize Error")]
     DeserializeError,
 
     /// request error
-    #[fail(display = "Http Request Error")]
+    #[error("Http Request Error")]
     RequestError,
 }

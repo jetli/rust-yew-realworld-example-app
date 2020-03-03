@@ -20,6 +20,7 @@ jobs:
       run: cargo install wasm-pack
     - name: Build
       run: |
+        cp .env.example .env
         npm run install
         npm run build
         npm run build:webview
