@@ -1,5 +1,4 @@
-use stdweb::web::event::IEvent;
-use yew::{html, Callback, ClickEvent, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::{html, Callback, MouseEvent, Component, ComponentLink, Html, Properties, ShouldRender};
 
 const ITEMS_PER_PAGE: u32 = 10;
 
@@ -11,11 +10,8 @@ pub struct ListPagination {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub articles_count: u32,
-    #[props(required)]
     pub current_page: u32,
-    #[props(required)]
     pub callback: Callback<u32>,
 }
 
@@ -68,7 +64,7 @@ impl Component for ListPagination {
                         "page-item"
                     };
                     let page = page.clone();
-                    let onclick = self.link.callback(move |ev: ClickEvent| {ev.prevent_default(); Msg::PaginationChanged(page)});
+                    let onclick = self.link.callback(move |ev: MouseEvent| {ev.prevent_default(); Msg::PaginationChanged(page)});
                     html! {
                         <li
                             class=page_item_class

@@ -1,8 +1,7 @@
-use stdweb::web::event::IEvent;
 use yew::services::fetch::FetchTask;
 use yew::{
     agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, InputData, Properties,
-    ShouldRender, SubmitEvent,
+    ShouldRender, Event,
 };
 use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
 
@@ -27,7 +26,6 @@ pub struct Register {
 #[derive(PartialEq, Properties, Clone)]
 pub struct Props {
     /// Callback when user is registered in successfully
-    #[props(required)]
     pub callback: Callback<UserInfo>,
 }
 
@@ -91,7 +89,7 @@ impl Component for Register {
     }
 
     fn view(&self) -> Html {
-        let onsubmit = self.link.callback(|ev: SubmitEvent| {
+        let onsubmit = self.link.callback(|ev: Event| {
             ev.prevent_default();
             Msg::Request
         });

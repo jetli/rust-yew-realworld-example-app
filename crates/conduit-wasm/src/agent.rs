@@ -22,7 +22,7 @@ const TOKEN_KEY: &str = "yew.token";
 lazy_static! {
     /// Jwt token read from local storage.
     pub static ref TOKEN: RwLock<Option<String>> = {
-        let storage = StorageService::new(Area::Local);
+        let storage = StorageService::new(Area::Local).expect("storage was disabled by the user");
         if let Ok(token) = storage.restore(TOKEN_KEY) {
             RwLock::new(Some(token))
         } else {
@@ -33,7 +33,7 @@ lazy_static! {
 
 /// Set jwt token to local storage.
 pub fn set_token(token: Option<String>) {
-    let mut storage = StorageService::new(Area::Local);
+    let mut storage = StorageService::new(Area::Local).expect("storage was disabled by the user");
     if let Some(t) = token.clone() {
         storage.store(TOKEN_KEY, Ok(t));
     } else {
@@ -122,7 +122,7 @@ impl Requests {
         let request = builder.body(body).unwrap();
         debug!("Request: {:?}", request);
 
-        self.fetch.fetch(request, handler.into())
+        self.fetch.fetch(request, handler.into()).unwrap()
     }
 
     /// Delete request

@@ -16,11 +16,8 @@ pub struct DeleteButton {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub slug: String,
-    #[props(required)]
     pub comment_id: u32,
-    #[props(required)]
     pub callback: Callback<u32>,
 }
 

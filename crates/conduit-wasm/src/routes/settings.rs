@@ -1,8 +1,7 @@
-use stdweb::web::event::IEvent;
 use yew::services::fetch::FetchTask;
 use yew::{
     agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, InputData, Properties,
-    ShouldRender, SubmitEvent,
+    ShouldRender, Event,
 };
 use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
 
@@ -28,7 +27,6 @@ pub struct Settings {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub callback: Callback<()>,
 }
 
@@ -135,7 +133,7 @@ impl Component for Settings {
     }
 
     fn view(&self) -> Html {
-        let onsubmit = self.link.callback(|ev: SubmitEvent| {
+        let onsubmit = self.link.callback(|ev: Event| {
             ev.prevent_default();
             Msg::Request
         });

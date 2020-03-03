@@ -1,8 +1,7 @@
-use stdweb::web::event::IEvent;
 use yew::services::fetch::FetchTask;
 use yew::{
     html, Callback, Component, ComponentLink, Html, InputData, Properties, ShouldRender,
-    SubmitEvent,
+    Event,
 };
 
 use crate::agent::Comments;
@@ -25,11 +24,8 @@ pub struct CommentInput {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub slug: String,
-    #[props(required)]
     pub current_user: UserInfo,
-    #[props(required)]
     pub callback: Callback<CommentInfo>,
 }
 
@@ -90,7 +86,7 @@ impl Component for CommentInput {
     }
 
     fn view(&self) -> Html {
-        let onsubmit = self.link.callback(|ev: SubmitEvent| {
+        let onsubmit = self.link.callback(|ev: Event| {
             ev.prevent_default();
             Msg::Request
         });

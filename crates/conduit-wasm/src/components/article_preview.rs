@@ -1,6 +1,5 @@
-use stdweb::web::event::IEvent;
 use yew::services::fetch::FetchTask;
-use yew::{html, Callback, ClickEvent, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::{html, Callback, MouseEvent, Component, ComponentLink, Html, Properties, ShouldRender};
 use yew_router::prelude::*;
 
 use crate::agent::Articles;
@@ -27,7 +26,6 @@ pub enum Msg {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub article: ArticleInfo,
 }
 
@@ -83,7 +81,7 @@ impl Component for ArticlePreview {
         } else {
             NOT_FAVORITED_CLASS
         };
-        let onclick = self.link.callback(|ev: ClickEvent| {
+        let onclick = self.link.callback(|ev: MouseEvent| {
             ev.prevent_default();
             Msg::Request
         });
