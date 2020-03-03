@@ -1,7 +1,6 @@
 use yew::services::fetch::FetchTask;
 use yew::{
-    html, Callback, Component, ComponentLink, Html, InputData, Properties, ShouldRender,
-    Event,
+    html, Callback, Component, ComponentLink, Event, Html, InputData, Properties, ShouldRender,
 };
 
 use crate::agent::Comments;

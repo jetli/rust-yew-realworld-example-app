@@ -1,7 +1,7 @@
 use yew::services::fetch::FetchTask;
 use yew::{
-    agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, InputData,
-    KeyboardEvent, Properties, ShouldRender, Event,
+    agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Event, Html, InputData,
+    KeyboardEvent, Properties, ShouldRender,
 };
 use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
 

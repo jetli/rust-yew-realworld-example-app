@@ -1,4 +1,4 @@
-use yew::{html, MouseEvent, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::{html, Component, ComponentLink, Html, MouseEvent, Properties, ShouldRender};
 
 use crate::agent::is_authenticated;
 use crate::components::article_list::{ArticleList, ArticleListFilter};

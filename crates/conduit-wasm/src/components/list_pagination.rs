@@ -1,4 +1,4 @@
-use yew::{html, Callback, MouseEvent, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::{html, Callback, Component, ComponentLink, Html, MouseEvent, Properties, ShouldRender};
 
 const ITEMS_PER_PAGE: u32 = 10;
 

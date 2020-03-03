@@ -1,5 +1,5 @@
 use yew::services::fetch::FetchTask;
-use yew::{html, Callback, MouseEvent, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::{html, Callback, Component, ComponentLink, Html, MouseEvent, Properties, ShouldRender};
 
 use crate::agent::Tags as TagsAgent;
 use crate::error::Error;
