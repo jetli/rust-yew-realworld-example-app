@@ -26,7 +26,6 @@ pub struct Login {
 #[derive(PartialEq, Properties, Clone)]
 pub struct Props {
     /// Callback when user is logged in successfully
-    #[props(required)]
     pub callback: Callback<UserInfo>,
 }
 

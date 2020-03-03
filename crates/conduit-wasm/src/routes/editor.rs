@@ -27,6 +27,7 @@ pub struct Editor {
 
 #[derive(Properties, Clone)]
 pub struct Props {
+    #[prop_or_default]
     pub slug: Option<String>,
 }
 

@@ -20,7 +20,6 @@ pub struct ArticleList {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub filter: ArticleListFilter,
 }
 

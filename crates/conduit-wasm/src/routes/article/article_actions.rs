@@ -22,9 +22,7 @@ pub struct ArticleActions {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub slug: String,
-    #[props(required)]
     pub can_modify: bool,
 }
 

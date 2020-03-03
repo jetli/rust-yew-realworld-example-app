@@ -21,9 +21,7 @@ pub struct CommentList {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub slug: String,
-    #[props(required)]
     pub current_user: Option<UserInfo>,
 }
 

@@ -10,7 +10,6 @@ pub struct Header {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub current_user: Option<UserInfo>,
 }
 

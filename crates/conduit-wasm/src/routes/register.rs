@@ -26,7 +26,6 @@ pub struct Register {
 #[derive(PartialEq, Properties, Clone)]
 pub struct Props {
     /// Callback when user is registered in successfully
-    #[props(required)]
     pub callback: Callback<UserInfo>,
 }
 

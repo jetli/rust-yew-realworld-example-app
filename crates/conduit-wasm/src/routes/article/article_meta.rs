@@ -11,13 +11,9 @@ pub struct ArticleMeta {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub slug: String,
-    #[props(required)]
     pub can_modify: bool,
-    #[props(required)]
     pub author: ProfileInfo,
-    #[props(required)]
     pub created_at: String,
 }
 

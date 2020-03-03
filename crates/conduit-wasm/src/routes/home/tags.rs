@@ -17,7 +17,6 @@ pub struct Tags {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub callback: Callback<String>,
 }
 

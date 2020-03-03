@@ -10,11 +10,8 @@ pub struct ListPagination {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub articles_count: u32,
-    #[props(required)]
     pub current_page: u32,
-    #[props(required)]
     pub callback: Callback<u32>,
 }
 

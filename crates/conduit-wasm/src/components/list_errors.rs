@@ -8,7 +8,6 @@ pub struct ListErrors {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub error: Option<Error>,
 }
 

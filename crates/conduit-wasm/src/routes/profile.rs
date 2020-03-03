@@ -20,11 +20,8 @@ pub struct Profile {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub username: String,
-    #[props(required)]
     pub current_user: Option<UserInfo>,
-    #[props(required)]
     pub tab: ProfileTab,
 }
 

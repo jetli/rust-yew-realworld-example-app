@@ -27,7 +27,6 @@ pub struct Settings {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub callback: Callback<()>,
 }
 

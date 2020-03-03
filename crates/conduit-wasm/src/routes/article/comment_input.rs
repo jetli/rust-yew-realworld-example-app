@@ -24,11 +24,8 @@ pub struct CommentInput {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[props(required)]
     pub slug: String,
-    #[props(required)]
     pub current_user: UserInfo,
-    #[props(required)]
     pub callback: Callback<CommentInfo>,
 }
 
