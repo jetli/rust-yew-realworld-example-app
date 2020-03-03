@@ -1,8 +1,12 @@
 [package]
-name = "conduit-wasm"
-version = "0.1.0"
 authors = ["Jet Li <jing.i.qin@icloud.com>"]
+categories = ["wasm"]
+description = "Exemplary real world app built with Rust + Yew + WebAssembly."
 edition = "2018"
+license = "Apache-2.0/MIT"
+name = "conduit-wasm"
+repository = "https://github.com/jetli/rust-yew-realworld-example-app.git"
+version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -11,21 +15,28 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 chrono = { version = "0.4.10", features = ["serde"] }
-failure = "0.1.6"
+dotenv_codegen = "0.15.0"
 lazy_static = "1.4.0"
 log = "0.4.8"
 parking_lot = "0.10.0"
 pulldown-cmark = "0.6.1"
 serde = "1.0.104"
 serde_json = "1.0.44"
-stdweb = "0.4.20"
+thiserror = "1"
 web_logger = "0.2.0"
-yew = "0.11.0"
-#yew = {git = "https://github.com/yewstack/yew", branch = "master"}
-yew-router = "0.8.1"
-#yew-router = {git = "https://github.com/yewstack/yew_router", branch = "master"}
+yew = { version="0.13.0", features = ["web_sys"] }
+yew-router = { version="0.10.0", features = ["web_sys"] }
 wasm-bindgen = "0.2.58"
 wee_alloc = "0.4.5"
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+  "Document",
+  "Element",
+  "Node",
+  "Window",
+]
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.8"
