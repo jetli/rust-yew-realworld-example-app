@@ -20,6 +20,8 @@ jobs:
         sudo apt-get update
         sudo apt-get install libwebkit2gtk-4.0-37 libwebkit2gtk-4.0-dev
     - uses: actions/checkout@v1
+    - name: Install wasm-pack
+      run: cargo install wasm-pack
     - name: Build
       run: |
         cp .env.example .env
