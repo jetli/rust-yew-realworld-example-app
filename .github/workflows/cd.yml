@@ -16,7 +16,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install libwebkit2gtk-4.0-37 libwebkit2gtk-4.0-dev
     - uses: actions/checkout@v1
-    - uses: jetli/wasm-pack-action@v0.1.0
+    - uses: jetli/wasm-pack-action@v0.2.0
       with:
         # Optional version of wasm-pack to install(eg. '0.9.1', 'latest')
         version: 'latest'
