@@ -24,9 +24,9 @@ serde = "1.0.104"
 serde_json = "1.0.44"
 thiserror = "1"
 web_logger = "0.2.0"
-yew = { version="0.13.0", features = ["web_sys"] }
-yew-router = { version="0.10.0", features = ["web_sys"] }
-wasm-bindgen = "0.2.58"
+yew = { version="0.14.0", features = ["web_sys"] }
+yew-router = { version="0.11.0", features = ["web_sys"] }
+wasm-bindgen = "0.2.59"
 wee_alloc = "0.4.5"
 
 [dependencies.web-sys]
@@ -39,4 +39,4 @@ features = [
 ]
 
 [dev-dependencies]
-wasm-bindgen-test = "0.3.8"
+wasm-bindgen-test = "0.3.9"
