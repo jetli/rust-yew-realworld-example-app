@@ -2,12 +2,12 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::eval_order_dependence)]
 
-mod agent;
-mod app;
-mod components;
-mod error;
-mod routes;
-mod types;
+pub mod agent;
+pub mod app;
+pub mod components;
+pub mod error;
+pub mod routes;
+pub mod types;
 
 use wasm_bindgen::prelude::*;
 use web_logger;

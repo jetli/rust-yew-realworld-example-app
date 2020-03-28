@@ -36,6 +36,7 @@ features = [
   "Element",
   "Node",
   "Window",
+  "HtmlCollection",
 ]
 
 [dev-dependencies]
