@@ -80,6 +80,13 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
   cargo run -p conduit-webview
   ```
 
+* Test
+
+  Install [chromedriver], run tests in headless browsers.
+  ```
+  npm test
+  ```
+
 # Create Yew App
 
 This project was bootstrapped with [Create Yew App], if you want to quickly setup a new Yew web app for your own, you might try [Create Yew App], an unofficial tool to set up a modern Yew web app by simply running one command. 
@@ -102,6 +109,7 @@ Apache License (Version 2.0)
 
 See [LICENSE] for details
 
+[chromedriver]: http://chromedriver.chromium.org/downloads
 [chrono]: https://github.com/chronotope/chrono
 [Cargo.toml]: ./crates/conduit-wasm/Cargo.toml
 [Create Yew App]: https://github.com/jetli/create-yew-app
