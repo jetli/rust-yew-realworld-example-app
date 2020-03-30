@@ -1,6 +1,8 @@
+mod common;
+
+use common::timeout::Timeout;
 use std::time::Duration;
 use wasm_bindgen_test::*;
-use wasm_bindgen_test_ext::timeout::Timeout;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
