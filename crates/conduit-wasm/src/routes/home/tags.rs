@@ -62,7 +62,7 @@ impl Component for Tags {
     fn view(&self) -> Html {
         if let Some(tag_list) = &self.tag_list {
             html! {
-                <div className="tag-list">
+                <div class="tag-list">
                     {for tag_list.tags.iter().map(|tag| {
                         let tag_filtered = tag.clone();
                         let onclick = self.link.callback(move |ev: MouseEvent| { ev.prevent_default(); Msg::TagFiltered(tag_filtered.to_string()) });

@@ -102,7 +102,7 @@ impl Component for Article {
                         <div class="row article-content">
                             <div class="col-xs-12">
                                 { self.view_body(&article.body) }
-                                <ul className="tag-list">
+                                <ul class="tag-list">
                                     {for article.tag_list.iter().map(|tag| {
                                         html! {
                                             <li

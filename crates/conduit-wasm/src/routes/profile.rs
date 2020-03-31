@@ -212,7 +212,7 @@ impl Profile {
                             { "My Articles" }
                         </RouterAnchor<AppRoute>>
                     </li>
-                    <li className="nav-item">
+                    <li class="nav-item">
                         <RouterAnchor<AppRoute>
                             classes=classes.1
                             route=AppRoute::ProfileFavorites(profile.username.clone())>
