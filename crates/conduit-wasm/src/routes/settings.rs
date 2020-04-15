@@ -5,10 +5,10 @@ use yew::{
 };
 use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
 
-use crate::agent::{is_authenticated, set_token, Auth};
 use crate::components::list_errors::ListErrors;
 use crate::error::Error;
 use crate::routes::AppRoute;
+use crate::services::{is_authenticated, set_token, Auth};
 use crate::types::{UserInfoWrapper, UserUpdateInfo, UserUpdateInfoWrapper};
 
 /// Update settings of the author or logout

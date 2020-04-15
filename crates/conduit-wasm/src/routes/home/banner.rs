@@ -1,6 +1,6 @@
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
-use crate::agent::is_authenticated;
+use crate::services::is_authenticated;
 
 pub struct Banner {}
 

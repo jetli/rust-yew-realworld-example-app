@@ -2,9 +2,9 @@ use yew::services::fetch::FetchTask;
 use yew::{html, Callback, Component, ComponentLink, Html, MouseEvent, Properties, ShouldRender};
 use yew_router::prelude::*;
 
-use crate::agent::Articles;
 use crate::error::Error;
 use crate::routes::AppRoute;
+use crate::services::Articles;
 use crate::types::{ArticleInfo, ArticleInfoWrapper};
 
 const FAVORITED_CLASS: &str = "btn btn-sm btn-primary";

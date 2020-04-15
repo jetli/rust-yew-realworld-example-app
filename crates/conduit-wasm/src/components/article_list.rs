@@ -3,8 +3,8 @@ use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRend
 
 use super::article_preview::ArticlePreview;
 use super::list_pagination::ListPagination;
-use crate::agent::Articles;
 use crate::error::Error;
+use crate::services::Articles;
 use crate::types::ArticleListInfo;
 
 /// List of articles component

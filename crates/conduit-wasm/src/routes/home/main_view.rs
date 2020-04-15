@@ -1,7 +1,7 @@
 use yew::{html, Component, ComponentLink, Html, MouseEvent, Properties, ShouldRender};
 
-use crate::agent::is_authenticated;
 use crate::components::article_list::{ArticleList, ArticleListFilter};
+use crate::services::is_authenticated;
 
 /// Main content with tabs of article list for home page
 pub struct MainView {

@@ -1,8 +1,8 @@
 use yew::services::fetch::FetchTask;
 use yew::{html, Callback, Component, ComponentLink, Html, MouseEvent, Properties, ShouldRender};
 
-use crate::agent::Tags as TagsAgent;
 use crate::error::Error;
+use crate::services::Tags as TagsAgent;
 use crate::types::TagListInfo;
 
 /// A tag list component with a callback to notify that some tag is clicked.

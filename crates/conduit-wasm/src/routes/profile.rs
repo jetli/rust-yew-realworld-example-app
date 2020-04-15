@@ -2,10 +2,10 @@ use yew::services::fetch::FetchTask;
 use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
 use yew_router::prelude::*;
 
-use crate::agent::Profiles;
 use crate::components::article_list::{ArticleList, ArticleListFilter};
 use crate::error::Error;
 use crate::routes::AppRoute;
+use crate::services::Profiles;
 use crate::types::{ProfileInfo, ProfileInfoWrapper, UserInfo};
 
 /// Profile for an author

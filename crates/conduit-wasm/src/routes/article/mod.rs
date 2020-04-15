@@ -11,8 +11,8 @@ use yew::services::fetch::FetchTask;
 use yew::virtual_dom::VNode;
 use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
 
-use crate::agent::Articles;
 use crate::error::Error;
+use crate::services::Articles;
 use crate::types::{ArticleInfo, ArticleInfoWrapper, UserInfo};
 
 use article_meta::ArticleMeta;
