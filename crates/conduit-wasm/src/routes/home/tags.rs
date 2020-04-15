@@ -2,12 +2,12 @@ use yew::services::fetch::FetchTask;
 use yew::{html, Callback, Component, ComponentLink, Html, MouseEvent, Properties, ShouldRender};
 
 use crate::error::Error;
-use crate::services::Tags as TagsAgent;
+use crate::services::Tags as TagsService;
 use crate::types::TagListInfo;
 
 /// A tag list component with a callback to notify that some tag is clicked.
 pub struct Tags {
-    tags: TagsAgent,
+    tags: TagsService,
     tag_list: Option<TagListInfo>,
     response: Callback<Result<TagListInfo, Error>>,
     task: Option<FetchTask>,
@@ -31,7 +31,7 @@ impl Component for Tags {
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Tags {
-            tags: TagsAgent::new(),
+            tags: TagsService::new(),
             tag_list: None,
             response: link.callback(Msg::Response),
             task: None,
