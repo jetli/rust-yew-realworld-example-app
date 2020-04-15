@@ -1,8 +1,8 @@
 use yew::services::fetch::FetchTask;
 use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
 
-use crate::agent::Comments;
 use crate::error::Error;
+use crate::services::Comments;
 use crate::types::DeleteWrapper;
 
 /// A component to delete a comment from an article.

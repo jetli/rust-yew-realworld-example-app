@@ -4,7 +4,6 @@ use yew::services::fetch::FetchTask;
 use yew::{agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, ShouldRender};
 use yew_router::prelude::*;
 
-use crate::agent::{is_authenticated, Auth};
 use crate::components::{footer::Footer, header::Header};
 use crate::error::Error;
 use crate::routes::{
@@ -18,6 +17,7 @@ use crate::routes::{
     settings::Settings,
     AppRoute,
 };
+use crate::services::{is_authenticated, Auth};
 use crate::types::{UserInfo, UserInfoWrapper};
 
 /// The root app component

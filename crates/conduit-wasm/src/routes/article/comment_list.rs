@@ -4,9 +4,9 @@ use yew_router::prelude::*;
 
 use super::comment::Comment;
 use super::comment_input::CommentInput;
-use crate::agent::Comments;
 use crate::error::Error;
 use crate::routes::AppRoute;
+use crate::services::Comments;
 use crate::types::{CommentInfo, CommentListInfo, UserInfo};
 
 /// A comment list component of an article.

@@ -5,10 +5,10 @@ use yew::{
 };
 use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
 
-use crate::agent::Articles;
 use crate::components::list_errors::ListErrors;
 use crate::error::Error;
 use crate::routes::AppRoute;
+use crate::services::Articles;
 use crate::types::{ArticleCreateUpdateInfo, ArticleCreateUpdateInfoWrapper, ArticleInfoWrapper};
 
 /// Create or update an article

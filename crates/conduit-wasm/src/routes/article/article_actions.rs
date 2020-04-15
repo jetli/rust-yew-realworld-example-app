@@ -5,9 +5,9 @@ use yew::{
 };
 use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
 
-use crate::agent::Articles;
 use crate::error::Error;
 use crate::routes::AppRoute;
+use crate::services::Articles;
 use crate::types::DeleteWrapper;
 
 /// Article actions component to edit or delete an article.

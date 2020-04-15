@@ -3,9 +3,9 @@ use yew::{
     html, Callback, Component, ComponentLink, Event, Html, InputData, Properties, ShouldRender,
 };
 
-use crate::agent::Comments;
 use crate::components::list_errors::ListErrors;
 use crate::error::Error;
+use crate::services::Comments;
 use crate::types::{
     CommentCreateInfo, CommentCreateInfoWrapper, CommentInfo, CommentInfoWrapper, UserInfo,
 };
