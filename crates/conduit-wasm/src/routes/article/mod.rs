@@ -5,7 +5,6 @@ mod comment_input;
 mod comment_list;
 mod delete_button;
 
-use pulldown_cmark;
 use web_sys::Node;
 use yew::services::fetch::FetchTask;
 use yew::virtual_dom::VNode;

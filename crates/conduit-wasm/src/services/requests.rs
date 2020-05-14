@@ -3,7 +3,6 @@ use lazy_static::lazy_static;
 use log::debug;
 use parking_lot::RwLock;
 use serde::{Deserialize, Serialize};
-use serde_json;
 use yew::callback::Callback;
 use yew::format::{Json, Nothing, Text};
 use yew::services::fetch::{FetchService, FetchTask, Request, Response};
