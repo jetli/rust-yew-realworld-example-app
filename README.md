@@ -43,6 +43,15 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
 
 # Getting started
 
+## With Docker
+
+```
+docker-compose up
+```
+You can visit `http://localhost:8000` in your browser now.
+
+## Manually
+
 * Install [Rust]
 * Install [wasm-pack]
   ```
