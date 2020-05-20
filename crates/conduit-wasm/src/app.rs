@@ -61,11 +61,9 @@ impl Component for App {
 
     fn rendered(&mut self, first_render: bool) {
         // Get current user info if a token is available when mounted
-        if first_render {
-            if is_authenticated() {
-                let task = self.auth.current(self.current_user_response.clone());
-                self.current_user_task = Some(task);
-            }
+        if first_render && is_authenticated() {
+            let task = self.auth.current(self.current_user_response.clone());
+            self.current_user_task = Some(task);
         }
     }
 

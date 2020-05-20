@@ -63,10 +63,8 @@ impl Component for Settings {
     }
 
     fn rendered(&mut self, first_render: bool) {
-        if first_render {
-            if is_authenticated() {
-                self.task = Some(self.auth.current(self.loaded.clone()));
-            }
+        if first_render && is_authenticated() {
+            self.task = Some(self.auth.current(self.loaded.clone()));
         }
     }
 
