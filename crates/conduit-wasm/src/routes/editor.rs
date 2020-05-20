@@ -63,11 +63,12 @@ impl Component for Editor {
         }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
-        if let Some(slug) = &self.props.slug {
-            self.task = Some(self.articles.get(slug.clone(), self.loaded.clone()));
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            if let Some(slug) = &self.props.slug {
+                self.task = Some(self.articles.get(slug.clone(), self.loaded.clone()));
+            }
         }
-        false
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -145,6 +146,11 @@ impl Component for Editor {
                 self.request.title = title;
             }
         }
+        true
+    }
+
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+        self.props = props;
         true
     }
 

@@ -18,6 +18,10 @@ impl Component for Banner {
         true
     }
 
+    fn change(&mut self, _: Self::Properties) -> ShouldRender {
+        false
+    }
+
     fn view(&self) -> Html {
         if is_authenticated() {
             html! {}

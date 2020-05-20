@@ -88,6 +88,11 @@ impl Component for Register {
         true
     }
 
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+        self.props = props;
+        true
+    }
+
     fn view(&self) -> Html {
         let onsubmit = self.link.callback(|ev: Event| {
             ev.prevent_default();

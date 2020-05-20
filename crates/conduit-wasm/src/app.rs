@@ -59,13 +59,14 @@ impl Component for App {
         }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
+    fn rendered(&mut self, first_render: bool) {
         // Get current user info if a token is available when mounted
-        if is_authenticated() {
-            let task = self.auth.current(self.current_user_response.clone());
-            self.current_user_task = Some(task);
+        if first_render {
+            if is_authenticated() {
+                let task = self.auth.current(self.current_user_response.clone());
+                self.current_user_task = Some(task);
+            }
         }
-        false
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -89,6 +90,10 @@ impl Component for App {
             }
         }
         true
+    }
+
+    fn change(&mut self, _: Self::Properties) -> ShouldRender {
+        false
     }
 
     fn view(&self) -> Html {

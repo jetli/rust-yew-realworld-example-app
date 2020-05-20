@@ -53,12 +53,13 @@ impl Component for Profile {
         }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
-        self.task = Some(
-            self.profiles
-                .get(self.props.username.clone(), self.response.clone()),
-        );
-        false
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            self.task = Some(
+                self.profiles
+                    .get(self.props.username.clone(), self.response.clone()),
+            );
+        }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {

@@ -54,9 +54,10 @@ impl Component for ArticleList {
         }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
-        self.request();
-        false
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            self.request();
+        }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {

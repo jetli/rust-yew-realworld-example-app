@@ -40,10 +40,11 @@ impl Component for Tags {
         }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
-        let task = self.tags.get_all(self.response.clone());
-        self.task = Some(task);
-        false
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            let task = self.tags.get_all(self.response.clone());
+            self.task = Some(task);
+        }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -56,6 +57,11 @@ impl Component for Tags {
                 self.props.callback.emit(tag);
             }
         }
+        true
+    }
+
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+        self.props = props;
         true
     }
 

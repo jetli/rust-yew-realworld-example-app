@@ -124,7 +124,7 @@ impl Component for ArticlePreview {
                 <ul class="tag-list">
                     {for article.tag_list.iter().map(|tag| {
                         html! {
-                            <li class="tag-default tag-pill tag-outline" key={ &tag }>
+                            <li class="tag-default tag-pill tag-outline" key={ (&tag).to_string() }>
                                 { &tag }
                             </li>
                         }

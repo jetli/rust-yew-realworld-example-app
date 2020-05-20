@@ -62,11 +62,12 @@ impl Component for Settings {
         }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
-        if is_authenticated() {
-            self.task = Some(self.auth.current(self.loaded.clone()));
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            if is_authenticated() {
+                self.task = Some(self.auth.current(self.loaded.clone()));
+            }
         }
-        false
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -129,6 +130,11 @@ impl Component for Settings {
                 self.request.username = username;
             }
         }
+        true
+    }
+
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+        self.props = props;
         true
     }
 
