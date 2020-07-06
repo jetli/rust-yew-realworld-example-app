@@ -1,6 +1,6 @@
 use yew::services::fetch::FetchTask;
 use yew::{
-    html, Callback, Component, ComponentLink, Event, Html, InputData, Properties, ShouldRender,
+    html, Callback, Component, ComponentLink, FocusEvent, Html, InputData, Properties, ShouldRender,
 };
 
 use crate::components::list_errors::ListErrors;
@@ -85,7 +85,7 @@ impl Component for CommentInput {
     }
 
     fn view(&self) -> Html {
-        let onsubmit = self.link.callback(|ev: Event| {
+        let onsubmit = self.link.callback(|ev: FocusEvent| {
             ev.prevent_default();
             Msg::Request
         });

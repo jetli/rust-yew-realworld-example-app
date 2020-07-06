@@ -1,6 +1,6 @@
 use yew::services::fetch::FetchTask;
 use yew::{
-    agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Event, Html, InputData,
+    agent::Bridged, html, Bridge, Callback, Component, ComponentLink, FocusEvent, Html, InputData,
     Properties, ShouldRender,
 };
 use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
@@ -94,7 +94,7 @@ impl Component for Register {
     }
 
     fn view(&self) -> Html {
-        let onsubmit = self.link.callback(|ev: Event| {
+        let onsubmit = self.link.callback(|ev: FocusEvent| {
             ev.prevent_default();
             Msg::Request
         });

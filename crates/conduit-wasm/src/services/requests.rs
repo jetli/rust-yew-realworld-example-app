@@ -52,14 +52,11 @@ pub fn is_authenticated() -> bool {
 /// Http request
 #[derive(Default, Debug)]
 pub struct Requests {
-    fetch: FetchService,
 }
 
 impl Requests {
     pub fn new() -> Self {
-        Self {
-            fetch: FetchService::new(),
-        }
+        Self {}
     }
 
     /// build all kinds of http request: post/get/delete etc.
@@ -117,7 +114,7 @@ impl Requests {
         let request = builder.body(body).unwrap();
         debug!("Request: {:?}", request);
 
-        self.fetch.fetch(request, handler.into()).unwrap()
+        FetchService::fetch(request, handler.into()).unwrap()
     }
 
     /// Delete request
