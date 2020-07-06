@@ -51,8 +51,7 @@ pub fn is_authenticated() -> bool {
 
 /// Http request
 #[derive(Default, Debug)]
-pub struct Requests {
-}
+pub struct Requests {}
 
 impl Requests {
     pub fn new() -> Self {
