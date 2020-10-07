@@ -10,12 +10,13 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "build": "WASM_PACK_PROFILE=release parcel build static/index.html --public-url ./",
-    "build:webview": "WASM_PACK_PROFILE=release parcel build static/index.html --public-url ./ --out-dir ../conduit-webview/static",
-    "start": "WASM_PACK_PROFILE=dev parcel static/index.html -p 8000 --open",
+    "build": "cross-env WASM_PACK_PROFILE=release parcel build static/index.html --public-url ./",
+    "build:webview": "cross-env WASM_PACK_PROFILE=release parcel build static/index.html --public-url ./ --out-dir ../conduit-webview/static",
+    "start": "cross-env WASM_PACK_PROFILE=dev parcel static/index.html -p 8000 --open",
     "test": "wasm-pack test --headless --chrome"
   },
   "devDependencies": {
+    "cross-env": "^7.0.2",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-wasm.rs": "^1.2.16",
     "typescript": "^3.7.4"
