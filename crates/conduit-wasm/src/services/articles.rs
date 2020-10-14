@@ -1,3 +1,4 @@
+use percent_encoding::{AsciiSet, CONTROLS, utf8_percent_encode};
 use yew::callback::Callback;
 use yew::services::fetch::FetchTask;
 
@@ -36,7 +37,7 @@ impl Articles {
         callback: Callback<Result<ArticleListInfo, Error>>,
     ) -> FetchTask {
         self.requests.get::<ArticleListInfo>(
-            format!("/articles?author={}&{}", author, limit(10, page)),
+            format!("/articles?author={}&{}", query_encode(&author), limit(10, page)),
             callback,
         )
     }
@@ -49,7 +50,7 @@ impl Articles {
         callback: Callback<Result<ArticleListInfo, Error>>,
     ) -> FetchTask {
         self.requests.get::<ArticleListInfo>(
-            format!("/articles?tag={}&{}", tag, limit(10, page)),
+            format!("/articles?tag={}&{}", query_encode(&tag), limit(10, page)),
             callback,
         )
     }
@@ -95,7 +96,7 @@ impl Articles {
         callback: Callback<Result<ArticleListInfo, Error>>,
     ) -> FetchTask {
         self.requests.get::<ArticleListInfo>(
-            format!("/articles?favorited={}&{}", author, limit(10, page)),
+            format!("/articles?favorited={}&{}", query_encode(&author), limit(10, page)),
             callback,
         )
     }
@@ -144,4 +145,18 @@ impl Articles {
                 callback,
             )
     }
+}
+
+/// Encode s for use as a query parameter value in a URL.
+fn query_encode(s: &str) -> String {
+    // The application/x-www-form-urlencoded percent-encode set. See
+    // https://url.spec.whatwg.org/#application-x-www-form-urlencoded-percent-encode-set
+    const QUERY: &AsciiSet = &CONTROLS
+        .add(b' ').add(b'"').add(b'#').add(b'<').add(b'>')
+        .add(b'?').add(b'`').add(b'{').add(b'}')
+        .add(b'/').add(b':').add(b';').add(b'=').add(b'@')
+        .add(b'[').add(b'\\').add(b']').add(b'^').add(b'|')
+        .add(b'$').add(b'%').add(b'&').add(b'+').add(b',')
+        .add(b'!').add(b'\'').add(b'(').add(b')').add(b'~');
+    return utf8_percent_encode(s, QUERY).to_string();
 }
