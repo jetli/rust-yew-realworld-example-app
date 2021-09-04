@@ -31,13 +31,13 @@ jobs:
         npm run build
         npm run build:webview
         cargo build --verbose -p conduit-webview
+    - name: cargo fmt & clippy
+      run: |
+        cargo fmt --all -- --check
+        cargo clippy -- --deny=warnings
     - name: Setup chromedriver
       uses: nanasess/setup-chromedriver@v1.0.1
     - name: Run tests
       run: |
         npm run test
         cargo test --verbose -p conduit-webview
-    - name: cargo fmt & clippy
-      run: |
-        cargo fmt --all -- --check
-        cargo clippy -- --deny=warnings
