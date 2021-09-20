@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 pub struct ProfileInfo {
     pub username: String,
     pub bio: Option<String>,
-    pub image: String,
+    pub image: Option<String>,
     pub following: bool,
 }
 
