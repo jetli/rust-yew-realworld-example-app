@@ -51,7 +51,8 @@ impl Component for Comment {
                 </div>
                 <div class="card-footer">
                     <span class="comment-author">
-                        <img src={ &comment.author.image } class="comment-author-img" alt={ &comment.author.username } />
+                        <img src={ if comment.author.image.is_none() { "" } else { comment.author.image.as_ref().unwrap() }} 
+                            class="comment-author-img" alt={ &comment.author.username } />
                     </span>
                     { " " }
                     <RouterAnchor<AppRoute> route=AppRoute::Profile(comment.author.username.clone()) classes="comment-author">

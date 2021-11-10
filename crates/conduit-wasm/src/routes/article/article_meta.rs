@@ -39,8 +39,8 @@ impl Component for ArticleMeta {
     fn view(&self) -> Html {
         html! {
             <div class="article-meta">
-                <img src={ &self.props.author.image } alt={ &self.props.author.username } />
-
+                <img src={ if self.props.author.image.is_none() { "" } else { self.props.author.image.as_ref().unwrap() }}
+                    alt={ &self.props.author.username } />
                 <div class="info">
                     <RouterAnchor<AppRoute> route=AppRoute::Profile(self.props.author.username.clone()) classes="author" >
                         { &self.props.author.username }
