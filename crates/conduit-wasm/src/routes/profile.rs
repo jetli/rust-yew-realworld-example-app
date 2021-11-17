@@ -106,7 +106,7 @@ impl Component for Profile {
                         <div class="container">
                             <div class="row">
                                 <div class="col-xs-12 col-md-10 offset-md-1">
-                                    <img src={ &profile.image } class="user-img" alt={ &profile.username } />
+                                    <img src={ profile.image.clone() } class="user-img" alt={ profile.username.clone() } />
                                     <h4>{ &profile.username }</h4>
                                     <p>
                                         {

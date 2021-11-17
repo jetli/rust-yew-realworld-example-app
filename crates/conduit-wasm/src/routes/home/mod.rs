@@ -47,7 +47,7 @@ impl Component for Home {
                 <Banner />
                 <div class="container page">
                     <div class="row">
-                        <MainView tag=&self.tag />
+                        <MainView tag=self.tag.clone() />
                         <div class="col-md-3 col-xs-12">
                             <div class="sidebar">
                                 <p>{ "Popular Tags" }</p>

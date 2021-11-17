@@ -162,7 +162,7 @@ impl Component for Settings {
                     <div class="row">
                         <div class="col-md-6 offset-md-3 col-xs-12">
                             <h1 class="text-xs-center">{ "Your Settings" }</h1>
-                            <ListErrors error=&self.error/>
+                            <ListErrors error=self.error.clone()/>
                             <form onsubmit=onsubmit>
                                 <fieldset>
                                     <fieldset class="form-group">
@@ -170,7 +170,7 @@ impl Component for Settings {
                                             class="form-control"
                                             type="text"
                                             placeholder="URL of profile picture"
-                                            value={&self.request.image}
+                                            value={self.request.image.clone()}
                                             oninput=oninput_image />
                                     </fieldset>
                                     <fieldset class="form-group">
@@ -178,7 +178,7 @@ impl Component for Settings {
                                             class="form-control form-control-lg"
                                             type="text"
                                             placeholder="Username"
-                                            value={&self.request.username}
+                                            value={self.request.username.clone()}
                                             oninput=oninput_username />
                                     </fieldset>
                                     <fieldset class="form-group">
@@ -186,7 +186,7 @@ impl Component for Settings {
                                             class="form-control form-control-lg"
                                             rows="8"
                                             placeholder="Short bio about you"
-                                            value={&self.request.bio }
+                                            value={self.request.bio.clone()}
                                             oninput=oninput_bio >
                                         </textarea>
                                     </fieldset>
@@ -195,7 +195,7 @@ impl Component for Settings {
                                             class="form-control form-control-lg"
                                             type="email"
                                             placeholder="Email"
-                                            value={&self.request.email}
+                                            value={self.request.email.clone()}
                                             oninput=oninput_email />
                                     </fieldset>
                                     <fieldset class="form-group">
@@ -203,7 +203,7 @@ impl Component for Settings {
                                             class="form-control form-control-lg"
                                             type="password"
                                             placeholder="New Password"
-                                            value={&self.password}
+                                            value={self.password.clone()}
                                             oninput=oninput_password />
                                     </fieldset>
                                     <button

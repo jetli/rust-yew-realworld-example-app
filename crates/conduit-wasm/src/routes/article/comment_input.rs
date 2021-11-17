@@ -94,13 +94,13 @@ impl Component for CommentInput {
             .callback(|ev: InputData| Msg::UpdateComment(ev.value));
         html! {
             <>
-                <ListErrors error=&self.error />
+                <ListErrors error=self.error.clone() />
                 <form class="card comment-form" onsubmit=onsubmit>
                     <div class="card-block">
                         <textarea class="form-control"
                             placeholder="Write a comment..."
                             rows="3"
-                            value=&self.request.body
+                            value=self.request.body.clone()
                             oninput=oninput >
                         </textarea>
                     </div>
@@ -108,9 +108,9 @@ impl Component for CommentInput {
                         {if let Some(image) = &self.props.current_user.image {
                             html! {
                                 <img
-                                    src={ image }
+                                    src={ image.clone() }
                                     class="comment-author-img"
-                                    alt={ &self.props.current_user.username} />
+                                    alt={ self.props.current_user.username.clone()} />
                             }
                         } else {
                             html! { }

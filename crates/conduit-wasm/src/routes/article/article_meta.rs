@@ -39,7 +39,7 @@ impl Component for ArticleMeta {
     fn view(&self) -> Html {
         html! {
             <div class="article-meta">
-                <img src={ &self.props.author.image } alt={ &self.props.author.username } />
+                <img src={ self.props.author.image.clone() } alt={ self.props.author.username.clone() } />
 
                 <div class="info">
                     <RouterAnchor<AppRoute> route=AppRoute::Profile(self.props.author.username.clone()) classes="author" >
@@ -50,7 +50,7 @@ impl Component for ArticleMeta {
                     </span>
                 </div>
 
-                <ArticleActions can_modify=self.props.can_modify slug=&self.props.slug />
+                <ArticleActions can_modify=self.props.can_modify slug=self.props.slug.clone() />
             </div>
         }
     }

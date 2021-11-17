@@ -27,7 +27,6 @@ pub struct Editor {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    #[prop_or_default]
     pub slug: Option<String>,
 }
 
@@ -193,7 +192,7 @@ impl Component for Editor {
                 <div class="container page">
                     <div class="row">
                         <div class="col-md-10 offset-md-1 col-xs-12">
-                            <ListErrors error=&self.error />
+                            <ListErrors error=self.error.clone() />
                             <form onsubmit=onsubmit>
                                 <fieldset>
                                     <fieldset class="form-group">
@@ -201,7 +200,7 @@ impl Component for Editor {
                                             class="form-control form-control-lg"
                                             type="text"
                                             placeholder="Article Title"
-                                            value={ &self.request.title }
+                                            value={ self.request.title.clone() }
                                             oninput=oninput_title />
                                     </fieldset>
                                     <fieldset class="form-group">
@@ -209,7 +208,7 @@ impl Component for Editor {
                                             class="form-control"
                                             type="text"
                                             placeholder="What's this article about?"
-                                            value={ &self.request.description }
+                                            value={ self.request.description.clone() }
                                             oninput=oninput_description />
                                     </fieldset>
                                     <fieldset class="form-group">
@@ -217,7 +216,7 @@ impl Component for Editor {
                                             class="form-control"
                                             rows="8"
                                             placeholder="Write your article (in markdown)"
-                                            value={ &self.request.body}
+                                            value={ self.request.body.clone()}
                                             oninput=oninput_body >
                                         </textarea>
                                     </fieldset>
@@ -226,7 +225,7 @@ impl Component for Editor {
                                             class="form-control"
                                             type="text"
                                             placeholder="Enter tags"
-                                            value={ &self.tag_input }
+                                            value={ self.tag_input.clone() }
                                             oninput=oninput_tag
                                             onkeypress=onkeypress
                                             onkeyup=onkeyup />
@@ -235,7 +234,7 @@ impl Component for Editor {
                                                 if let Some(tag_list) = &self.request.tag_list {
                                                     html! {for tag_list.iter().map(|tag| {
                                                         let tag_to_remove = tag.clone();
-                                                        let onclick_remove = self.link.callback(move |ev| Msg::RemoveTag(tag_to_remove.to_string()));
+                                                        let onclick_remove = self.link.callback(move |_ev| Msg::RemoveTag(tag_to_remove.to_string()));
                                                         html! {
                                                             <span class="tag-default tag-pill">
                                                                 <i class="ion-close-round"

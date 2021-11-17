@@ -91,7 +91,7 @@ impl Component for ArticleList {
                 html! {
                     <>
                         {for article_list.articles.iter().map(|article| {
-                            html! { <ArticlePreview article=article /> }
+                            html! { <ArticlePreview article=article.clone() /> }
                         })}
                         <ListPagination
                             articles_count=article_list.articles_count
