@@ -93,8 +93,8 @@ impl Component for CommentList {
                             html! {
                                 <div>
                                     <CommentInput
-                                        slug=&self.props.slug
-                                        current_user=user_info
+                                        slug=self.props.slug.clone()
+                                        current_user=user_info.clone()
                                         callback=callback />
                                 </div>
                             }
@@ -118,9 +118,9 @@ impl Component for CommentList {
                             let callback = self.link.callback(Msg::CommentDeleted);
                             html! {
                                 <Comment
-                                    slug=&self.props.slug
-                                    comment=comment
-                                    current_user=&self.props.current_user
+                                    slug=self.props.slug.clone()
+                                    comment=comment.clone()
+                                    current_user=self.props.current_user.clone()
                                     callback=callback />
                             }
                         })}

@@ -114,7 +114,7 @@ impl Component for Login {
                                     { "Need an account?" }
                                 </RouterAnchor<AppRoute>>
                             </p>
-                            <ListErrors error=&self.error />
+                            <ListErrors error=self.error.clone() />
                             <form onsubmit=onsubmit>
                                 <fieldset>
                                     <fieldset class="form-group">
@@ -122,7 +122,7 @@ impl Component for Login {
                                             class="form-control form-control-lg"
                                             type="email"
                                             placeholder="Email"
-                                            value=&self.request.email
+                                            value=self.request.email.clone()
                                             oninput=oninput_email
                                             />
                                     </fieldset>
@@ -131,7 +131,7 @@ impl Component for Login {
                                             class="form-control form-control-lg"
                                             type="password"
                                             placeholder="Password"
-                                            value=&self.request.password
+                                            value=self.request.password.clone()
                                             oninput=oninput_password
                                             />
                                     </fieldset>

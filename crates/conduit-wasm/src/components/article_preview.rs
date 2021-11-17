@@ -89,7 +89,7 @@ impl Component for ArticlePreview {
         html! {
             <div class="article-preview">
                 <div class="article-meta">
-                    <img src={ &article.author.image } />
+                    <img src={ article.author.image.clone() } />
                     <div class="info">
                         <RouterAnchor<AppRoute>
                             route=AppRoute::Profile(article.author.username.clone())

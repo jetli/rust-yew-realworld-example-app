@@ -51,7 +51,7 @@ impl Component for Comment {
                 </div>
                 <div class="card-footer">
                     <span class="comment-author">
-                        <img src={ &comment.author.image } class="comment-author-img" alt={ &comment.author.username } />
+                        <img src={ comment.author.image.clone() } class="comment-author-img" alt={ comment.author.username.clone() } />
                     </span>
                     { " " }
                     <RouterAnchor<AppRoute> route=AppRoute::Profile(comment.author.username.clone()) classes="comment-author">
@@ -63,8 +63,8 @@ impl Component for Comment {
                     { if show {
                         html! {
                             <DeleteButton
-                                slug=&self.props.slug
-                                comment_id=&comment.id
+                                slug=self.props.slug.clone()
+                                comment_id=comment.id
                                 callback=&self.props.callback
                                 />
                         }

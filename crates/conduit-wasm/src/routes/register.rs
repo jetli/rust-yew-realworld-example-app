@@ -119,7 +119,7 @@ impl Component for Register {
                                     { "Have an account?" }
                                 </RouterAnchor<AppRoute>>
                             </p>
-                            <ListErrors error=&self.error />
+                            <ListErrors error=self.error.clone() />
                             <form onsubmit=onsubmit>
                                 <fieldset>
                                     <fieldset class="form-group">
@@ -127,7 +127,7 @@ impl Component for Register {
                                             class="form-control form-control-lg"
                                             type="text"
                                             placeholder="Username"
-                                            value=&self.request.username
+                                            value=self.request.username.clone()
                                             oninput=oninput_username
                                             />
                                     </fieldset>
@@ -136,7 +136,7 @@ impl Component for Register {
                                             class="form-control form-control-lg"
                                             type="email"
                                             placeholder="Email"
-                                            value=&self.request.email
+                                            value=self.request.email.clone()
                                             oninput=oninput_email
                                             />
                                     </fieldset>
@@ -145,7 +145,7 @@ impl Component for Register {
                                             class="form-control form-control-lg"
                                             type="password"
                                             placeholder="Password"
-                                            value=&self.request.password
+                                            value=self.request.password.clone()
                                             oninput=oninput_password
                                             />
                                     </fieldset>
