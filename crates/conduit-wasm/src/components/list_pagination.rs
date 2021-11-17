@@ -63,14 +63,13 @@ impl Component for ListPagination {
                     } else {
                         "page-item"
                     };
-                    let page = page.clone();
+                    let page = *page;
                     let onclick = self.link.callback(move |ev: MouseEvent| {ev.prevent_default(); Msg::PaginationChanged(page)});
                     html! {
                         <li
                             class=page_item_class
                             onclick=onclick>
                             <a class="page-link" href="">{page + 1}</a>
-
                         </li>
                     }
                 })}
