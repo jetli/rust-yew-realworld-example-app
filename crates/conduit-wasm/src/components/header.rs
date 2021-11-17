@@ -41,7 +41,7 @@ impl Component for Header {
                     </RouterAnchor<AppRoute>>
                     {
                         if let Some(user_info) = &self.props.current_user {
-                            self.logged_in_view(&user_info)
+                            self.logged_in_view(user_info)
                         } else {
                             self.logged_out_view()
                         }
