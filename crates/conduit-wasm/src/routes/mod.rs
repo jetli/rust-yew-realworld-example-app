@@ -8,37 +8,54 @@ pub mod profile;
 pub mod register;
 pub mod settings;
 
+use yew::{html, Html};
 use yew_router::prelude::*;
 
+use article::Article;
+use editor::Editor;
+use home::Home;
+use login::Login;
+use profile::{Profile, ProfileTab};
+use register::Register;
+use settings::Settings;
+
 /// App routes
-#[derive(Switch, Debug, Clone)]
+#[derive(Routable, Debug, Clone, PartialEq)]
 pub enum AppRoute {
-    #[to = "#/login"]
+    #[at("/login")]
     Login,
-    #[to = "#/register"]
+    #[at("/register")]
     Register,
-    #[to = "#/editor/{slug}"]
-    Editor(String),
-    #[to = "#/editor"]
+    #[at("/editor/:slug")]
+    Editor { slug: String },
+    #[at("/editor")]
     EditorCreate,
-    #[to = "#/article/{slug}"]
-    Article(String),
-    #[to = "#/settings"]
+    #[at("/article/:slug")]
+    Article { slug: String },
+    #[at("/settings")]
     Settings,
-    #[to = "#/@{username}/favorites"]
-    ProfileFavorites(String),
-    #[to = "#/@{username}"]
-    Profile(String),
-    #[to = "#/"]
+    #[at("/:username/favorites")]
+    ProfileFavorites { username: String },
+    #[at("/:username")]
+    Profile { username: String },
+    #[at("/")]
     Home,
 }
 
-/// Fix fragment handling problem for yew_router
-pub fn fix_fragment_routes(route: &mut Route) {
-    let r = route.route.as_str();
-    if let Some(index) = r.find('#') {
-        route.route = r[index..].to_string();
-    } else {
-        route.route = "#/".to_string();
+pub fn switch(route: &AppRoute) -> Html {
+    match route {
+        AppRoute::Login => html! {<Login />},
+        AppRoute::Register => html! {<Register />},
+        AppRoute::Home => html! {<Home />},
+        AppRoute::Editor { slug } => html! {<Editor slug={Some(slug.clone())}/>},
+        AppRoute::EditorCreate => html! {<Editor />},
+        AppRoute::Article { slug } => html! {<Article slug={slug.clone()} />},
+        AppRoute::Settings => html! {<Settings />},
+        AppRoute::ProfileFavorites { username } => html! {
+            <Profile username={username.clone()} tab={ProfileTab::FavoritedBy} />
+        },
+        AppRoute::Profile { username } => html! {
+            <Profile username={username.clone()} tab={ProfileTab::ByAuthor} />
+        },
     }
 }

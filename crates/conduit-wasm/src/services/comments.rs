@@ -1,55 +1,22 @@
-use yew::callback::Callback;
-use yew::services::fetch::FetchTask;
-
-use super::Requests;
+use super::{request_delete, request_get, request_post};
 use crate::error::Error;
 use crate::types::*;
 
-/// Apis for comments
-#[derive(Default, Debug)]
-pub struct Comments {
-    requests: Requests,
+pub async fn create(
+    slug: String,
+    comment: CommentCreateInfoWrapper,
+) -> Result<CommentInfoWrapper, Error> {
+    request_post::<CommentCreateInfoWrapper, CommentInfoWrapper>(
+        format!("/articles/{}/comments", slug),
+        comment,
+    )
+    .await
 }
 
-impl Comments {
-    pub fn new() -> Self {
-        Self {
-            requests: Requests::new(),
-        }
-    }
+pub async fn delete(slug: String, comment_id: u32) -> Result<DeleteWrapper, Error> {
+    request_delete::<DeleteWrapper>(format!("/articles/{}/comments/{}", slug, comment_id)).await
+}
 
-    pub fn create(
-        &mut self,
-        slug: String,
-        comment: CommentCreateInfoWrapper,
-        callback: Callback<Result<CommentInfoWrapper, Error>>,
-    ) -> FetchTask {
-        self.requests
-            .post::<CommentCreateInfoWrapper, CommentInfoWrapper>(
-                format!("/articles/{}/comments", slug),
-                comment,
-                callback,
-            )
-    }
-
-    pub fn delete(
-        &mut self,
-        slug: String,
-        comment_id: u32,
-        callback: Callback<Result<DeleteWrapper, Error>>,
-    ) -> FetchTask {
-        self.requests.delete::<DeleteWrapper>(
-            format!("/articles/{}/comments/{}", slug, comment_id),
-            callback,
-        )
-    }
-
-    pub fn for_article(
-        &mut self,
-        slug: String,
-        callback: Callback<Result<CommentListInfo, Error>>,
-    ) -> FetchTask {
-        self.requests
-            .get::<CommentListInfo>(format!("/articles/{}/comments", slug), callback)
-    }
+pub async fn for_article(slug: String) -> Result<CommentListInfo, Error> {
+    request_get::<CommentListInfo>(format!("/articles/{}/comments", slug)).await
 }

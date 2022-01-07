@@ -1,134 +1,101 @@
-use yew::services::fetch::FetchTask;
-use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
+use wasm_bindgen_futures::spawn_local;
+
+use yew::prelude::*;
 use yew_router::prelude::*;
 
 use super::comment::Comment;
 use super::comment_input::CommentInput;
-use crate::error::Error;
+use crate::hooks::use_user_context;
 use crate::routes::AppRoute;
-use crate::services::Comments;
-use crate::types::{CommentInfo, CommentListInfo, UserInfo};
+use crate::services::comments::*;
 
-/// A comment list component of an article.
-pub struct CommentList {
-    comments: Comments,
-    comment_list: Option<Vec<CommentInfo>>,
-    response: Callback<Result<CommentListInfo, Error>>,
-    task: Option<FetchTask>,
-    props: Props,
-    link: ComponentLink<Self>,
-}
-
-#[derive(Properties, Clone)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub slug: String,
-    pub current_user: Option<UserInfo>,
 }
 
-pub enum Msg {
-    Response(Result<CommentListInfo, Error>),
-    CommentAdded(CommentInfo),
-    CommentDeleted(u32),
-}
+/// A comment list component of an article.
+#[function_component(CommentList)]
+pub fn comment_list(props: &Props) -> Html {
+    let comment_list = use_state(|| None);
+    let user_ctx = use_user_context();
 
-impl Component for CommentList {
-    type Message = Msg;
-    type Properties = Props;
+    {
+        let comment_list = comment_list.clone();
+        use_effect_with_deps(
+            move |slug| {
+                let slug = slug.clone();
+                spawn_local(async move {
+                    if let Ok(list_info) = for_article(slug.clone()).await {
+                        comment_list.set(Some(list_info.comments));
+                    }
+                });
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        CommentList {
-            comments: Comments::new(),
-            comment_list: None,
-            response: link.callback(Msg::Response),
-            task: None,
-            props,
-            link,
-        }
+                || ()
+            },
+            props.slug.clone(),
+        );
     }
 
-    fn rendered(&mut self, first_render: bool) {
-        if first_render {
-            self.task = Some(
-                self.comments
-                    .for_article(self.props.slug.clone(), self.response.clone()),
-            );
-        }
-    }
+    let callback_added = {
+        let comment_list = comment_list.clone();
+        Callback::from(move |comment_info| {
+            if let Some(mut list) = (*comment_list).clone() {
+                list.insert(0, comment_info);
+                comment_list.set(Some(list));
+            }
+        })
+    };
+    let callback_deleted = {
+        let comment_list = comment_list.clone();
+        Callback::from(move |comment_id| {
+            if let Some(mut list) = (*comment_list).clone() {
+                list.retain(|c| c.id != comment_id);
+                comment_list.set(Some(list));
+            }
+        })
+    };
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            Msg::Response(Ok(comment_list)) => {
-                self.comment_list = Some(comment_list.comments);
-                self.task = None;
-            }
-            Msg::Response(Err(_)) => {
-                self.task = None;
-            }
-            Msg::CommentAdded(comment_info) => {
-                if let Some(comment_list) = &mut self.comment_list {
-                    comment_list.insert(0, comment_info);
-                }
-            }
-            Msg::CommentDeleted(comment_id) => {
-                if let Some(comment_list) = &mut self.comment_list {
-                    comment_list.retain(|c| c.id != comment_id);
-                }
-            }
-        }
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        self.props = props;
-        true
-    }
-
-    fn view(&self) -> Html {
-        if let Some(comment_list) = &self.comment_list {
-            html! {
-                <div class="col-xs-12 col-md-8 offset-md-2">
-                    {
-                        if let Some(user_info) = &self.props.current_user {
-                            let callback = self.link.callback(Msg::CommentAdded);
-                            html! {
-                                <div>
-                                    <CommentInput
-                                        slug=self.props.slug.clone()
-                                        current_user=user_info.clone()
-                                        callback=callback />
-                                </div>
-                            }
-                        } else {
-                            html! {
-                                <p>
-                                    <RouterAnchor<AppRoute> route=AppRoute::Login classes="nav-link">
-                                        { "Sign in" }
-                                    </RouterAnchor<AppRoute>>
-                                    { " or " }
-                                    <RouterAnchor<AppRoute> route=AppRoute::Register classes="nav-link">
-                                        { "sign up" }
-                                    </RouterAnchor<AppRoute>>
-                                    { " to add comments on this article." }
-                                </p>
-                            }
+    if let Some(comment_list) = &*comment_list {
+        html! {
+            <div class="col-xs-12 col-md-8 offset-md-2">
+                {
+                    if user_ctx.is_authenticated() {
+                        html! {
+                            <div>
+                                <CommentInput
+                                    slug={props.slug.clone()}
+                                    callback={callback_added} />
+                            </div>
+                        }
+                    } else {
+                        html! {
+                            <p>
+                                <Link<AppRoute> to={AppRoute::Login} classes="nav-link">
+                                    { "Sign in" }
+                                </Link<AppRoute>>
+                                { " or " }
+                                <Link<AppRoute> to={AppRoute::Register} classes="nav-link">
+                                    { "sign up" }
+                                </Link<AppRoute>>
+                                { " to add comments on this article." }
+                            </p>
                         }
                     }
-                    <div>
-                        {for comment_list.iter().map(|comment| {
-                            let callback = self.link.callback(Msg::CommentDeleted);
-                            html! {
-                                <Comment
-                                    slug=self.props.slug.clone()
-                                    comment=comment.clone()
-                                    current_user=self.props.current_user.clone()
-                                    callback=callback />
-                            }
-                        })}
-                    </div>
+                }
+                <div>
+                    {for comment_list.iter().map(|comment| {
+                        html! {
+                            <Comment
+                                slug={props.slug.clone()}
+                                comment={comment.clone()}
+                                callback={callback_deleted.clone()} />
+                        }
+                    })}
                 </div>
-            }
-        } else {
-            html! {}
+            </div>
         }
+    } else {
+        html! {}
     }
 }

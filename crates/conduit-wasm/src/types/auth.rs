@@ -27,7 +27,7 @@ pub struct RegisterInfoWrapper {
     pub user: RegisterInfo,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct UserInfo {
     pub email: String,
@@ -35,6 +35,12 @@ pub struct UserInfo {
     pub username: String,
     pub bio: Option<String>,
     pub image: Option<String>,
+}
+
+impl UserInfo {
+    pub fn is_authenticated(&self) -> bool {
+        !self.token.is_empty()
+    }
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
