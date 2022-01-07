@@ -1,104 +1,77 @@
-use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
+use yew::prelude::*;
 use yew_router::prelude::*;
 
+use crate::hooks::use_user_context;
 use crate::routes::AppRoute;
 use crate::types::UserInfo;
 
-pub struct Header {
-    props: Props,
-}
+#[function_component(Header)]
+pub fn header() -> Html {
+    let user_ctx = use_user_context();
 
-#[derive(Properties, Clone)]
-pub struct Props {
-    pub current_user: Option<UserInfo>,
-}
-
-pub enum Msg {}
-
-impl Component for Header {
-    type Message = Msg;
-    type Properties = Props;
-
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Header { props }
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        self.props = props;
-        true
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <nav class="navbar navbar-light">
-                <div class="container">
-                    <RouterAnchor<AppRoute> route=AppRoute::Home classes="navbar-brand">
-                        { "conduit" }
-                    </RouterAnchor<AppRoute>>
-                    {
-                        if let Some(user_info) = &self.props.current_user {
-                            self.logged_in_view(user_info)
-                        } else {
-                            self.logged_out_view()
-                        }
+    html! {
+        <nav class="navbar navbar-light">
+            <div class="container">
+                <Link<AppRoute> to={AppRoute::Home} classes="navbar-brand">
+                    { "conduit" }
+                </Link<AppRoute>>
+                {
+                    if user_ctx.is_authenticated() {
+                        logged_in_view((*user_ctx).clone())
+                    } else {
+                        logged_out_view()
                     }
-                </div>
-            </nav>
-        }
+                }
+            </div>
+        </nav>
     }
 }
 
-impl Header {
-    fn logged_out_view(&self) -> Html {
-        html! {
-            <ul class="nav navbar-nav pull-xs-right">
-                <li class="nav-item">
-                    <RouterAnchor<AppRoute> route=AppRoute::Home classes="nav-link">
-                        { "Home" }
-                    </RouterAnchor<AppRoute>>
-                </li>
-                <li class="nav-item">
-                    <RouterAnchor<AppRoute> route=AppRoute::Login classes="nav-link">
-                        { "Sign in" }
-                    </RouterAnchor<AppRoute>>
-                </li>
-                <li class="nav-item">
-                    <RouterAnchor<AppRoute> route=AppRoute::Register classes="nav-link">
-                        { "Sign up" }
-                    </RouterAnchor<AppRoute>>
-                </li>
-            </ul>
-        }
+fn logged_out_view() -> Html {
+    html! {
+        <ul class="nav navbar-nav pull-xs-right">
+            <li class="nav-item">
+                <Link<AppRoute> to={AppRoute::Home} classes="nav-link">
+                    { "Home" }
+                </Link<AppRoute>>
+            </li>
+            <li class="nav-item">
+                <Link<AppRoute> to={AppRoute::Login} classes="nav-link">
+                    { "Sign in" }
+                </Link<AppRoute>>
+            </li>
+            <li class="nav-item">
+                <Link<AppRoute> to={AppRoute::Register} classes="nav-link">
+                    { "Sign up" }
+                </Link<AppRoute>>
+            </li>
+        </ul>
     }
+}
 
-    fn logged_in_view(&self, user_info: &UserInfo) -> Html {
-        html! {
-            <ul class="nav navbar-nav pull-xs-right">
-                <li class="nav-item">
-                    <RouterAnchor<AppRoute> route=AppRoute::Home classes="nav-link">
-                        { "Home" }
-                    </RouterAnchor<AppRoute>>
-                </li>
-                <li class="nav-item">
-                    <RouterAnchor<AppRoute> route=AppRoute::EditorCreate classes="nav-link">
-                        { "New Post" }
-                    </RouterAnchor<AppRoute>>
-                </li>
-                <li class="nav-item">
-                    <RouterAnchor<AppRoute> route=AppRoute::Settings classes="nav-link">
-                        { "Settings" }
-                    </RouterAnchor<AppRoute>>
-                </li>
-                <li class="nav-item">
-                    <RouterAnchor<AppRoute> route=AppRoute::Profile(user_info.username.clone())  classes="nav-link">
-                        { &user_info.username }
-                    </RouterAnchor<AppRoute>>
-                </li>
-            </ul>
-        }
+fn logged_in_view(user_info: UserInfo) -> Html {
+    html! {
+        <ul class="nav navbar-nav pull-xs-right">
+            <li class="nav-item">
+                <Link<AppRoute> to={AppRoute::Home} classes="nav-link">
+                    { "Home" }
+                </Link<AppRoute>>
+            </li>
+            <li class="nav-item">
+                <Link<AppRoute> to={AppRoute::EditorCreate} classes="nav-link">
+                    { "New Post" }
+                </Link<AppRoute>>
+            </li>
+            <li class="nav-item">
+                <Link<AppRoute> to={AppRoute::Settings} classes="nav-link">
+                    { "Settings" }
+                </Link<AppRoute>>
+            </li>
+            <li class="nav-item">
+                <Link<AppRoute> to={AppRoute::Profile { username: user_info.username.clone() }}  classes="nav-link">
+                    { &user_info.username }
+                </Link<AppRoute>>
+            </li>
+        </ul>
     }
 }

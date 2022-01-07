@@ -1,25 +1,11 @@
-use yew::{html, Component, ComponentLink, Html, MouseEvent, Properties, ShouldRender};
+use yew::prelude::*;
 
 use crate::components::article_list::{ArticleList, ArticleListFilter};
-use crate::services::is_authenticated;
+use crate::hooks::use_user_context;
 
-/// Main content with tabs of article list for home page
-pub struct MainView {
-    props: Props,
-    tab: Tab,
-    filter: ArticleListFilter,
-    link: ComponentLink<Self>,
-}
-
-#[derive(Properties, Clone)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub tag: Option<String>,
-}
-
-#[derive(Clone)]
-pub enum Msg {
-    TagChanged(Tab),
-    Ignore,
 }
 
 #[derive(PartialEq, Clone)]
@@ -29,157 +15,145 @@ pub enum Tab {
     Tag,
 }
 
-impl Component for MainView {
-    type Message = Msg;
-    type Properties = Props;
-
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let tab = if is_authenticated() {
+/// Main content with tabs of article list for home page
+#[function_component(MainView)]
+pub fn main_view(props: &Props) -> Html {
+    let user_ctx = use_user_context();
+    let tab = use_state(|| {
+        if user_ctx.is_authenticated() {
             Tab::Feed
         } else {
             Tab::All
-        };
+        }
+    });
 
-        let filter = if is_authenticated() {
+    let filter = use_state(|| {
+        if user_ctx.is_authenticated() {
             ArticleListFilter::Feed
         } else {
             ArticleListFilter::All
-        };
-
-        MainView {
-            props,
-            tab,
-            filter,
-            link,
         }
+    });
+
+    {
+        let tab = tab.clone();
+        let filter = filter.clone();
+        use_effect_with_deps(
+            move |tag| {
+                if let Some(tag) = &tag {
+                    tab.set(Tab::Tag);
+                    filter.set(ArticleListFilter::ByTag(tag.clone()));
+                }
+                || ()
+            },
+            props.tag.clone(),
+        );
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            Msg::TagChanged(tab) => {
-                self.tab = tab;
-                match self.tab {
-                    Tab::Feed => self.filter = ArticleListFilter::Feed,
-                    Tab::All => self.filter = ArticleListFilter::All,
+    {
+        let filter = filter.clone();
+        use_effect_with_deps(
+            move |(tab, tag)| {
+                match tab {
+                    Tab::Feed => filter.set(ArticleListFilter::Feed),
+                    Tab::All => filter.set(ArticleListFilter::All),
                     Tab::Tag => {
-                        if let Some(tag) = &self.props.tag {
-                            self.filter = ArticleListFilter::ByTag(tag.clone());
+                        if let Some(tag) = tag {
+                            filter.set(ArticleListFilter::ByTag(tag.clone()));
                         }
                     }
                 }
-                true
-            }
-            Msg::Ignore => false,
-        }
+                || ()
+            },
+            ((*tab).clone(), props.tag.clone()),
+        );
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        self.props = props;
-        self.tab = Tab::Tag;
-        if let Some(tag) = &self.props.tag {
-            self.filter = ArticleListFilter::ByTag(tag.clone());
-        }
-        true
-    }
-
-    fn view(&self) -> Html {
-        html! {
-            <div class="col-md-9 col-xs-12">
-                <div class="feed-toggle">
-                    <ul class="nav nav-pills outline-active">
-                        { self.your_feed_tab() }
-                        { self.global_feed_tab() }
-                        { self.tag_filter_tab() }
-                    </ul>
-                </div>
-
-                <ArticleList filter=self.filter.clone() />
+    html! {
+        <div class="col-md-9 col-xs-12">
+            <div class="feed-toggle">
+                <ul class="nav nav-pills outline-active">
+                    {
+                        if user_ctx.is_authenticated() {
+                            your_feed_tab(tab.clone())
+                        } else {
+                            html! {}
+                        }
+                    }
+                    { global_feed_tab(tab.clone()) }
+                    { tag_filter_tab(tab.clone(), props) }
+                </ul>
             </div>
-        }
+
+            <ArticleList filter={(*filter).clone()} />
+        </div>
     }
 }
 
-impl MainView {
-    fn your_feed_tab(&self) -> Html {
-        if is_authenticated() {
-            let (msg, class) = self.get_tab_msg_class(Tab::Feed);
-            let onclick = self.link.callback(move |ev: MouseEvent| {
-                ev.prevent_default();
-                msg.clone()
-            });
+fn your_feed_tab(tab: UseStateHandle<Tab>) -> Html {
+    let (onclick, class) = get_tab_msg_class(tab, Tab::Feed);
 
-            html! {
-                <li class="nav-item">
-                    <a  href=""
-                        class=class
-                        onclick=onclick>
-                        { "Your Feed" }
-                    </a>
-                </li>
-            }
-        } else {
-            html! {}
-        }
+    html! {
+        <li class="nav-item">
+            <a  href=""
+                {class}
+                {onclick}>
+                { "Your Feed" }
+            </a>
+        </li>
     }
+}
 
-    fn global_feed_tab(&self) -> Html {
-        let (msg, class) = self.get_tab_msg_class(Tab::All);
-        let onclick = self.link.callback(move |ev: MouseEvent| {
-            ev.prevent_default();
-            msg.clone()
-        });
+fn global_feed_tab(tab: UseStateHandle<Tab>) -> Html {
+    let (onclick, class) = get_tab_msg_class(tab, Tab::All);
+
+    html! {
+        <li class="nav-item">
+            <a
+                href=""
+                {class}
+                {onclick}>
+                { "Global Feed" }
+            </a>
+        </li>
+    }
+}
+
+fn tag_filter_tab(tab: UseStateHandle<Tab>, props: &Props) -> Html {
+    if let Some(tag) = &props.tag {
+        let (onclick, class) = get_tab_msg_class(tab, Tab::Tag);
 
         html! {
             <li class="nav-item">
                 <a
                     href=""
-                    class=class
-                    onclick=onclick>
-                    { "Global Feed" }
+                    {class}
+                    {onclick}>
+                    <i class="ion-pound"></i> { &tag }
                 </a>
             </li>
         }
-    }
-
-    fn tag_filter_tab(&self) -> Html {
-        if let Some(tag) = &self.props.tag {
-            let (msg, class) = self.get_tab_msg_class(Tab::Tag);
-            let onclick = self.link.callback(move |ev: MouseEvent| {
-                ev.prevent_default();
-                msg.clone()
-            });
-
-            html! {
-                <li class="nav-item">
-                    <a
-                        href=""
-                        class=class
-                        onclick=onclick>
-                        <i class="ion-pound"></i> { &tag }
-                    </a>
-                </li>
-            }
-        } else {
-            html! {}
-        }
+    } else {
+        html! {}
     }
 }
 
-impl MainView {
-    /// Get Msg and css class for tabs
-    fn get_tab_msg_class(&self, tab: Tab) -> (Msg, String) {
-        let class = if self.tab == tab {
-            "nav-link active".to_string()
-        } else {
-            "nav-link".to_string()
-        };
+/// Get Msg and css class for tabs
+fn get_tab_msg_class(current_tab: UseStateHandle<Tab>, tab: Tab) -> (Callback<MouseEvent>, String) {
+    let class = if *current_tab == tab {
+        "nav-link active".to_string()
+    } else {
+        "nav-link".to_string()
+    };
 
-        let msg = if self.tab == tab {
-            Msg::Ignore
-        } else {
-            Msg::TagChanged(tab)
-        };
+    let callback = {
+        Callback::from(move |e: MouseEvent| {
+            e.prevent_default();
+            if *current_tab != tab {
+                current_tab.set(tab.clone());
+            }
+        })
+    };
 
-        (msg, class)
-    }
+    (callback, class)
 }

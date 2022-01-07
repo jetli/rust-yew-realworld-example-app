@@ -1,41 +1,22 @@
-use yew::{html, Component, ComponentLink, Html, ShouldRender};
+use yew::prelude::*;
 
-use crate::services::is_authenticated;
+use crate::hooks::use_user_context;
 
-pub struct Banner {}
-
-pub enum Msg {}
-
-impl Component for Banner {
-    type Message = Msg;
-    type Properties = ();
-
-    fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Banner {}
-    }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, _: Self::Properties) -> ShouldRender {
-        false
-    }
-
-    fn view(&self) -> Html {
-        if is_authenticated() {
-            html! {}
-        } else {
-            html! {
-                <div class="banner">
-                    <div class="container">
-                        <h1 class="logo-font">
-                            { "conduit" }
-                        </h1>
-                        <p>{ "A place to share your knowledge." }</p>
-                    </div>
+#[function_component(Banner)]
+pub fn banner() -> Html {
+    let user_ctx = use_user_context();
+    if user_ctx.is_authenticated() {
+        html! {}
+    } else {
+        html! {
+            <div class="banner">
+                <div class="container">
+                    <h1 class="logo-font">
+                        { "conduit" }
+                    </h1>
+                    <p>{ "A place to share your knowledge." }</p>
                 </div>
-            }
+            </div>
         }
     }
 }

@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use super::ProfileInfo;
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct CommentInfo {
     pub id: u32,

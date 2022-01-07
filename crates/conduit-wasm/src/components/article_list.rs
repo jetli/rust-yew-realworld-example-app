@@ -1,35 +1,18 @@
-use yew::services::fetch::FetchTask;
-use yew::{html, Callback, Component, ComponentLink, Html, Properties, ShouldRender};
+use wasm_bindgen_futures::spawn_local;
+
+use yew::prelude::*;
 
 use super::article_preview::ArticlePreview;
 use super::list_pagination::ListPagination;
-use crate::error::Error;
-use crate::services::Articles;
-use crate::types::ArticleListInfo;
+use crate::services::articles::*;
 
-/// List of articles component
-pub struct ArticleList {
-    articles: Articles,
-    article_list: Option<ArticleListInfo>,
-    response: Callback<Result<ArticleListInfo, Error>>,
-    task: Option<FetchTask>,
-    current_page: u32,
-    props: Props,
-    link: ComponentLink<Self>,
-}
-
-#[derive(Properties, Clone)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub filter: ArticleListFilter,
 }
 
-pub enum Msg {
-    Response(Result<ArticleListInfo, Error>),
-    PaginationChanged(u32),
-}
-
 /// Filters for article list
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum ArticleListFilter {
     All,
     ByAuthor(String),
@@ -38,111 +21,82 @@ pub enum ArticleListFilter {
     Feed,
 }
 
-impl Component for ArticleList {
-    type Message = Msg;
-    type Properties = Props;
+/// List of articles component
+#[function_component(ArticleList)]
+pub fn article_list(props: &Props) -> Html {
+    let article_list = use_state(|| None);
+    let current_page = use_state(|| 0u32);
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        ArticleList {
-            articles: Articles::new(),
-            article_list: None,
-            response: link.callback(Msg::Response),
-            task: None,
-            current_page: 0,
-            props,
-            link,
-        }
+    {
+        let current_page = current_page.clone();
+        use_effect_with_deps(
+            move |_| {
+                // Reset to first page
+                current_page.set(0);
+
+                || ()
+            },
+            props.filter.clone(),
+        );
     }
 
-    fn rendered(&mut self, first_render: bool) {
-        if first_render {
-            self.request();
-        }
+    {
+        let article_list = article_list.clone();
+        use_effect_with_deps(
+            move |(filter, current_page)| {
+                let filter = filter.clone();
+                let current_page = *current_page;
+
+                spawn_local(async move {
+                    if let Ok(articles) = match filter {
+                        ArticleListFilter::All => all(current_page).await,
+                        ArticleListFilter::ByAuthor(author) => {
+                            by_author(author, current_page).await
+                        }
+                        ArticleListFilter::ByTag(tag) => by_tag(tag, current_page).await,
+                        ArticleListFilter::FavoritedBy(author) => {
+                            favorited_by(author, current_page).await
+                        }
+                        ArticleListFilter::Feed => feed().await,
+                    } {
+                        article_list.set(Some(articles));
+                    }
+                });
+
+                || ()
+            },
+            (props.filter.clone(), *current_page),
+        );
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            Msg::Response(Ok(article_list)) => {
-                self.article_list = Some(article_list);
-                self.task = None;
-            }
-            Msg::Response(Err(_)) => {
-                self.task = None;
-            }
-            Msg::PaginationChanged(current_page) => {
-                self.current_page = current_page;
-                self.request();
-            }
-        }
-        true
-    }
+    let callback = {
+        let current_page = current_page.clone();
+        Callback::from(move |page| {
+            current_page.set(page);
+        })
+    };
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        self.props = props;
-        self.current_page = 0;
-        self.request();
-        false
-    }
-
-    fn view(&self) -> Html {
-        if let Some(article_list) = &self.article_list {
-            if !article_list.articles.is_empty() {
-                let callback = self.link.callback(Msg::PaginationChanged);
-                html! {
-                    <>
-                        {for article_list.articles.iter().map(|article| {
-                            html! { <ArticlePreview article=article.clone() /> }
-                        })}
-                        <ListPagination
-                            articles_count=article_list.articles_count
-                            current_page=self.current_page
-                            callback=callback />
-                    </>
-                }
-            } else {
-                html! {
-                    <div class="article-preview">{ "No articles are here... yet." }</div>
-                }
+    if let Some(article_list) = &*article_list {
+        if !article_list.articles.is_empty() {
+            html! {
+                <>
+                    {for article_list.articles.iter().map(|article| {
+                        html! { <ArticlePreview article={article.clone()} /> }
+                    })}
+                    <ListPagination
+                        total_count={article_list.articles_count}
+                        current_page={*current_page}
+                        callback={callback} />
+                </>
             }
         } else {
             html! {
-                <div class="article-preview">{ "Loading..." }</div>
+                <div class="article-preview">{ "No articles are here... yet." }</div>
             }
         }
-    }
-}
-
-impl ArticleList {
-    /// Request apis for filters
-    fn request(&mut self) {
-        match self.props.filter.clone() {
-            ArticleListFilter::All => {
-                self.task = Some(self.articles.all(self.current_page, self.response.clone()));
-            }
-            ArticleListFilter::ByAuthor(author) => {
-                self.task = Some(self.articles.by_author(
-                    author,
-                    self.current_page,
-                    self.response.clone(),
-                ));
-            }
-            ArticleListFilter::ByTag(tag) => {
-                self.task = Some(self.articles.by_tag(
-                    tag,
-                    self.current_page,
-                    self.response.clone(),
-                ));
-            }
-            ArticleListFilter::FavoritedBy(author) => {
-                self.task = Some(self.articles.favorited_by(
-                    author,
-                    self.current_page,
-                    self.response.clone(),
-                ));
-            }
-            ArticleListFilter::Feed => {
-                self.task = Some(self.articles.feed(self.response.clone()));
-            }
+    } else {
+        html! {
+            <div class="article-preview">{ "Loading..." }</div>
         }
     }
 }

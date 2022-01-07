@@ -1,96 +1,50 @@
-use yew::services::fetch::FetchTask;
-use yew::{
-    agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, Properties,
-    ShouldRender,
-};
-use yew_router::{agent::RouteRequest::ChangeRoute, prelude::*};
+use wasm_bindgen_futures::spawn_local;
 
-use crate::error::Error;
+use yew::prelude::*;
+use yew_router::prelude::*;
+
 use crate::routes::AppRoute;
-use crate::services::Articles;
-use crate::types::DeleteWrapper;
+use crate::services::articles::*;
 
-/// Article actions component to edit or delete an article.
-pub struct ArticleActions {
-    articles: Articles,
-    response: Callback<Result<DeleteWrapper, Error>>,
-    task: Option<FetchTask>,
-    props: Props,
-    router_agent: Box<dyn Bridge<RouteAgent>>,
-    link: ComponentLink<Self>,
-}
-
-#[derive(Properties, Clone)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub slug: String,
     pub can_modify: bool,
 }
 
-pub enum Msg {
-    DeleteArticle,
-    Response(Result<DeleteWrapper, Error>),
-    Ignore,
-}
+/// Article actions component to edit or delete an article.
+#[function_component(ArticleActions)]
+pub fn article_actions(props: &Props) -> Html {
+    let history = use_history().unwrap();
+    let onclick = {
+        let slug = props.slug.clone();
+        Callback::from(move |_| {
+            let slug = slug.clone();
+            let history = history.clone();
+            spawn_local(async move {
+                if del(slug).await.is_ok() {
+                    history.push(AppRoute::Home);
+                }
+            });
+        })
+    };
 
-impl Component for ArticleActions {
-    type Message = Msg;
-    type Properties = Props;
-
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        ArticleActions {
-            articles: Articles::new(),
-            response: link.callback(Msg::Response),
-            task: None,
-            props,
-            router_agent: RouteAgent::bridge(link.callback(|_| Msg::Ignore)),
-            link,
+    if props.can_modify {
+        html! {
+            <span>
+                <Link<AppRoute> to={AppRoute::Editor { slug: props.slug.clone() }} classes="btn btn-outline-secondary btn-sm" >
+                    { "Edit Article" }
+                </Link<AppRoute>>
+                { " " }
+                <button class="btn btn-outline-danger btn-sm" {onclick} >
+                    <i class="ion-trash-a"></i> { "Delete Article" }
+                </button>
+            </span>
         }
-    }
-
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            Msg::DeleteArticle => {
-                self.task = Some(
-                    self.articles
-                        .del(self.props.slug.clone(), self.response.clone()),
-                );
-            }
-            Msg::Response(Ok(_)) => {
-                self.task = None;
-                self.router_agent.send(ChangeRoute(AppRoute::Home.into()));
-            }
-            Msg::Response(Err(_)) => {
-                self.task = None;
-            }
-            Msg::Ignore => {}
-        }
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        self.props = props;
-        true
-    }
-
-    fn view(&self) -> Html {
-        if self.props.can_modify {
-            let onclick = self.link.callback(|_| Msg::DeleteArticle);
-            html! {
-                <span>
-                    <RouterAnchor<AppRoute> route=AppRoute::Editor(self.props.slug.clone()) classes="btn btn-outline-secondary btn-sm" >
-                        { "Edit Article" }
-                    </RouterAnchor<AppRoute>>
-                    { " " }
-                    <button class="btn btn-outline-danger btn-sm" onclick=onclick >
-                        <i class="ion-trash-a"></i> { "Delete Article" }
-                    </button>
-                </span>
-            }
-        } else {
-            html! {
-                <span>
-                </span>
-            }
+    } else {
+        html! {
+            <span>
+            </span>
         }
     }
 }

@@ -1,65 +1,24 @@
-use yew::callback::Callback;
-use yew::services::fetch::FetchTask;
-
-use super::Requests;
+use super::{request_get, request_post, request_put};
 use crate::error::Error;
 use crate::types::*;
 
-/// Apis for authentication
-#[derive(Default, Debug)]
-pub struct Auth {
-    requests: Requests,
+/// Get current user info
+pub async fn current() -> Result<UserInfoWrapper, Error> {
+    request_get::<UserInfoWrapper>("/user".to_string()).await
 }
 
-impl Auth {
-    pub fn new() -> Self {
-        Self {
-            requests: Requests::new(),
-        }
-    }
+/// Login a user
+pub async fn login(login_info: LoginInfoWrapper) -> Result<UserInfoWrapper, Error> {
+    request_post::<LoginInfoWrapper, UserInfoWrapper>("/users/login".to_string(), login_info).await
+}
 
-    /// Get current user info
-    pub fn current(&mut self, callback: Callback<Result<UserInfoWrapper, Error>>) -> FetchTask {
-        self.requests
-            .get::<UserInfoWrapper>("/user".to_string(), callback)
-    }
+/// Register a new user
+pub async fn register(register_info: RegisterInfoWrapper) -> Result<UserInfoWrapper, Error> {
+    request_post::<RegisterInfoWrapper, UserInfoWrapper>("/users".to_string(), register_info).await
+}
 
-    /// Login a user
-    pub fn login(
-        &mut self,
-        login_info: LoginInfoWrapper,
-        callback: Callback<Result<UserInfoWrapper, Error>>,
-    ) -> FetchTask {
-        self.requests.post::<LoginInfoWrapper, UserInfoWrapper>(
-            "/users/login".to_string(),
-            login_info,
-            callback,
-        )
-    }
-
-    /// Register a new user
-    pub fn register(
-        &mut self,
-        register_info: RegisterInfoWrapper,
-        callback: Callback<Result<UserInfoWrapper, Error>>,
-    ) -> FetchTask {
-        self.requests.post::<RegisterInfoWrapper, UserInfoWrapper>(
-            "/users".to_string(),
-            register_info,
-            callback,
-        )
-    }
-
-    /// Save info of current user
-    pub fn save(
-        &mut self,
-        user_update_info: UserUpdateInfoWrapper,
-        callback: Callback<Result<UserInfoWrapper, Error>>,
-    ) -> FetchTask {
-        self.requests.put::<UserUpdateInfoWrapper, UserInfoWrapper>(
-            "/user".to_string(),
-            user_update_info,
-            callback,
-        )
-    }
+/// Save info of current user
+pub async fn save(user_update_info: UserUpdateInfoWrapper) -> Result<UserInfoWrapper, Error> {
+    request_put::<UserUpdateInfoWrapper, UserInfoWrapper>("/user".to_string(), user_update_info)
+        .await
 }

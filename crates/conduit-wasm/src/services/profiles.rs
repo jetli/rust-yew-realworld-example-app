@@ -1,50 +1,15 @@
-use yew::callback::Callback;
-use yew::services::fetch::FetchTask;
-
-use super::Requests;
+use super::{request_delete, request_get, request_post};
 use crate::error::Error;
 use crate::types::*;
 
-/// Apis for profile
-#[derive(Default, Debug)]
-pub struct Profiles {
-    requests: Requests,
+pub async fn follow(username: String) -> Result<ProfileInfoWrapper, Error> {
+    request_post::<(), ProfileInfoWrapper>(format!("/profiles/{}/follow", username), ()).await
 }
 
-impl Profiles {
-    pub fn new() -> Self {
-        Self {
-            requests: Requests::new(),
-        }
-    }
+pub async fn unfollow(username: String) -> Result<ProfileInfoWrapper, Error> {
+    request_delete::<ProfileInfoWrapper>(format!("/profiles/{}/follow", username)).await
+}
 
-    pub fn follow(
-        &mut self,
-        username: String,
-        callback: Callback<Result<ProfileInfoWrapper, Error>>,
-    ) -> FetchTask {
-        self.requests.post::<(), ProfileInfoWrapper>(
-            format!("/profiles/{}/follow", username),
-            (),
-            callback,
-        )
-    }
-
-    pub fn unfollow(
-        &mut self,
-        username: String,
-        callback: Callback<Result<ProfileInfoWrapper, Error>>,
-    ) -> FetchTask {
-        self.requests
-            .delete::<ProfileInfoWrapper>(format!("/profiles/{}/follow", username), callback)
-    }
-
-    pub fn get(
-        &mut self,
-        username: String,
-        callback: Callback<Result<ProfileInfoWrapper, Error>>,
-    ) -> FetchTask {
-        self.requests
-            .get::<ProfileInfoWrapper>(format!("/profiles/{}", username), callback)
-    }
+pub async fn get(username: String) -> Result<ProfileInfoWrapper, Error> {
+    request_get::<ProfileInfoWrapper>(format!("/profiles/{}", username)).await
 }
