@@ -3,7 +3,7 @@ use gloo::storage::{LocalStorage, Storage};
 use lazy_static::lazy_static;
 use log::debug;
 use parking_lot::RwLock;
-use serde::{Deserialize, Serialize};
+use serde::{de::DeserializeOwned, Serialize};
 
 use crate::error::Error;
 use crate::types::ErrorInfo;
@@ -42,7 +42,7 @@ pub fn get_token() -> Option<String> {
 /// build all kinds of http request: post/get/delete etc.
 pub async fn request<B, T>(method: reqwest::Method, url: String, body: B) -> Result<T, Error>
 where
-    for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
+    T: DeserializeOwned + 'static + std::fmt::Debug,
     B: Serialize + std::fmt::Debug,
 {
     let allow_body = method == reqwest::Method::POST || method == reqwest::Method::PUT;
@@ -94,7 +94,7 @@ where
 /// Delete request
 pub async fn request_delete<T>(url: String) -> Result<T, Error>
 where
-    for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
+    T: DeserializeOwned + 'static + std::fmt::Debug,
 {
     request(reqwest::Method::DELETE, url, ()).await
 }
@@ -102,7 +102,7 @@ where
 /// Get request
 pub async fn request_get<T>(url: String) -> Result<T, Error>
 where
-    for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
+    T: DeserializeOwned + 'static + std::fmt::Debug,
 {
     request(reqwest::Method::GET, url, ()).await
 }
@@ -110,7 +110,7 @@ where
 /// Post request with a body
 pub async fn request_post<B, T>(url: String, body: B) -> Result<T, Error>
 where
-    for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
+    T: DeserializeOwned + 'static + std::fmt::Debug,
     B: Serialize + std::fmt::Debug,
 {
     request(reqwest::Method::POST, url, body).await
@@ -119,7 +119,7 @@ where
 /// Put request with a body
 pub async fn request_put<B, T>(url: String, body: B) -> Result<T, Error>
 where
-    for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
+    T: DeserializeOwned + 'static + std::fmt::Debug,
     B: Serialize + std::fmt::Debug,
 {
     request(reqwest::Method::PUT, url, body).await
