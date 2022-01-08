@@ -3,7 +3,7 @@ use gloo::storage::{LocalStorage, Storage};
 use lazy_static::lazy_static;
 use log::debug;
 use parking_lot::RwLock;
-use serde::{Serialize, de::DeserializeOwned};
+use serde::{de::DeserializeOwned, Serialize};
 
 use crate::error::Error;
 use crate::types::ErrorInfo;
