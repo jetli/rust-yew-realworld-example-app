@@ -9,13 +9,12 @@ use crate::routes::AppRoute;
 use crate::services::articles::*;
 use crate::types::{ArticleCreateUpdateInfo, ArticleCreateUpdateInfoWrapper};
 
-/// Create or update an article
-
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub slug: Option<String>,
 }
 
+/// Create or update an article
 #[function_component(Editor)]
 pub fn editor(props: &Props) -> Html {
     let history = use_history().unwrap();
