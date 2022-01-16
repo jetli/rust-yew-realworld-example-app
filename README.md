@@ -33,6 +33,7 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
 
 * [yew] - a modern Rust framework for creating multi-threaded frontend apps with WebAssembly.
 * [yew-router] - a routing library for the [Yew] framework.
+* [yew-hooks] - Hooks for the [Yew] web framework, inspired by react hook libs like streamich/react-use and alibaba/hooks.
 * [lazy_static] - a macro for declaring lazily evaluated statics in Rust.
 * [parking_lot] - provides implementations of `Mutex`, `RwLock`, `Condvar` and `Once` etc.
 * [pulldown-cmark] - a pull parser for CommonMark, used to parse Markdown.
@@ -145,3 +146,4 @@ See [LICENSE] for details
 [wasm-pack]: https://github.com/rustwasm/wasm-pack
 [Yew]: https://github.com/yewstack/yew
 [yew-router]: https://github.com/yewstack/yew
+[yew-hooks]: https://github.com/jetli/yew-hooks
