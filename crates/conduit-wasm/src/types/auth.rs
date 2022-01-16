@@ -43,7 +43,7 @@ impl UserInfo {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct UserInfoWrapper {
     pub user: UserInfo,

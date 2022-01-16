@@ -1,7 +1,7 @@
-use wasm_bindgen_futures::spawn_local;
 use web_sys::HtmlInputElement;
 
 use yew::prelude::*;
+use yew_hooks::{use_async, use_mount};
 
 use crate::components::list_errors::ListErrors;
 use crate::hooks::use_user_context;
@@ -12,67 +12,74 @@ use crate::types::{UserUpdateInfo, UserUpdateInfoWrapper};
 #[function_component(Settings)]
 pub fn settings() -> Html {
     let user_ctx = use_user_context();
-    let error = use_state(|| None);
     let update_info = use_state(UserUpdateInfo::default);
     let password = use_state(String::default);
+    let user_info = use_async(async move { current().await });
+    let user_update = {
+        let update_info = update_info.clone();
+        let password = password.clone();
+        use_async(async move {
+            let mut request = UserUpdateInfoWrapper {
+                user: (*update_info).clone(),
+            };
+            if !(*password).is_empty() {
+                request.user.password = Some((*password).clone());
+            }
+            save(request).await
+        })
+    };
 
     {
-        let update_info = update_info.clone();
-        let error = error.clone();
         let user_ctx = user_ctx.clone();
-        use_effect_with_deps(
-            move |_| {
-                let user_ctx = user_ctx.clone();
-                spawn_local(async move {
-                    if user_ctx.is_authenticated() {
-                        let user_info = current().await;
-                        match user_info {
-                            Ok(user_info) => {
-                                update_info.set(UserUpdateInfo {
-                                    email: user_info.user.email,
-                                    username: user_info.user.username,
-                                    password: None,
-                                    image: user_info.user.image.unwrap_or_default(),
-                                    bio: user_info.user.bio.unwrap_or_default(),
-                                });
-                                error.set(None);
-                            }
-                            Err(e) => error.set(Some(e)),
-                        }
-                    }
-                });
+        let user_info = user_info.clone();
+        use_mount(move || {
+            if user_ctx.is_authenticated() {
+                user_info.run();
+            }
+        });
+    }
 
+    {
+        let user_info = user_info.clone();
+        let update_info = update_info.clone();
+        use_effect_with_deps(
+            move |user_info| {
+                if let Some(user_info) = &user_info.data {
+                    update_info.set(UserUpdateInfo {
+                        email: user_info.user.email.clone(),
+                        username: user_info.user.username.clone(),
+                        password: None,
+                        image: user_info.user.image.clone().unwrap_or_default(),
+                        bio: user_info.user.bio.clone().unwrap_or_default(),
+                    });
+                }
                 || ()
             },
-            (),
+            user_info,
+        );
+    }
+
+    {
+        let user_ctx = user_ctx.clone();
+        let user_update = user_update.clone();
+        use_effect_with_deps(
+            move |user_update| {
+                if let Some(user_info) = &user_update.data {
+                    // Login current user again to update user info.
+                    user_ctx.login(user_info.user.clone());
+                }
+                || ()
+            },
+            user_update,
         );
     }
 
     let onsubmit = {
-        let error = error.clone();
-        let update_info = update_info.clone();
-        let password = password.clone();
-        let user_ctx = user_ctx.clone();
+        let user_update = user_update.clone();
         Callback::from(move |e: FocusEvent| {
             e.prevent_default(); /* Prevent event propagation */
-            let mut request = UserUpdateInfoWrapper {
-                user: (*update_info).clone(),
-            };
-            if (*password).is_empty() {
-                request.user.password = Some((*password).clone());
-            }
-            let user_ctx = user_ctx.clone();
-            let error = error.clone();
-            spawn_local(async move {
-                let user_info = save(request).await;
-                match user_info {
-                    Ok(user_info) => {
-                        user_ctx.login(user_info.user);
-                        error.set(None);
-                    }
-                    Err(e) => error.set(Some(e)),
-                }
-            });
+            let user_update = user_update.clone();
+            user_update.run();
         })
     };
     let oninput_image = {
@@ -131,7 +138,8 @@ pub fn settings() -> Html {
                 <div class="row">
                     <div class="col-md-6 offset-md-3 col-xs-12">
                         <h1 class="text-xs-center">{ "Your Settings" }</h1>
-                        <ListErrors error={(*error).clone()}/>
+                        <ListErrors error={user_info.error.clone()}/>
+                        <ListErrors error={user_update.error.clone()}/>
                         <form {onsubmit}>
                             <fieldset>
                                 <fieldset class="form-group">
@@ -178,7 +186,7 @@ pub fn settings() -> Html {
                                 <button
                                     class="btn btn-lg btn-primary pull-xs-right"
                                     type="submit"
-                                    disabled=false>
+                                    disabled={user_info.loading || user_update.loading}>
                                     { "Update Settings" }
                                 </button>
                             </fieldset>

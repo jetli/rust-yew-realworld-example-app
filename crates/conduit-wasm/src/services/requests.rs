@@ -1,7 +1,6 @@
 use dotenv_codegen::dotenv;
 use gloo::storage::{LocalStorage, Storage};
 use lazy_static::lazy_static;
-use log::debug;
 use parking_lot::RwLock;
 use serde::{de::DeserializeOwned, Serialize};
 
@@ -61,10 +60,10 @@ where
     let response = builder.send().await;
 
     if let Ok(data) = response {
-        debug!("Response: {:?}", data);
         if data.status().is_success() {
             let data: Result<T, _> = data.json::<T>().await;
             if let Ok(data) = data {
+                log::debug!("Response: {:?}", data);
                 Ok(data)
             } else {
                 Err(Error::DeserializeError)
