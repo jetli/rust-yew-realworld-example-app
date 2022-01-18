@@ -30,12 +30,9 @@ pub fn settings() -> Html {
     };
 
     {
-        let user_ctx = user_ctx.clone();
         let user_info = user_info.clone();
         use_mount(move || {
-            if user_ctx.is_authenticated() {
-                user_info.run();
-            }
+            user_info.run();
         });
     }
 
