@@ -1,6 +1,5 @@
-use wasm_bindgen_futures::spawn_local;
-
 use yew::prelude::*;
+use yew_hooks::use_async;
 use yew_router::prelude::*;
 
 use super::comment::Comment;
@@ -17,20 +16,17 @@ pub struct Props {
 /// A comment list component of an article.
 #[function_component(CommentList)]
 pub fn comment_list(props: &Props) -> Html {
-    let comment_list = use_state(|| None);
     let user_ctx = use_user_context();
+    let comment_list = {
+        let slug = props.slug.clone();
+        use_async(async move { for_article(slug).await })
+    };
 
     {
         let comment_list = comment_list.clone();
         use_effect_with_deps(
-            move |slug| {
-                let slug = slug.clone();
-                spawn_local(async move {
-                    if let Ok(list_info) = for_article(slug.clone()).await {
-                        comment_list.set(Some(list_info.comments));
-                    }
-                });
-
+            move |_| {
+                comment_list.run();
                 || ()
             },
             props.slug.clone(),
@@ -40,23 +36,23 @@ pub fn comment_list(props: &Props) -> Html {
     let callback_added = {
         let comment_list = comment_list.clone();
         Callback::from(move |comment_info| {
-            if let Some(mut list) = (*comment_list).clone() {
-                list.insert(0, comment_info);
-                comment_list.set(Some(list));
+            if let Some(mut list) = (*comment_list).data.clone() {
+                list.comments.insert(0, comment_info);
+                comment_list.update(list);
             }
         })
     };
     let callback_deleted = {
         let comment_list = comment_list.clone();
         Callback::from(move |comment_id| {
-            if let Some(mut list) = (*comment_list).clone() {
-                list.retain(|c| c.id != comment_id);
-                comment_list.set(Some(list));
+            if let Some(mut list) = (*comment_list).data.clone() {
+                list.comments.retain(|c| c.id != comment_id);
+                comment_list.update(list);
             }
         })
     };
 
-    if let Some(comment_list) = &*comment_list {
+    if let Some(comment_list) = &comment_list.data {
         html! {
             <div class="col-xs-12 col-md-8 offset-md-2">
                 {
@@ -84,7 +80,7 @@ pub fn comment_list(props: &Props) -> Html {
                     }
                 }
                 <div>
-                    {for comment_list.iter().map(|comment| {
+                    {for comment_list.comments.iter().map(|comment| {
                         html! {
                             <Comment
                                 slug={props.slug.clone()}
