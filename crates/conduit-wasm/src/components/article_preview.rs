@@ -1,6 +1,5 @@
-use wasm_bindgen_futures::spawn_local;
-
 use yew::prelude::*;
+use yew_hooks::use_async;
 use yew_router::prelude::*;
 
 use crate::routes::AppRoute;
@@ -19,25 +18,42 @@ pub struct Props {
 #[function_component(ArticlePreview)]
 pub fn article_preview(props: &Props) -> Html {
     let article = use_state(|| props.article.clone());
+    let article_favorite = {
+        let article = article.clone();
+        use_async(async move {
+            if article.favorited {
+                unfavorite(article.slug.clone()).await
+            } else {
+                favorite(article.slug.clone()).await
+            }
+        })
+    };
+
+    {
+        let article = article.clone();
+        let article_favorite = article_favorite.clone();
+        use_effect_with_deps(
+            move |article_favorite| {
+                if let Some(article_info) = &article_favorite.data {
+                    article.set(article_info.article.clone());
+                }
+                || ()
+            },
+            article_favorite,
+        );
+    }
+
     let favorite_button_class = if article.favorited {
         FAVORITED_CLASS
     } else {
         NOT_FAVORITED_CLASS
     };
     let onclick = {
-        let article = article.clone();
+        let article_favorite = article_favorite.clone();
         Callback::from(move |ev: MouseEvent| {
             ev.prevent_default();
-            let article = article.clone();
-            spawn_local(async move {
-                if let Ok(article_info) = if article.favorited {
-                    unfavorite(article.slug.clone()).await
-                } else {
-                    favorite(article.slug.clone()).await
-                } {
-                    article.set(article_info.article);
-                }
-            });
+            let article_favorite = article_favorite.clone();
+            article_favorite.run();
         })
     };
 

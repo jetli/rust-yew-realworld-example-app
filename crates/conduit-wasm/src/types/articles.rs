@@ -18,7 +18,7 @@ pub struct ArticleInfo {
     pub author: ProfileInfo,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct ArticleInfoWrapper {
     pub article: ArticleInfo,

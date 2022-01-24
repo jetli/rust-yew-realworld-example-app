@@ -1,6 +1,5 @@
-use wasm_bindgen_futures::spawn_local;
-
 use yew::prelude::*;
+use yew_hooks::use_async;
 
 use super::article_preview::ArticlePreview;
 use super::list_pagination::ListPagination;
@@ -24,8 +23,21 @@ pub enum ArticleListFilter {
 /// List of articles component
 #[function_component(ArticleList)]
 pub fn article_list(props: &Props) -> Html {
-    let article_list = use_state(|| None);
     let current_page = use_state(|| 0u32);
+    let article_list = {
+        let filter = props.filter.clone();
+        let current_page = current_page.clone();
+
+        use_async(async move {
+            match filter {
+                ArticleListFilter::All => all(*current_page).await,
+                ArticleListFilter::ByAuthor(author) => by_author(author, *current_page).await,
+                ArticleListFilter::ByTag(tag) => by_tag(tag, *current_page).await,
+                ArticleListFilter::FavoritedBy(author) => favorited_by(author, *current_page).await,
+                ArticleListFilter::Feed => feed().await,
+            }
+        })
+    };
 
     {
         let current_page = current_page.clone();
@@ -33,7 +45,6 @@ pub fn article_list(props: &Props) -> Html {
             move |_| {
                 // Reset to first page
                 current_page.set(0);
-
                 || ()
             },
             props.filter.clone(),
@@ -43,26 +54,8 @@ pub fn article_list(props: &Props) -> Html {
     {
         let article_list = article_list.clone();
         use_effect_with_deps(
-            move |(filter, current_page)| {
-                let filter = filter.clone();
-                let current_page = *current_page;
-
-                spawn_local(async move {
-                    if let Ok(articles) = match filter {
-                        ArticleListFilter::All => all(current_page).await,
-                        ArticleListFilter::ByAuthor(author) => {
-                            by_author(author, current_page).await
-                        }
-                        ArticleListFilter::ByTag(tag) => by_tag(tag, current_page).await,
-                        ArticleListFilter::FavoritedBy(author) => {
-                            favorited_by(author, current_page).await
-                        }
-                        ArticleListFilter::Feed => feed().await,
-                    } {
-                        article_list.set(Some(articles));
-                    }
-                });
-
+            move |_| {
+                article_list.run();
                 || ()
             },
             (props.filter.clone(), *current_page),
@@ -76,7 +69,7 @@ pub fn article_list(props: &Props) -> Html {
         })
     };
 
-    if let Some(article_list) = &*article_list {
+    if let Some(article_list) = &article_list.data {
         if !article_list.articles.is_empty() {
             html! {
                 <>
