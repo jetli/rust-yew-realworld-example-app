@@ -1,6 +1,5 @@
-use wasm_bindgen_futures::spawn_local;
-
 use yew::prelude::*;
+use yew_hooks::use_async;
 use yew_router::prelude::*;
 
 use crate::components::article_list::{ArticleList, ArticleListFilter};
@@ -23,49 +22,59 @@ pub enum ProfileTab {
 /// Profile for an author
 #[function_component(Profile)]
 pub fn profile(props: &Props) -> Html {
-    let profile_info = use_state(|| None);
+    let profile_info = {
+        let username = props.username.clone();
+        use_async(async move { get(username).await })
+    };
+    let user_follow = {
+        let profile_info = profile_info.clone();
+        let username = props.username.clone();
+        use_async(async move {
+            if let Some(profile) = &profile_info.data {
+                if profile.profile.following {
+                    return unfollow(username).await;
+                }
+            }
+            follow(username).await
+        })
+    };
     let user_ctx = use_user_context();
     let is_current_user = (*user_ctx).is_authenticated() && (*user_ctx).username == props.username;
 
     {
         let profile_info = profile_info.clone();
         use_effect_with_deps(
-            move |username| {
-                let username = username.clone();
-                spawn_local(async move {
-                    let profile = get(username).await;
-                    if let Ok(profile) = profile {
-                        profile_info.set(Some(profile.profile));
-                    }
-                });
-
+            move |_| {
+                profile_info.run();
                 || ()
             },
             props.username.clone(),
         );
     }
 
-    let onclick = {
+    {
         let profile_info = profile_info.clone();
-        Callback::from(move |_| {
-            let profile_info = profile_info.clone();
-            spawn_local(async move {
-                if let Some(profile) = &*profile_info {
-                    let username = profile.username.clone();
-                    let profile = if profile.following {
-                        unfollow(username).await
-                    } else {
-                        follow(username).await
-                    };
-                    if let Ok(profile) = profile {
-                        profile_info.set(Some(profile.profile));
-                    }
+        use_effect_with_deps(
+            move |user_follow| {
+                if let Some(profile) = &user_follow.data {
+                    profile_info.update(profile.clone());
                 }
-            });
+                || ()
+            },
+            user_follow.clone(),
+        );
+    }
+
+    let onclick = {
+        let user_follow = user_follow.clone();
+        Callback::from(move |_| {
+            let user_follow = user_follow.clone();
+            user_follow.run();
         })
     };
 
-    if let Some(profile) = &*profile_info {
+    if let Some(profile) = &profile_info.data {
+        let profile = &profile.profile;
         let classes_tab = if props.tab == ProfileTab::ByAuthor {
             ("nav-link active", "nav-link")
         } else {

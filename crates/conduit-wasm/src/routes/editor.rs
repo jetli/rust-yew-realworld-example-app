@@ -1,7 +1,7 @@
-use wasm_bindgen_futures::spawn_local;
 use web_sys::HtmlInputElement;
 
 use yew::prelude::*;
+use yew_hooks::use_async;
 use yew_router::prelude::*;
 
 use crate::components::list_errors::ListErrors;
@@ -21,68 +21,92 @@ pub fn editor(props: &Props) -> Html {
     let error = use_state(|| None);
     let update_info = use_state(ArticleCreateUpdateInfo::default);
     let tag_input = use_state(String::default);
+    let article_get = props
+        .slug
+        .clone()
+        .map(|slug| use_async(async move { get(slug).await }));
+    let article_update = {
+        let slug = props.slug.clone();
+        let update_info = update_info.clone();
+        use_async(async move {
+            let request = ArticleCreateUpdateInfoWrapper {
+                article: (*update_info).clone(),
+            };
+            if let Some(slug) = slug {
+                update(slug, request).await
+            } else {
+                create(request).await
+            }
+        })
+    };
 
     {
-        let update_info = update_info.clone();
-        let error = error.clone();
+        let article_get = article_get.clone();
         use_effect_with_deps(
             move |slug| {
-                if let Some(slug) = slug {
-                    let slug = slug.clone();
-                    spawn_local(async move {
-                        let article_info = get(slug).await;
-                        match article_info {
-                            Ok(article_info) => {
-                                update_info.set(ArticleCreateUpdateInfo {
-                                    title: article_info.article.title,
-                                    description: article_info.article.description,
-                                    body: article_info.article.body,
-                                    tag_list: Some(article_info.article.tag_list),
-                                });
-                                error.set(None);
-                            }
-                            Err(e) => error.set(Some(e)),
-                        }
-                    });
+                if slug.is_some() {
+                    if let Some(article_get) = article_get {
+                        article_get.run();
+                    }
                 }
-
                 || ()
             },
             props.slug.clone(),
         );
     }
 
-    let onsubmit = {
-        let error = error.clone();
+    {
         let update_info = update_info.clone();
-        let slug = props.slug.clone();
+        let error = error.clone();
+        use_effect_with_deps(
+            move |article_get| {
+                if let Some(article_get) = article_get {
+                    if let Some(article_info) = &article_get.data {
+                        update_info.set(ArticleCreateUpdateInfo {
+                            title: article_info.article.title.clone(),
+                            description: article_info.article.description.clone(),
+                            body: article_info.article.body.clone(),
+                            tag_list: Some(article_info.article.tag_list.clone()),
+                        });
+                        error.set(None);
+                    }
+                    if let Some(e) = &article_get.error {
+                        error.set(Some(e.clone()));
+                    }
+                }
+
+                || ()
+            },
+            article_get,
+        );
+    }
+
+    {
+        let error = error.clone();
+        use_effect_with_deps(
+            move |article_update| {
+                if let Some(article_info) = &article_update.data {
+                    error.set(None);
+                    // Route to article detail page.
+                    history.push(AppRoute::Article {
+                        slug: article_info.article.slug.clone(),
+                    });
+                }
+                if let Some(e) = &article_update.error {
+                    error.set(Some(e.clone()));
+                }
+                || ()
+            },
+            article_update.clone(),
+        );
+    }
+
+    let onsubmit = {
+        let article_update = article_update.clone();
         Callback::from(move |e: FocusEvent| {
             e.prevent_default(); /* Prevent event propagation */
-            let request = ArticleCreateUpdateInfoWrapper {
-                article: (*update_info).clone(),
-            };
-            let history = history.clone();
-            let error = error.clone();
-            let slug = slug.clone();
-            spawn_local(async move {
-                let article_info = {
-                    if let Some(slug) = slug {
-                        update(slug, request).await
-                    } else {
-                        create(request).await
-                    }
-                };
-                match article_info {
-                    Ok(article_info) => {
-                        error.set(None);
-                        // Route to home page after logged in
-                        history.push(AppRoute::Article {
-                            slug: article_info.article.slug,
-                        });
-                    }
-                    Err(e) => error.set(Some(e)),
-                }
-            });
+            let article_update = article_update.clone();
+            article_update.run();
         })
     };
     let oninput_title = {
@@ -224,7 +248,7 @@ pub fn editor(props: &Props) -> Html {
                                 <button
                                     class="btn btn-lg pull-xs-right btn-primary"
                                     type="submit"
-                                    disabled=false>
+                                    disabled={article_update.loading}>
                                     { "Publish Article" }
                                 </button>
                             </fieldset>

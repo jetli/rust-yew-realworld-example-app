@@ -9,7 +9,7 @@ pub struct ProfileInfo {
     pub following: bool,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct ProfileInfoWrapper {
     pub profile: ProfileInfo,

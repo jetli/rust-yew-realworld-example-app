@@ -1,6 +1,5 @@
-use wasm_bindgen_futures::spawn_local;
-
 use yew::prelude::*;
+use yew_hooks::use_async;
 
 use crate::services::comments::*;
 
@@ -14,20 +13,31 @@ pub struct Props {
 /// A component to delete a comment from an article.
 #[function_component(DeleteButton)]
 pub fn delete_button(props: &Props) -> Html {
-    let onclick = {
+    let delete_comment = {
         let slug = props.slug.clone();
         let comment_id = props.comment_id;
-        let callback = props.callback.clone();
+        use_async(async move { delete(slug, comment_id).await })
+    };
+    let onclick = {
+        let delete_comment = delete_comment.clone();
         Callback::from(move |_| {
-            let slug = slug.clone();
-            let callback = callback.clone();
-            spawn_local(async move {
-                if delete(slug, comment_id).await.is_ok() {
-                    callback.emit(comment_id);
-                }
-            });
+            let delete_comment = delete_comment.clone();
+            delete_comment.run();
         })
     };
+
+    {
+        use_effect_with_deps(
+            move |(callback, comment_id, delete_comment)| {
+                if delete_comment.data.is_some() {
+                    callback.emit(*comment_id);
+                }
+                || ()
+            },
+            (props.callback.clone(), props.comment_id, delete_comment),
+        )
+    }
+
     html! {
         <span class="mod-options">
             <i class="ion-trash-a" {onclick} ></i>

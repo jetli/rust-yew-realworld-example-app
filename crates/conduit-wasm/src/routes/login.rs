@@ -1,7 +1,7 @@
-use wasm_bindgen_futures::spawn_local;
 use web_sys::HtmlInputElement;
 
 use yew::prelude::*;
+use yew_hooks::use_async;
 use yew_router::prelude::*;
 
 use crate::components::list_errors::ListErrors;
@@ -14,29 +14,33 @@ use crate::types::{LoginInfo, LoginInfoWrapper};
 #[function_component(Login)]
 pub fn login() -> Html {
     let user_ctx = use_user_context();
-    let error = use_state(|| None);
     let login_info = use_state(LoginInfo::default);
-
-    let onsubmit = {
-        let error = error.clone();
+    let user_login = {
         let login_info = login_info.clone();
-        Callback::from(move |e: FocusEvent| {
-            e.prevent_default(); /* Prevent event propagation */
+        use_async(async move {
             let request = LoginInfoWrapper {
                 user: (*login_info).clone(),
             };
-            let user_ctx = user_ctx.clone();
-            let error = error.clone();
-            spawn_local(async move {
-                let user_info = login(request).await;
-                match user_info {
-                    Ok(user_info) => {
-                        user_ctx.login(user_info.user);
-                        error.set(None);
-                    }
-                    Err(e) => error.set(Some(e)),
-                }
-            });
+            login(request).await
+        })
+    };
+
+    use_effect_with_deps(
+        move |user_login| {
+            if let Some(user_info) = &user_login.data {
+                user_ctx.login(user_info.user.clone());
+            }
+            || ()
+        },
+        user_login.clone(),
+    );
+
+    let onsubmit = {
+        let user_login = user_login.clone();
+        Callback::from(move |e: FocusEvent| {
+            e.prevent_default(); /* Prevent event propagation */
+            let user_login = user_login.clone();
+            user_login.run();
         })
     };
     let oninput_email = {
@@ -69,7 +73,7 @@ pub fn login() -> Html {
                                 { "Need an account?" }
                             </Link<AppRoute>>
                         </p>
-                        <ListErrors error={(*error).clone()} />
+                        <ListErrors error={user_login.error.clone()} />
                         <form {onsubmit}>
                             <fieldset>
                                 <fieldset class="form-group">

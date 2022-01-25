@@ -1,6 +1,5 @@
-use wasm_bindgen_futures::spawn_local;
-
 use yew::prelude::*;
+use yew_hooks::use_async;
 use yew_router::prelude::*;
 
 use crate::routes::AppRoute;
@@ -16,18 +15,27 @@ pub struct Props {
 #[function_component(ArticleActions)]
 pub fn article_actions(props: &Props) -> Html {
     let history = use_history().unwrap();
-    let onclick = {
+    let article_delete = {
         let slug = props.slug.clone();
+        use_async(async move { del(slug).await })
+    };
+    let onclick = {
+        let article_delete = article_delete.clone();
         Callback::from(move |_| {
-            let slug = slug.clone();
-            let history = history.clone();
-            spawn_local(async move {
-                if del(slug).await.is_ok() {
-                    history.push(AppRoute::Home);
-                }
-            });
+            let article_delete = article_delete.clone();
+            article_delete.run();
         })
     };
+
+    use_effect_with_deps(
+        move |article_delete| {
+            if article_delete.data.is_some() {
+                history.push(AppRoute::Home);
+            }
+            || ()
+        },
+        article_delete,
+    );
 
     if props.can_modify {
         html! {

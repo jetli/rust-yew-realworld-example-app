@@ -1,7 +1,7 @@
-use wasm_bindgen_futures::spawn_local;
 use web_sys::HtmlInputElement;
 
 use yew::prelude::*;
+use yew_hooks::use_async;
 
 use crate::components::list_errors::ListErrors;
 use crate::hooks::use_user_context;
@@ -18,35 +18,21 @@ pub struct Props {
 #[function_component(CommentInput)]
 pub fn comment_input(props: &Props) -> Html {
     let create_info = use_state(CommentCreateInfo::default);
-    let error = use_state(|| None);
     let user_ctx = use_user_context();
+    let create_comment = {
+        let request = CommentCreateInfoWrapper {
+            comment: (*create_info).clone(),
+        };
+        let slug = props.slug.clone();
+        use_async(async move { create(slug, request).await })
+    };
 
     let onsubmit = {
-        let error = error.clone();
-        let create_info = create_info.clone();
-        let slug = props.slug.clone();
-        let callback = props.callback.clone();
+        let create_comment = create_comment.clone();
         Callback::from(move |e: FocusEvent| {
             e.prevent_default(); /* Prevent event propagation */
-            let request = CommentCreateInfoWrapper {
-                comment: (*create_info).clone(),
-            };
-
-            let slug = slug.clone();
-            let error = error.clone();
-            let callback = callback.clone();
-            let create_info = create_info.clone();
-            spawn_local(async move {
-                let comment_info = create(slug, request).await;
-                match comment_info {
-                    Ok(comment_info) => {
-                        error.set(None);
-                        create_info.set(CommentCreateInfo::default());
-                        callback.emit(comment_info.comment);
-                    }
-                    Err(e) => error.set(Some(e)),
-                }
-            });
+            let create_comment = create_comment.clone();
+            create_comment.run();
         })
     };
     let oninput = {
@@ -59,9 +45,24 @@ pub fn comment_input(props: &Props) -> Html {
         })
     };
 
+    {
+        let create_info = create_info.clone();
+        use_effect_with_deps(
+            move |(callback, create_comment)| {
+                if let Some(comment_info) = &create_comment.data {
+                    create_info.set(CommentCreateInfo::default());
+                    callback.emit(comment_info.comment.clone());
+                }
+
+                || ()
+            },
+            (props.callback.clone(), create_comment.clone()),
+        );
+    }
+
     html! {
         <>
-            <ListErrors error={(*error).clone()} />
+            <ListErrors error={create_comment.error.clone()} />
             <form class="card comment-form" onsubmit={onsubmit}>
                 <div class="card-block">
                     <textarea class="form-control"

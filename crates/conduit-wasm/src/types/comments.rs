@@ -13,7 +13,7 @@ pub struct CommentInfo {
     pub author: ProfileInfo,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct CommentInfoWrapper {
     pub comment: CommentInfo,

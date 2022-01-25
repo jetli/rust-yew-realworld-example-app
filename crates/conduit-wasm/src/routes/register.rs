@@ -1,7 +1,7 @@
-use wasm_bindgen_futures::spawn_local;
 use web_sys::HtmlInputElement;
 
 use yew::prelude::*;
+use yew_hooks::use_async;
 use yew_router::prelude::*;
 
 use crate::components::list_errors::ListErrors;
@@ -14,29 +14,35 @@ use crate::types::{RegisterInfo, RegisterInfoWrapper};
 #[function_component(Register)]
 pub fn register() -> Html {
     let user_ctx = use_user_context();
-    let error = use_state(|| None);
     let register_info = use_state(RegisterInfo::default);
-
-    let onsubmit = {
-        let error = error.clone();
+    let user_register = {
         let register_info = register_info.clone();
-        Callback::from(move |e: FocusEvent| {
-            e.prevent_default(); /* Prevent event propagation */
+        use_async(async move {
             let request = RegisterInfoWrapper {
                 user: (*register_info).clone(),
             };
-            let user_ctx = user_ctx.clone();
-            let error = error.clone();
-            spawn_local(async move {
-                let user_info = register(request).await;
-                match user_info {
-                    Ok(user_info) => {
-                        user_ctx.login(user_info.user);
-                        error.set(None);
-                    }
-                    Err(e) => error.set(Some(e)),
+            register(request).await
+        })
+    };
+
+    {
+        use_effect_with_deps(
+            move |user_register| {
+                if let Some(user_info) = &user_register.data {
+                    user_ctx.login(user_info.user.clone());
                 }
-            });
+                || ()
+            },
+            user_register.clone(),
+        );
+    }
+
+    let onsubmit = {
+        let user_register = user_register.clone();
+        Callback::from(move |e: FocusEvent| {
+            e.prevent_default(); /* Prevent event propagation */
+            let user_register = user_register.clone();
+            user_register.run();
         })
     };
     let oninput_username = {
@@ -78,7 +84,7 @@ pub fn register() -> Html {
                                 { "Have an account?" }
                             </Link<AppRoute>>
                         </p>
-                        <ListErrors error={(*error).clone()} />
+                        <ListErrors error={user_register.error.clone()} />
                         <form {onsubmit}>
                             <fieldset>
                                 <fieldset class="form-group">
