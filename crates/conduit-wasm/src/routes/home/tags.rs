@@ -1,6 +1,5 @@
-use wasm_bindgen_futures::spawn_local;
-
 use yew::prelude::*;
+use yew_hooks::{use_async, use_mount};
 
 use crate::services::tags::*;
 
@@ -12,25 +11,16 @@ pub struct Props {
 /// A tag list component with a callback to notify that some tag is clicked.
 #[function_component(Tags)]
 pub fn tags(props: &Props) -> Html {
-    let tag_list = use_state(|| None);
+    let tag_list = use_async(async move { get_all().await });
 
     {
         let tag_list = tag_list.clone();
-        use_effect_with_deps(
-            move |_| {
-                spawn_local(async move {
-                    if let Ok(tags) = get_all().await {
-                        tag_list.set(Some(tags));
-                    }
-                });
-
-                || ()
-            },
-            (),
-        );
+        use_mount(move || {
+            tag_list.run();
+        });
     }
 
-    if let Some(tag_list) = &*tag_list {
+    if let Some(tag_list) = &tag_list.data {
         html! {
             <div class="tag-list">
                 {for tag_list.tags.iter().map(|tag| {

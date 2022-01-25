@@ -5,11 +5,11 @@ mod comment_input;
 mod comment_list;
 mod delete_button;
 
-use wasm_bindgen_futures::spawn_local;
 use web_sys::Node;
 
 use yew::prelude::*;
 use yew::virtual_dom::VNode;
+use yew_hooks::use_async;
 
 use crate::hooks::use_user_context;
 use crate::services::articles::*;
@@ -24,27 +24,25 @@ pub struct Props {
 /// Article detail page
 #[function_component(Article)]
 pub fn article(props: &Props) -> Html {
-    let article = use_state(|| None);
+    let article = {
+        let slug = props.slug.clone();
+        use_async(async move { get(slug).await })
+    };
     let user_ctx = use_user_context();
 
     {
         let article = article.clone();
         use_effect_with_deps(
-            move |slug| {
-                let slug = slug.clone();
-                spawn_local(async move {
-                    if let Ok(article_info) = get(slug.clone()).await {
-                        article.set(Some(article_info.article));
-                    }
-                });
-
+            move |_| {
+                article.run();
                 || ()
             },
             props.slug.clone(),
         );
     }
 
-    if let Some(article) = &*article {
+    if let Some(article) = &article.data {
+        let article = &article.article;
         let can_modify =
             user_ctx.is_authenticated() && user_ctx.username == article.author.username;
         let created_at = article.created_at.format("%B %e, %Y").to_string();
