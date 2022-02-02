@@ -7,7 +7,7 @@
 
 ## [Demo]&nbsp;&nbsp;&nbsp;&nbsp;[RealWorld]
 
-This codebase was created to demonstrate a fully fledged [WebAssembly] web application built with [Yew] including CRUD operations, authentication, routing, pagination, and more.
+This codebase was created to demonstrate a fully fledged [WebAssembly] web application built with [Yew] including CRUD operations, authentication, routing, pagination, and more. It utilizes Yew's latest `functional components` and `hooks`.
 
 We've gone to great lengths to adhere to the [Yew] community styleguides & best practices.
 
