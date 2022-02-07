@@ -11,10 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Installing needed Ubuntu dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install libwebkit2gtk-4.0-37 libwebkit2gtk-4.0-dev
     - uses: actions/checkout@v1
     - uses: jetli/wasm-pack-action@v0.3.0
       with:
@@ -25,17 +21,6 @@ jobs:
         cp .env.example .env
         npm run install
         npm run build
-        npm run build:webview
-        cargo build --verbose -p conduit-webview --release
-
-    - name: Deploy to gh-pages
-      uses: JamesIves/github-pages-deploy-action@releases/v3
-      with:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        BRANCH: gh-pages
-        FOLDER: crates/conduit-wasm/dist
-        CLEAN: true
-        CLEAN_EXCLUDE: "[\".gitignore\", \"README.md\"]"
     - name: Package
       shell: bash
       run: |
@@ -43,10 +28,6 @@ jobs:
         zip -r target/conduit-wasm.zip crates/conduit-wasm/dist
         shasum -a 256 target/conduit-wasm.tar.gz > target/conduit-wasm.tar.gz.sha256
         shasum -a 256 target/conduit-wasm.zip > target/conduit-wasm.zip.sha256
-        tar czvf target/conduit-webview-linux.tar.gz target/release/conduit-webview
-        zip -r target/conduit-webview-linux.zip target/release/conduit-webview
-        shasum -a 256 target/conduit-webview-linux.tar.gz > target/conduit-webview-linux.tar.gz.sha256
-        shasum -a 256 target/conduit-webview-linux.zip > target/conduit-webview-linux.zip.sha256
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
@@ -55,9 +36,5 @@ jobs:
           target/conduit-wasm.tar.gz.sha256
           target/conduit-wasm.zip
           target/conduit-wasm.zip.sha256
-          target/conduit-webview-linux.tar.gz
-          target/conduit-webview-linux.tar.gz.sha256
-          target/conduit-webview-linux.zip
-          target/conduit-webview-linux.zip.sha256
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
