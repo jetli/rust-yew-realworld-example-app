@@ -7,7 +7,7 @@
 
 ## [Demo]&nbsp;&nbsp;&nbsp;&nbsp;[RealWorld]
 
-This codebase was created to demonstrate a fully fledged [WebAssembly] web application built with [Yew] including CRUD operations, authentication, routing, pagination, and more. It utilizes Yew's latest `functional components` and `hooks`.
+This codebase was created to demonstrate a fully fledged [WebAssembly] web application built with [Yew] including CRUD operations, authentication, routing, pagination, and more. It utilizes Yew's latest `functional components` and `hooks`. It also supports desktop application powered by [Tauri].
 
 We've gone to great lengths to adhere to the [Yew] community styleguides & best practices.
 
@@ -84,26 +84,38 @@ You can visit `http://localhost:8000` in your browser now.
 
   You should find static files at `crates/conduit-wasm/dist` folder now, they are hosted in [gh-pages] branch as a demo.
 
-* Build and develop for desktop
-
-  If you're planning on targeting Linux you must ensure that Webkit2gtk is already installed and available for discovery via the pkg-config command.
-
-  ```bash
-  sudo apt-get update
-  sudo apt-get install libwebkit2gtk-4.0-37 libwebkit2gtk-4.0-dev
-  ```
-
-  ```bash
-  npm run build:webview
-  cargo run -p conduit-webview
-  ```
-
 * Test
 
   Install [chromedriver], run tests in headless browsers.
 
   ```bash
   npm test
+  ```
+
+### With [Tauri] for desktop (optional)
+
+* Install [Tauri]
+
+  ```bash
+  cargo install tauri-cli --version ^1.0.0-beta
+  ```
+
+  or
+
+  ```bash
+  cargo install tauri-cli --git https://github.com/tauri-apps/tauri --branch next
+  ```
+
+* Build and develop for desktop
+
+  ```bash
+  cargo tauri dev
+  ```
+
+* Build and release for desktop
+
+  ```bash
+  cargo tauri build
   ```
 
 ## Create Yew App
@@ -149,3 +161,4 @@ See [LICENSE] for details
 [yew-hooks]: https://github.com/jetli/yew-hooks
 [streamich/react-use]: https://github.com/streamich/react-use
 [alibaba/hooks]: https://github.com/alibaba/hooks
+[Tauri]: https://github.com/tauri-apps/tauri
