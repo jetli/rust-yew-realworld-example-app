@@ -13,7 +13,7 @@
     "build": "cross-env WASM_PACK_PROFILE=release parcel build static/index.html --public-url ./",
     "build:webview": "cross-env WASM_PACK_PROFILE=release parcel build static/index.html --public-url ./ --out-dir ../conduit-webview/static",
     "start": "cross-env WASM_PACK_PROFILE=dev parcel static/index.html -p 8000 --open",
-    "test": "wasm-pack test --headless --chrome"
+    "test": "wasm-pack test --chrome --firefox --headless"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",

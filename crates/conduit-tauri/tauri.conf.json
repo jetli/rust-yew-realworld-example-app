@@ -7,7 +7,8 @@
     "distDir": "../conduit-wasm/dist",
     "devPath": "http://localhost:8000",
     "beforeDevCommand": "npm start",
-    "beforeBuildCommand": "npm run build"
+    "beforeBuildCommand": "npm run build",
+    "withGlobalTauri": true
   },
   "tauri": {
     "bundle": {

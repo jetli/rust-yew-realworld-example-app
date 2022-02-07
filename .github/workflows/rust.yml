@@ -15,10 +15,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Installing needed Ubuntu dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install libwebkit2gtk-4.0-37 libwebkit2gtk-4.0-dev
     - uses: actions/checkout@v1
     - uses: jetli/wasm-pack-action@v0.3.0
       with:
@@ -29,15 +25,16 @@ jobs:
         cp .env.example .env
         npm run install
         npm run build
-        npm run build:webview
-        cargo build --verbose -p conduit-webview
     - name: cargo fmt & clippy
       run: |
         cargo fmt --all -- --check
         cargo clippy -- --deny=warnings
-    - name: Setup chromedriver
-      uses: nanasess/setup-chromedriver@v1.0.1
     - name: Run tests
       run: |
         npm run test
-        cargo test --verbose -p conduit-webview
+    - name: Deploy demo
+      uses: JamesIves/github-pages-deploy-action@v4.2.2
+      with:
+        branch: gh-pages
+        folder: crates/conduit-wasm/dist
+        clean: true
