@@ -1,3 +1,6 @@
+// Fix for now: https://github.com/rustwasm/wasm-bindgen/issues/2774
+#![allow(clippy::unused_unit)]
+
 pub mod app;
 pub mod components;
 pub mod error;
