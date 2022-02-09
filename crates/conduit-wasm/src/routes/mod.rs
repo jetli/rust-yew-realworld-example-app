@@ -8,7 +8,7 @@ pub mod profile;
 pub mod register;
 pub mod settings;
 
-use yew::{html, Html};
+use yew::prelude::*;
 use yew_router::prelude::*;
 
 use article::Article;
@@ -22,24 +22,27 @@ use settings::Settings;
 /// App routes
 #[derive(Routable, Debug, Clone, PartialEq)]
 pub enum AppRoute {
-    #[at("/login")]
+    #[at("/rust-yew-realworld-example-app/login")]
     Login,
-    #[at("/register")]
+    #[at("/rust-yew-realworld-example-app/register")]
     Register,
-    #[at("/editor/:slug")]
+    #[at("/rust-yew-realworld-example-app/editor/:slug")]
     Editor { slug: String },
-    #[at("/editor")]
+    #[at("/rust-yew-realworld-example-app/editor")]
     EditorCreate,
-    #[at("/article/:slug")]
+    #[at("/rust-yew-realworld-example-app/article/:slug")]
     Article { slug: String },
-    #[at("/settings")]
+    #[at("/rust-yew-realworld-example-app/settings")]
     Settings,
-    #[at("/:username/favorites")]
+    #[at("/rust-yew-realworld-example-app/:username/favorites")]
     ProfileFavorites { username: String },
-    #[at("/:username")]
+    #[at("/rust-yew-realworld-example-app/:username")]
     Profile { username: String },
-    #[at("/")]
+    #[at("/rust-yew-realworld-example-app/")]
     Home,
+    #[not_found]
+    #[at("/rust-yew-realworld-example-app/404")]
+    NotFound,
 }
 
 pub fn switch(route: &AppRoute) -> Html {
@@ -57,5 +60,6 @@ pub fn switch(route: &AppRoute) -> Html {
         AppRoute::Profile { username } => html! {
             <Profile username={username.clone()} tab={ProfileTab::ByAuthor} />
         },
+        AppRoute::NotFound => html! { "Page not found" },
     }
 }
