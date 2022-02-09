@@ -22,26 +22,26 @@ use settings::Settings;
 /// App routes
 #[derive(Routable, Debug, Clone, PartialEq)]
 pub enum AppRoute {
-    #[at("/rust-yew-realworld-example-app/login")]
+    #[at("/login")]
     Login,
-    #[at("/rust-yew-realworld-example-app/register")]
+    #[at("/register")]
     Register,
-    #[at("/rust-yew-realworld-example-app/editor/:slug")]
+    #[at("/editor/:slug")]
     Editor { slug: String },
-    #[at("/rust-yew-realworld-example-app/editor")]
+    #[at("/editor")]
     EditorCreate,
-    #[at("/rust-yew-realworld-example-app/article/:slug")]
+    #[at("/article/:slug")]
     Article { slug: String },
-    #[at("/rust-yew-realworld-example-app/settings")]
+    #[at("/settings")]
     Settings,
-    #[at("/rust-yew-realworld-example-app/:username/favorites")]
+    #[at("/:username/favorites")]
     ProfileFavorites { username: String },
-    #[at("/rust-yew-realworld-example-app/:username")]
+    #[at("/:username")]
     Profile { username: String },
-    #[at("/rust-yew-realworld-example-app/")]
+    #[at("/")]
     Home,
     #[not_found]
-    #[at("/rust-yew-realworld-example-app/404")]
+    #[at("/404")]
     NotFound,
 }
 
