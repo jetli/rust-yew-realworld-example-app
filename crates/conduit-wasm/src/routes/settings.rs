@@ -1,7 +1,7 @@
 use web_sys::HtmlInputElement;
 
 use yew::prelude::*;
-use yew_hooks::{use_async, use_mount};
+use yew_hooks::{use_async, use_async_with_options, UseAsyncOptions};
 
 use crate::components::list_errors::ListErrors;
 use crate::hooks::use_user_context;
@@ -14,7 +14,10 @@ pub fn settings() -> Html {
     let user_ctx = use_user_context();
     let update_info = use_state(UserUpdateInfo::default);
     let password = use_state(String::default);
-    let user_info = use_async(async move { current().await });
+    let user_info = use_async_with_options(
+        async move { current().await },
+        UseAsyncOptions::enable_auto(),
+    );
     let user_update = {
         let update_info = update_info.clone();
         let password = password.clone();
@@ -28,13 +31,6 @@ pub fn settings() -> Html {
             save(request).await
         })
     };
-
-    {
-        let user_info = user_info.clone();
-        use_mount(move || {
-            user_info.run();
-        });
-    }
 
     {
         let user_info = user_info.clone();
@@ -75,7 +71,6 @@ pub fn settings() -> Html {
         let user_update = user_update.clone();
         Callback::from(move |e: FocusEvent| {
             e.prevent_default(); /* Prevent event propagation */
-            let user_update = user_update.clone();
             user_update.run();
         })
     };

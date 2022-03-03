@@ -49,10 +49,8 @@ pub fn article_preview(props: &Props) -> Html {
         NOT_FAVORITED_CLASS
     };
     let onclick = {
-        let article_favorite = article_favorite.clone();
         Callback::from(move |ev: MouseEvent| {
             ev.prevent_default();
-            let article_favorite = article_favorite.clone();
             article_favorite.run();
         })
     };

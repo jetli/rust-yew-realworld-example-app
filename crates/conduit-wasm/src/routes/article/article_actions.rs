@@ -22,7 +22,6 @@ pub fn article_actions(props: &Props) -> Html {
     let onclick = {
         let article_delete = article_delete.clone();
         Callback::from(move |_| {
-            let article_delete = article_delete.clone();
             article_delete.run();
         })
     };

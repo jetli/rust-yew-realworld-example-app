@@ -31,7 +31,6 @@ pub fn comment_input(props: &Props) -> Html {
         let create_comment = create_comment.clone();
         Callback::from(move |e: FocusEvent| {
             e.prevent_default(); /* Prevent event propagation */
-            let create_comment = create_comment.clone();
             create_comment.run();
         })
     };

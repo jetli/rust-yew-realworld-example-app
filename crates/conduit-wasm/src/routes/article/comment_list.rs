@@ -1,5 +1,5 @@
 use yew::prelude::*;
-use yew_hooks::use_async;
+use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use yew_router::prelude::*;
 
 use super::comment::Comment;
@@ -19,19 +19,11 @@ pub fn comment_list(props: &Props) -> Html {
     let user_ctx = use_user_context();
     let comment_list = {
         let slug = props.slug.clone();
-        use_async(async move { for_article(slug).await })
+        use_async_with_options(
+            async move { for_article(slug).await },
+            UseAsyncOptions::enable_auto(),
+        )
     };
-
-    {
-        let comment_list = comment_list.clone();
-        use_effect_with_deps(
-            move |_| {
-                comment_list.run();
-                || ()
-            },
-            props.slug.clone(),
-        );
-    }
 
     let callback_added = {
         let comment_list = comment_list.clone();

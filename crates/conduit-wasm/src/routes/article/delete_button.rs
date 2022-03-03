@@ -21,7 +21,6 @@ pub fn delete_button(props: &Props) -> Html {
     let onclick = {
         let delete_comment = delete_comment.clone();
         Callback::from(move |_| {
-            let delete_comment = delete_comment.clone();
             delete_comment.run();
         })
     };

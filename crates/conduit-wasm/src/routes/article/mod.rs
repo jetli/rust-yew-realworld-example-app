@@ -9,7 +9,7 @@ use web_sys::Node;
 
 use yew::prelude::*;
 use yew::virtual_dom::VNode;
-use yew_hooks::use_async;
+use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
 use crate::hooks::use_user_context;
 use crate::services::articles::*;
@@ -26,20 +26,12 @@ pub struct Props {
 pub fn article(props: &Props) -> Html {
     let article = {
         let slug = props.slug.clone();
-        use_async(async move { get(slug).await })
+        use_async_with_options(
+            async move { get(slug).await },
+            UseAsyncOptions::enable_auto(),
+        )
     };
     let user_ctx = use_user_context();
-
-    {
-        let article = article.clone();
-        use_effect_with_deps(
-            move |_| {
-                article.run();
-                || ()
-            },
-            props.slug.clone(),
-        );
-    }
 
     if let Some(article) = &article.data {
         let article = &article.article;

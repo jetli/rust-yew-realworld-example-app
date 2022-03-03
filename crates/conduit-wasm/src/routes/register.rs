@@ -41,7 +41,6 @@ pub fn register() -> Html {
         let user_register = user_register.clone();
         Callback::from(move |e: FocusEvent| {
             e.prevent_default(); /* Prevent event propagation */
-            let user_register = user_register.clone();
             user_register.run();
         })
     };

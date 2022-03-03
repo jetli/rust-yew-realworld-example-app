@@ -105,7 +105,6 @@ pub fn editor(props: &Props) -> Html {
         let article_update = article_update.clone();
         Callback::from(move |e: FocusEvent| {
             e.prevent_default(); /* Prevent event propagation */
-            let article_update = article_update.clone();
             article_update.run();
         })
     };

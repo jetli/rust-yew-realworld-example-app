@@ -66,9 +66,7 @@ pub fn profile(props: &Props) -> Html {
     }
 
     let onclick = {
-        let user_follow = user_follow.clone();
         Callback::from(move |_| {
-            let user_follow = user_follow.clone();
             user_follow.run();
         })
     };

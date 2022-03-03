@@ -39,7 +39,6 @@ pub fn login() -> Html {
         let user_login = user_login.clone();
         Callback::from(move |e: FocusEvent| {
             e.prevent_default(); /* Prevent event propagation */
-            let user_login = user_login.clone();
             user_login.run();
         })
     };

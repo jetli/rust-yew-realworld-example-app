@@ -1,5 +1,5 @@
 use yew::prelude::*;
-use yew_hooks::{use_async, use_mount};
+use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
 use crate::services::tags::*;
 
@@ -11,14 +11,10 @@ pub struct Props {
 /// A tag list component with a callback to notify that some tag is clicked.
 #[function_component(Tags)]
 pub fn tags(props: &Props) -> Html {
-    let tag_list = use_async(async move { get_all().await });
-
-    {
-        let tag_list = tag_list.clone();
-        use_mount(move || {
-            tag_list.run();
-        });
-    }
+    let tag_list = use_async_with_options(
+        async move { get_all().await },
+        UseAsyncOptions::enable_auto(),
+    );
 
     if let Some(tag_list) = &tag_list.data {
         html! {
