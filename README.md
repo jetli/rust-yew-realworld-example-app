@@ -97,7 +97,7 @@ You can visit `http://localhost:8000` in your browser now.
 * Install [Tauri]
 
   ```bash
-  cargo install tauri-cli --version ^1.0.0-beta
+  cargo install tauri-cli --version ^1.0.0-rc
   ```
 
   or
