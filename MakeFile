@@ -1,0 +1,22 @@
+compose:
+	#get lunch with docker compose
+	docker-compose up
+
+start:
+	#lunch the app maniuall
+	cargo install wasm-pack
+	npm run install
+	npm start
+	#now you can visit http://localhost:8000 in your browser now.
+
+build:
+	npm run build
+
+tarui:
+	cargo install tauri-cli --version ^1.0.0-rc
+	# or
+	#cargo install tauri-cli --git https://github.com/tauri-apps/tauri --branch next
+	cargo tauri dev
+
+tarui_build:
+	cargo tauri build
