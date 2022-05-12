@@ -1,7 +1,7 @@
 //! User context provider.
 
 use yew::prelude::*;
-use yew_hooks::{use_async, use_mount};
+use yew_hooks::prelude::*;
 
 use crate::error::Error;
 use crate::services::{auth::*, get_token, set_token};

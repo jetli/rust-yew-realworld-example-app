@@ -9,7 +9,7 @@ use web_sys::Node;
 
 use yew::prelude::*;
 use yew::virtual_dom::VNode;
-use yew_hooks::{use_async_with_options, UseAsyncOptions};
+use yew_hooks::prelude::*;
 
 use crate::hooks::use_user_context;
 use crate::services::articles::*;

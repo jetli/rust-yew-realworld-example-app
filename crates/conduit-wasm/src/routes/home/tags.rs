@@ -1,5 +1,5 @@
 use yew::prelude::*;
-use yew_hooks::{use_async_with_options, UseAsyncOptions};
+use yew_hooks::prelude::*;
 
 use crate::services::tags::*;
 

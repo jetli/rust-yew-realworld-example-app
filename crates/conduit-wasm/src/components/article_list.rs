@@ -1,5 +1,5 @@
 use yew::prelude::*;
-use yew_hooks::use_async;
+use yew_hooks::prelude::*;
 
 use super::article_preview::ArticlePreview;
 use super::list_pagination::ListPagination;
