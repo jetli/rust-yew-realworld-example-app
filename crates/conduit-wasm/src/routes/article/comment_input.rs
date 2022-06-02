@@ -14,7 +14,7 @@ pub struct Props {
     pub callback: Callback<CommentInfo>,
 }
 
-/// Creat a comment for an article.
+/// Create a comment for an article.
 #[function_component(CommentInput)]
 pub fn comment_input(props: &Props) -> Html {
     let create_info = use_state(CommentCreateInfo::default);
