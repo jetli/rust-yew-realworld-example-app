@@ -97,13 +97,7 @@ You can visit `http://localhost:8000` in your browser now.
 * Install [Tauri]
 
   ```bash
-  cargo install tauri-cli --version ^1.0.0-rc
-  ```
-
-  or
-
-  ```bash
-  cargo install tauri-cli --git https://github.com/tauri-apps/tauri --branch next
+  cargo install tauri-cli
   ```
 
 * Build and develop for desktop
