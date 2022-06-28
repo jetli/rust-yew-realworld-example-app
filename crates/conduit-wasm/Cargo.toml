@@ -27,7 +27,7 @@ thiserror = "1"
 yew = "0.19.3"
 yew-router = "0.16.0"
 yew-hooks = "0.1.56"
-wasm-bindgen = "0.2"
+wasm-bindgen = "=0.2.80"
 wasm-logger = "0.2.0"
 wee_alloc = "0.4.5"
 
