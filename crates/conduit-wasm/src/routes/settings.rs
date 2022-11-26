@@ -69,7 +69,7 @@ pub fn settings() -> Html {
 
     let onsubmit = {
         let user_update = user_update.clone();
-        Callback::from(move |e: FocusEvent| {
+        Callback::from(move |e: SubmitEvent| {
             e.prevent_default(); /* Prevent event propagation */
             user_update.run();
         })

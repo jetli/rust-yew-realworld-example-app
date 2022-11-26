@@ -5,7 +5,7 @@ use super::article_actions::ArticleActions;
 use crate::routes::AppRoute;
 use crate::types::ProfileInfo;
 
-#[derive(Properties, Clone, PartialEq)]
+#[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
     pub slug: String,
     pub can_modify: bool,

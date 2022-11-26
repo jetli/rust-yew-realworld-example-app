@@ -11,7 +11,7 @@ use crate::types::UserInfo;
 /// State handle for the [`use_user_context`] hook.
 pub struct UseUserContextHandle {
     inner: UseStateHandle<UserInfo>,
-    history: AnyHistory,
+    navigator: Navigator,
 }
 
 impl UseUserContextHandle {
@@ -20,7 +20,7 @@ impl UseUserContextHandle {
         set_token(Some(value.token.clone()));
         self.inner.set(value);
         // Redirect to home page
-        self.history.push(AppRoute::Home);
+        self.navigator.push(&AppRoute::Home);
     }
 
     pub fn logout(&self) {
@@ -28,7 +28,7 @@ impl UseUserContextHandle {
         set_token(None);
         self.inner.set(UserInfo::default());
         // Redirect to home page
-        self.history.push(AppRoute::Home);
+        self.navigator.push(&AppRoute::Home);
     }
 }
 
@@ -36,7 +36,7 @@ impl Deref for UseUserContextHandle {
     type Target = UserInfo;
 
     fn deref(&self) -> &Self::Target {
-        &(*self.inner)
+        &self.inner
     }
 }
 
@@ -44,7 +44,7 @@ impl Clone for UseUserContextHandle {
     fn clone(&self) -> Self {
         Self {
             inner: self.inner.clone(),
-            history: self.history.clone(),
+            navigator: self.navigator.clone(),
         }
     }
 }
@@ -64,9 +64,10 @@ impl fmt::Debug for UseUserContextHandle {
 }
 
 /// This hook is used to manage user context.
+#[hook]
 pub fn use_user_context() -> UseUserContextHandle {
     let inner = use_context::<UseStateHandle<UserInfo>>().unwrap();
-    let history = use_history().unwrap();
+    let navigator = use_navigator().unwrap();
 
-    UseUserContextHandle { inner, history }
+    UseUserContextHandle { inner, navigator }
 }

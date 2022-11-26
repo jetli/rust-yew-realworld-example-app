@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use super::ProfileInfo;
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct ArticleInfo {
     pub slug: String,
@@ -18,7 +18,7 @@ pub struct ArticleInfo {
     pub author: ProfileInfo,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct ArticleInfoWrapper {
     pub article: ArticleInfo,

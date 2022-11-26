@@ -29,7 +29,7 @@ pub fn comment_input(props: &Props) -> Html {
 
     let onsubmit = {
         let create_comment = create_comment.clone();
-        Callback::from(move |e: FocusEvent| {
+        Callback::from(move |e: SubmitEvent| {
             e.prevent_default(); /* Prevent event propagation */
             create_comment.run();
         })

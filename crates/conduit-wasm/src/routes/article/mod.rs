@@ -16,7 +16,7 @@ use crate::services::articles::*;
 use article_meta::ArticleMeta;
 use comment_list::CommentList;
 
-#[derive(Properties, Clone, PartialEq)]
+#[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
     pub slug: String,
 }

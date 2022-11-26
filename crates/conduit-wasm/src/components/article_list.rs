@@ -5,13 +5,13 @@ use super::article_preview::ArticlePreview;
 use super::list_pagination::ListPagination;
 use crate::services::articles::*;
 
-#[derive(Properties, Clone, PartialEq)]
+#[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
     pub filter: ArticleListFilter,
 }
 
 /// Filters for article list
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum ArticleListFilter {
     All,
     ByAuthor(String),
