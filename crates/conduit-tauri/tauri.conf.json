@@ -29,14 +29,12 @@
       "shortDescription": "",
       "longDescription": "",
       "deb": {
-        "depends": [],
-        "useBootstrapper": false
+        "depends": []
       },
       "macOS": {
         "frameworks": [],
         "minimumSystemVersion": "",
-        "useBootstrapper": false,
-        "exceptionDomain": "",
+        "exceptionDomain": "localhost",
         "signingIdentity": null,
         "providerShortName": null,
         "entitlements": null
@@ -63,7 +61,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'"
+      "csp": null
     }
   }
 }

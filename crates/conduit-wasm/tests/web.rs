@@ -6,12 +6,11 @@ use wasm_bindgen_test::*;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
-use conduit_wasm::app::App as YewApp;
-use yew::start_app;
+use conduit_wasm::app::App;
 
 #[wasm_bindgen_test]
 async fn home_page_has_articles() {
-    start_app::<YewApp>();
+    yew::Renderer::<App>::new().render();
 
     let articles = gloo_utils::document().get_elements_by_class_name("article-preview");
 

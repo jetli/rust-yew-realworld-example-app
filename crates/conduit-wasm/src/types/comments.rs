@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use super::ProfileInfo;
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct CommentInfo {
     pub id: u32,
@@ -13,7 +13,7 @@ pub struct CommentInfo {
     pub author: ProfileInfo,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct CommentInfoWrapper {
     pub comment: CommentInfo,

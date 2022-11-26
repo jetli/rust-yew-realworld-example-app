@@ -3,12 +3,12 @@ use yew::prelude::*;
 use crate::components::article_list::{ArticleList, ArticleListFilter};
 use crate::hooks::use_user_context;
 
-#[derive(Properties, Clone, PartialEq)]
+#[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
     pub tag: Option<String>,
 }
 
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Eq, Clone)]
 pub enum Tab {
     All,
     Feed,

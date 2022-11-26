@@ -5,7 +5,7 @@ use yew_router::prelude::*;
 use crate::routes::AppRoute;
 use crate::services::articles::*;
 
-#[derive(Properties, Clone, PartialEq)]
+#[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
     pub slug: String,
     pub can_modify: bool,
@@ -14,7 +14,7 @@ pub struct Props {
 /// Article actions component to edit or delete an article.
 #[function_component(ArticleActions)]
 pub fn article_actions(props: &Props) -> Html {
-    let history = use_history().unwrap();
+    let navigator = use_navigator().unwrap();
     let article_delete = {
         let slug = props.slug.clone();
         use_async(async move { del(slug).await })
@@ -29,7 +29,7 @@ pub fn article_actions(props: &Props) -> Html {
     use_effect_with_deps(
         move |article_delete| {
             if article_delete.data.is_some() {
-                history.push(AppRoute::Home);
+                navigator.push(&AppRoute::Home);
             }
             || ()
         },

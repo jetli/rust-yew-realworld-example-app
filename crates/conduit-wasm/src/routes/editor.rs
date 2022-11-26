@@ -9,7 +9,7 @@ use crate::routes::AppRoute;
 use crate::services::articles::*;
 use crate::types::{ArticleCreateUpdateInfo, ArticleCreateUpdateInfoWrapper};
 
-#[derive(Properties, Clone, PartialEq)]
+#[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
     pub slug: Option<String>,
 }
@@ -17,14 +17,14 @@ pub struct Props {
 /// Create or update an article
 #[function_component(Editor)]
 pub fn editor(props: &Props) -> Html {
-    let history = use_history().unwrap();
+    let navigator = use_navigator().unwrap();
     let error = use_state(|| None);
     let update_info = use_state(ArticleCreateUpdateInfo::default);
     let tag_input = use_state(String::default);
-    let article_get = props
-        .slug
-        .clone()
-        .map(|slug| use_async(async move { get(slug).await }));
+    let article_get = {
+        let slug = props.slug.clone();
+        use_async(async move { get(slug.unwrap_or_default()).await })
+    };
     let article_update = {
         let slug = props.slug.clone();
         let update_info = update_info.clone();
@@ -45,9 +45,7 @@ pub fn editor(props: &Props) -> Html {
         use_effect_with_deps(
             move |slug| {
                 if slug.is_some() {
-                    if let Some(article_get) = article_get {
-                        article_get.run();
-                    }
+                    article_get.run();
                 }
                 || ()
             },
@@ -60,19 +58,17 @@ pub fn editor(props: &Props) -> Html {
         let error = error.clone();
         use_effect_with_deps(
             move |article_get| {
-                if let Some(article_get) = article_get {
-                    if let Some(article_info) = &article_get.data {
-                        update_info.set(ArticleCreateUpdateInfo {
-                            title: article_info.article.title.clone(),
-                            description: article_info.article.description.clone(),
-                            body: article_info.article.body.clone(),
-                            tag_list: Some(article_info.article.tag_list.clone()),
-                        });
-                        error.set(None);
-                    }
-                    if let Some(e) = &article_get.error {
-                        error.set(Some(e.clone()));
-                    }
+                if let Some(article_info) = &article_get.data {
+                    update_info.set(ArticleCreateUpdateInfo {
+                        title: article_info.article.title.clone(),
+                        description: article_info.article.description.clone(),
+                        body: article_info.article.body.clone(),
+                        tag_list: Some(article_info.article.tag_list.clone()),
+                    });
+                    error.set(None);
+                }
+                if let Some(e) = &article_get.error {
+                    error.set(Some(e.clone()));
                 }
 
                 || ()
@@ -88,7 +84,7 @@ pub fn editor(props: &Props) -> Html {
                 if let Some(article_info) = &article_update.data {
                     error.set(None);
                     // Route to article detail page.
-                    history.push(AppRoute::Article {
+                    navigator.push(&AppRoute::Article {
                         slug: article_info.article.slug.clone(),
                     });
                 }
@@ -103,7 +99,7 @@ pub fn editor(props: &Props) -> Html {
 
     let onsubmit = {
         let article_update = article_update.clone();
-        Callback::from(move |e: FocusEvent| {
+        Callback::from(move |e: SubmitEvent| {
             e.prevent_default(); /* Prevent event propagation */
             article_update.run();
         })

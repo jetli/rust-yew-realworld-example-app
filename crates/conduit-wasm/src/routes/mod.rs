@@ -20,7 +20,7 @@ use register::Register;
 use settings::Settings;
 
 /// App routes
-#[derive(Routable, Debug, Clone, PartialEq)]
+#[derive(Routable, Debug, Clone, PartialEq, Eq)]
 pub enum AppRoute {
     #[at("/login")]
     Login,
@@ -45,20 +45,20 @@ pub enum AppRoute {
     NotFound,
 }
 
-pub fn switch(route: &AppRoute) -> Html {
+pub fn switch(route: AppRoute) -> Html {
     match route {
         AppRoute::Login => html! {<Login />},
         AppRoute::Register => html! {<Register />},
         AppRoute::Home => html! {<Home />},
-        AppRoute::Editor { slug } => html! {<Editor slug={Some(slug.clone())}/>},
+        AppRoute::Editor { slug } => html! {<Editor slug={Some(slug)}/>},
         AppRoute::EditorCreate => html! {<Editor />},
-        AppRoute::Article { slug } => html! {<Article slug={slug.clone()} />},
+        AppRoute::Article { slug } => html! {<Article slug={slug} />},
         AppRoute::Settings => html! {<Settings />},
         AppRoute::ProfileFavorites { username } => html! {
-            <Profile username={username.clone()} tab={ProfileTab::FavoritedBy} />
+            <Profile username={username} tab={ProfileTab::FavoritedBy} />
         },
         AppRoute::Profile { username } => html! {
-            <Profile username={username.clone()} tab={ProfileTab::ByAuthor} />
+            <Profile username={username} tab={ProfileTab::ByAuthor} />
         },
         AppRoute::NotFound => html! { "Page not found" },
     }

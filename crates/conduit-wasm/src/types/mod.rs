@@ -24,7 +24,7 @@ pub use profiles::{ProfileInfo, ProfileInfoWrapper};
 pub use tags::TagListInfo;
 
 /// Conduit api error info for Unprocessable Entity error
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct ErrorInfo {
     pub errors: HashMap<String, Vec<String>>,

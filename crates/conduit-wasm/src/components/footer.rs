@@ -1,4 +1,4 @@
-use yew::{function_component, html};
+use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::routes::AppRoute;

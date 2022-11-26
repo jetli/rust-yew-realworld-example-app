@@ -13,11 +13,11 @@ use crate::routes::{switch, AppRoute};
 pub fn app() -> Html {
     html! {
         <UserContextProvider>
-            <BrowserRouter>
+            <HashRouter>
                 <Header />
-                <Switch<AppRoute> render={Switch::render(switch)} />
+                <Switch<AppRoute> render={switch} />
                 <Footer />
-            </BrowserRouter>
+            </HashRouter>
         </UserContextProvider>
     }
 }

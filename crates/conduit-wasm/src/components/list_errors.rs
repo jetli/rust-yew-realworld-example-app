@@ -2,7 +2,7 @@ use yew::prelude::*;
 
 use crate::error::Error;
 
-#[derive(Properties, Clone, PartialEq)]
+#[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
     pub error: Option<Error>,
 }

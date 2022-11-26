@@ -8,7 +8,7 @@ use crate::hooks::use_user_context;
 use crate::routes::AppRoute;
 use crate::services::comments::*;
 
-#[derive(Properties, Clone, PartialEq)]
+#[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
     pub slug: String,
 }
@@ -28,7 +28,7 @@ pub fn comment_list(props: &Props) -> Html {
     let callback_added = {
         let comment_list = comment_list.clone();
         Callback::from(move |comment_info| {
-            if let Some(mut list) = (*comment_list).data.clone() {
+            if let Some(mut list) = comment_list.data.clone() {
                 list.comments.insert(0, comment_info);
                 comment_list.update(list);
             }
@@ -37,7 +37,7 @@ pub fn comment_list(props: &Props) -> Html {
     let callback_deleted = {
         let comment_list = comment_list.clone();
         Callback::from(move |comment_id| {
-            if let Some(mut list) = (*comment_list).data.clone() {
+            if let Some(mut list) = comment_list.data.clone() {
                 list.comments.retain(|c| c.id != comment_id);
                 comment_list.update(list);
             }

@@ -7,13 +7,13 @@ use crate::hooks::use_user_context;
 use crate::routes::AppRoute;
 use crate::services::profiles::*;
 
-#[derive(Properties, Clone, PartialEq)]
+#[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
     pub username: String,
     pub tab: ProfileTab,
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Eq)]
 pub enum ProfileTab {
     ByAuthor,
     FavoritedBy,
@@ -39,7 +39,7 @@ pub fn profile(props: &Props) -> Html {
         })
     };
     let user_ctx = use_user_context();
-    let is_current_user = (*user_ctx).is_authenticated() && (*user_ctx).username == props.username;
+    let is_current_user = user_ctx.is_authenticated() && user_ctx.username == props.username;
 
     {
         let profile_info = profile_info.clone();

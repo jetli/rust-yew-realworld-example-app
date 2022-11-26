@@ -27,7 +27,7 @@ pub struct RegisterInfoWrapper {
     pub user: RegisterInfo,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Default)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct UserInfo {
     pub email: String,
@@ -43,7 +43,7 @@ impl UserInfo {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct UserInfoWrapper {
     pub user: UserInfo,

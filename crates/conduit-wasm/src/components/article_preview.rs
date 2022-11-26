@@ -9,7 +9,7 @@ use crate::types::ArticleInfo;
 const FAVORITED_CLASS: &str = "btn btn-sm btn-primary";
 const NOT_FAVORITED_CLASS: &str = "btn btn-sm btn-outline-primary";
 
-#[derive(Properties, Clone, PartialEq)]
+#[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
     pub article: ArticleInfo,
 }

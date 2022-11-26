@@ -12,7 +12,7 @@ use crate::types::{RegisterInfo, RegisterInfoWrapper};
 
 /// Register page
 #[function_component(Register)]
-pub fn register() -> Html {
+pub fn register_page() -> Html {
     let user_ctx = use_user_context();
     let register_info = use_state(RegisterInfo::default);
     let user_register = {
@@ -39,7 +39,7 @@ pub fn register() -> Html {
 
     let onsubmit = {
         let user_register = user_register.clone();
-        Callback::from(move |e: FocusEvent| {
+        Callback::from(move |e: SubmitEvent| {
             e.prevent_default(); /* Prevent event propagation */
             user_register.run();
         })

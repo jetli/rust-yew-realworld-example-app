@@ -12,7 +12,7 @@ use crate::types::{LoginInfo, LoginInfoWrapper};
 
 /// Login page
 #[function_component(Login)]
-pub fn login() -> Html {
+pub fn login_page() -> Html {
     let user_ctx = use_user_context();
     let login_info = use_state(LoginInfo::default);
     let user_login = {
@@ -37,7 +37,7 @@ pub fn login() -> Html {
 
     let onsubmit = {
         let user_login = user_login.clone();
-        Callback::from(move |e: FocusEvent| {
+        Callback::from(move |e: SubmitEvent| {
             e.prevent_default(); /* Prevent event propagation */
             user_login.run();
         })
