@@ -12,12 +12,12 @@ use crate::routes::{switch, AppRoute};
 #[function_component(App)]
 pub fn app() -> Html {
     html! {
-        <UserContextProvider>
-            <HashRouter>
+        <HashRouter>
+            <UserContextProvider>
                 <Header />
                 <Switch<AppRoute> render={switch} />
                 <Footer />
-            </HashRouter>
-        </UserContextProvider>
+            </UserContextProvider>
+        </HashRouter>
     }
 }
