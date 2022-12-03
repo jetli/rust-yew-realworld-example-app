@@ -64,9 +64,9 @@ pub fn article_list(props: &Props) -> Html {
 
     let callback = {
         let current_page = current_page.clone();
-        Callback::from(move |page| {
+        use_callback(move |page, _| {
             current_page.set(page);
-        })
+        }, ())
     };
 
     if let Some(article_list) = &article_list.data {
