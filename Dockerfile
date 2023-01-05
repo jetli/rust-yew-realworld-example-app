@@ -1,7 +1,7 @@
 FROM rust:latest
 
 # Install nodejs
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get update && apt-get install nodejs
 
 # Install wasm-pack
