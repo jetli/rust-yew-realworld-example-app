@@ -24,7 +24,14 @@ pub async fn del(slug: String) -> Result<DeleteWrapper, Error> {
 
 /// Favorite and article
 pub async fn favorite(slug: String) -> Result<ArticleInfoWrapper, Error> {
-    request_post::<(), ArticleInfoWrapper>(format!("/articles/{}/favorite", slug), ()).await
+    // Workaround: null POST body is rejected by the default API backend
+    use serde::{Serialize, Deserialize};
+    #[derive(Serialize, Deserialize, Debug, Default)]
+    struct Slug {
+        slug: String,
+    }
+
+    request_post::<Slug, ArticleInfoWrapper>(format!("/articles/{}/favorite", slug), Slug { slug }).await
 }
 
 /// Unfavorite an article
