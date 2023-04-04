@@ -2,6 +2,7 @@ use yew::prelude::*;
 use yew_hooks::prelude::*;
 use yew_router::prelude::*;
 
+use crate::hooks::use_user_context;
 use crate::routes::AppRoute;
 use crate::services::articles::*;
 use crate::types::ArticleInfo;
@@ -48,10 +49,19 @@ pub fn article_preview(props: &Props) -> Html {
     } else {
         NOT_FAVORITED_CLASS
     };
+
+    let user_ctx = use_user_context();
     let onclick = {
-        Callback::from(move |ev: MouseEvent| {
-            ev.prevent_default();
-            article_favorite.run();
+        let navigator = use_navigator().unwrap();
+        let article_favorite = article_favorite.clone();
+
+        Callback::from(move |e: MouseEvent| {
+            e.prevent_default();
+            if user_ctx.is_authenticated() {
+                article_favorite.run();
+            } else {
+                navigator.push(&AppRoute::Login);
+            }
         })
     };
 

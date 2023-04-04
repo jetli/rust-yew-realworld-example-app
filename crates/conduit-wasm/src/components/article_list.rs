@@ -72,6 +72,14 @@ pub fn article_list(props: &Props) -> Html {
         )
     };
 
+    let loading = html! {
+        <div class="article-preview">{ "Loading..." }</div>
+    };
+
+    if article_list.loading {
+        return loading;
+    }
+
     if let Some(article_list) = &article_list.data {
         if !article_list.articles.is_empty() {
             html! {
@@ -91,8 +99,6 @@ pub fn article_list(props: &Props) -> Html {
             }
         }
     } else {
-        html! {
-            <div class="article-preview">{ "Loading..." }</div>
-        }
+        loading
     }
 }
