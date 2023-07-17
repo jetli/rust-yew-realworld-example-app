@@ -16,6 +16,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Setup toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+          components: rust-src
     - name: Install webkit2gtk for Tauri
       run: |
         sudo apt-get update
