@@ -48,7 +48,7 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
 docker-compose up
 ```
 
-You can visit `http://localhost:8000` in your browser now.
+You can visit `http://localhost:8080` in your browser now.
 
 ### Manually
 
@@ -59,12 +59,7 @@ You can visit `http://localhost:8000` in your browser now.
   cargo install wasm-pack
   ```
 
-* Install [node]
-* Install npm packages
-
-  ```bash
-  npm run install
-  ```
+* Install [trunk]
 
 * Build and develop
 
@@ -72,14 +67,14 @@ You can visit `http://localhost:8000` in your browser now.
 
   ```bash
   cp .env.example .env
-  npm start
+  trunk serve
   ```
 
-  You can visit `http://localhost:8000` in your browser now.
+  You can visit `http://localhost:8080` in your browser now.
 * Build and release
 
   ```bash
-  npm run build
+  trunk build
   ```
 
   You should find static files at `crates/conduit-wasm/dist` folder now, they are hosted in [gh-pages] branch as a demo.
@@ -89,7 +84,7 @@ You can visit `http://localhost:8000` in your browser now.
   Install [chromedriver], run tests in headless browsers.
 
   ```bash
-  npm test
+  wasm-pack test --headless --chrome
   ```
 
 ### With [Tauri] for desktop (optional)
@@ -142,7 +137,6 @@ See [LICENSE] for details
 [gh-pages]: https://github.com/jetli/rust-yew-realworld-example-app/tree/gh-pages
 [lazy_static]: https://github.com/rust-lang-nursery/lazy-static.rs
 [LICENSE]: ./LICENSE
-[node]: https://nodejs.org
 [parking_lot]: https://github.com/Amanieu/parking_lot
 [pulldown-cmark]: https://github.com/raphlinus/pulldown-cmark
 [RealWorld]: https://github.com/gothinkster/realworld
@@ -156,3 +150,4 @@ See [LICENSE] for details
 [streamich/react-use]: https://github.com/streamich/react-use
 [alibaba/hooks]: https://github.com/alibaba/hooks
 [Tauri]: https://github.com/tauri-apps/tauri
+[trunk]:https://trunkrs.dev

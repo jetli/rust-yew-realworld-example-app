@@ -31,7 +31,7 @@ jobs:
     - name: Build
       run: |
         cp .env.example .env
-        trunk build --public-url=/rust-yew-realworld-example-app/
+        cd crates/conduit-wasm && trunk build --public-url=/rust-yew-realworld-example-app/
     - name: cargo fmt & clippy
       run: |
         cargo fmt --all -- --check
