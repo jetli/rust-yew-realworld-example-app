@@ -19,6 +19,10 @@ use profile::{Profile, ProfileTab};
 use register::Register;
 use settings::Settings;
 
+use crate::components::{
+    footer::Footer, header::Header, user_context_provider::UserContextProvider,
+};
+
 /// App routes
 #[derive(Routable, Debug, Clone, PartialEq, Eq)]
 pub enum AppRoute {
@@ -61,5 +65,19 @@ pub fn switch(route: AppRoute) -> Html {
             <Profile username={username} tab={ProfileTab::ByAuthor} />
         },
         AppRoute::NotFound => html! { "Page not found" },
+    }
+}
+
+/// The root app component
+#[function_component(App)]
+pub fn app() -> Html {
+    html! {
+        <HashRouter>
+            <UserContextProvider>
+                <Header />
+                <Switch<AppRoute> render={switch} />
+                <Footer />
+            </UserContextProvider>
+        </HashRouter>
     }
 }

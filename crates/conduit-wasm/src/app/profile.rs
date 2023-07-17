@@ -2,9 +2,9 @@ use yew::prelude::*;
 use yew_hooks::prelude::*;
 use yew_router::prelude::*;
 
+use crate::app::AppRoute;
 use crate::components::article_list::{ArticleList, ArticleListFilter};
 use crate::hooks::use_user_context;
-use crate::routes::AppRoute;
 use crate::services::profiles::*;
 
 #[derive(Properties, Clone, PartialEq, Eq)]

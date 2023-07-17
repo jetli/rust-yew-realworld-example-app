@@ -2,7 +2,7 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use super::article_actions::ArticleActions;
-use crate::routes::AppRoute;
+use crate::app::AppRoute;
 use crate::types::ProfileInfo;
 
 #[derive(Properties, Clone, PartialEq, Eq)]

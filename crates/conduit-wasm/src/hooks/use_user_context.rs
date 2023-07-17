@@ -4,7 +4,7 @@ use std::ops::Deref;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::routes::AppRoute;
+use crate::app::AppRoute;
 use crate::services::set_token;
 use crate::types::UserInfo;
 

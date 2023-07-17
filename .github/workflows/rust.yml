@@ -24,11 +24,14 @@ jobs:
       with:
         # Optional version of wasm-pack to install(eg. '0.9.1', 'latest')
         version: 'latest'
+    - uses: jetli/trunk-action@v0.4.0
+      with:
+        # Optional version of trunk to install(eg. 'v0.16.0', 'latest')
+        version: 'latest'
     - name: Build
       run: |
         cp .env.example .env
-        npm run install
-        npm run build
+        trunk build --public-url=/rust-yew-realworld-example-app/
     - name: cargo fmt & clippy
       run: |
         cargo fmt --all -- --check

@@ -1,11 +1,10 @@
 FROM rust:latest
 
-# Install nodejs
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
-RUN apt-get update && apt-get install nodejs
-
 # Install wasm-pack
 RUN curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+# Install trunk
+wget -qO- https://github.com/thedodd/trunk/releases/download/v0.17.2/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
 WORKDIR /usr/src/conduit-wasm
 
@@ -13,8 +12,6 @@ COPY ./crates/conduit-wasm .
 
 COPY .env.example .env
 
-RUN npm install
+EXPOSE 8080
 
-EXPOSE 8000
-
-CMD [ "npm", "start" ]
+CMD [ "trunk", "serve" ]

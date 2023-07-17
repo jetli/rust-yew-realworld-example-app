@@ -10,9 +10,6 @@ version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[lib]
-crate-type = ["cdylib", "rlib"]
-
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
 dotenv_codegen = "0.15.0"

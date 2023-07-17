@@ -2,7 +2,7 @@ use yew::prelude::*;
 use yew_hooks::prelude::*;
 use yew_router::prelude::*;
 
-use crate::routes::AppRoute;
+use crate::app::AppRoute;
 use crate::services::articles::*;
 use crate::types::ArticleInfo;
 

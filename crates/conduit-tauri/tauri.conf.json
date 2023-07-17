@@ -6,8 +6,8 @@
   "build": {
     "distDir": "../conduit-wasm/dist",
     "devPath": "http://localhost:8000",
-    "beforeDevCommand": "npm start",
-    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "cd conduit-wasm && trunk serve",
+    "beforeBuildCommand": "cd conduit-wasm && trunk build",
     "withGlobalTauri": true
   },
   "tauri": {

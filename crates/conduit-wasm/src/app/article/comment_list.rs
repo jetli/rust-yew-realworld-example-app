@@ -4,8 +4,8 @@ use yew_router::prelude::*;
 
 use super::comment::Comment;
 use super::comment_input::CommentInput;
+use crate::app::AppRoute;
 use crate::hooks::use_user_context;
-use crate::routes::AppRoute;
 use crate::services::comments::*;
 
 #[derive(Properties, Clone, PartialEq, Eq)]

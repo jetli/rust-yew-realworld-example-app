@@ -2,8 +2,8 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use super::delete_button::DeleteButton;
+use crate::app::AppRoute;
 use crate::hooks::use_user_context;
-use crate::routes::AppRoute;
 use crate::types::CommentInfo;
 
 #[derive(Properties, Clone, PartialEq)]
