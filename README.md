@@ -48,7 +48,7 @@ You can view a full list of crates being used in [Cargo.toml], but here are some
 docker-compose up
 ```
 
-You can visit `http://localhost:8080` in your browser now.
+You can visit `http://127.0.0.1:8080` in your browser now.
 
 ### Manually
 
@@ -70,7 +70,7 @@ You can visit `http://localhost:8080` in your browser now.
   trunk serve
   ```
 
-  You can visit `http://localhost:8080` in your browser now.
+  You can visit `http://127.0.0.1:8080` in your browser now.
 * Build and release
 
   ```bash
@@ -114,7 +114,7 @@ This project was bootstrapped with [Create Yew App], if you want to quickly setu
 ```bash
 npx create-yew-app my-app
 cd my-app
-npm start
+trunk serve
 ```
 
 ## Contributing
