@@ -44,7 +44,7 @@ jobs:
         cargo clippy -- --deny=warnings
     - name: Run tests
       run: |
-        wasm-pack test --headless --chrome
+        cd crates/conduit-wasm && wasm-pack test --headless --chrome
     - name: Deploy demo
       uses: JamesIves/github-pages-deploy-action@v4.2.2
       with:
