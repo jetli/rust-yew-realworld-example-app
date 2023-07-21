@@ -42,9 +42,9 @@ jobs:
       run: |
         cargo fmt --all -- --check
         cargo clippy -- --deny=warnings
-    #- name: Run tests
-    #  run: |
-    #    npm run test
+    - name: Run tests
+      run: |
+        wasm-pack test --headless --chrome
     - name: Deploy demo
       uses: JamesIves/github-pages-deploy-action@v4.2.2
       with:
