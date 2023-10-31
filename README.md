@@ -67,14 +67,14 @@ You can visit `http://127.0.0.1:8080` in your browser now.
 
   ```bash
   cp .env.example .env
-  trunk serve
+  cd crates/conduit-wasm && trunk serve
   ```
 
   You can visit `http://127.0.0.1:8080` in your browser now.
 * Build and release
 
   ```bash
-  trunk build
+  cd crates/conduit-wasm && trunk build
   ```
 
   You should find static files at `crates/conduit-wasm/dist` folder now, they are hosted in [gh-pages] branch as a demo.
