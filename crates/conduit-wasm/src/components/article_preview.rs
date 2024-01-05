@@ -31,6 +31,17 @@ pub fn article_preview(props: &Props) -> Html {
 
     {
         let article = article.clone();
+        let props = props.clone();
+        use_effect_with_deps(
+            move |props| {
+                article.set(props.article.clone());
+            },
+            props.clone()
+        )
+    }
+
+    {
+        let article = article.clone();
         let article_favorite = article_favorite.clone();
         use_effect_with_deps(
             move |article_favorite| {
