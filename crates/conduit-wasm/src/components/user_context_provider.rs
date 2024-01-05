@@ -29,7 +29,8 @@ pub fn user_context_provider(props: &Props) -> Html {
 
     {
         let user_ctx = user_ctx.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            current_user,
             move |current_user| {
                 if let Some(user_info) = &current_user.data {
                     user_ctx.set(user_info.user.clone());
@@ -43,7 +44,6 @@ pub fn user_context_provider(props: &Props) -> Html {
                 }
                 || ()
             },
-            current_user,
         )
     }
 

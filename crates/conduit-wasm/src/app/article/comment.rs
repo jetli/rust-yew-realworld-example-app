@@ -33,7 +33,7 @@ pub fn comment(props: &Props) -> Html {
                     { &comment.author.username }
                 </Link<AppRoute>>
                 <span class="date-posted">
-                    { &comment.created_at.format("%B %e, %Y") }
+                    { &comment.created_at.format("%B %e, %Y").to_string() }
                 </span>
                 { if show {
                     html! {

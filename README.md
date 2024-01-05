@@ -87,6 +87,13 @@ You can visit `http://127.0.0.1:8080` in your browser now.
   wasm-pack test --headless --chrome
   ```
 
+* Justfile
+  * Install [wasm-pack] `just install-wasm-pack`
+  * Copy `.env.example` to `.env` `just env`
+  * Trunk serve `just trunk-serve`
+  * Trunk build `just trunk-build`
+  * Test `just test`
+
 ### With [Tauri] for desktop (optional)
 
 * Install [Tauri]
@@ -106,6 +113,11 @@ You can visit `http://127.0.0.1:8080` in your browser now.
   ```bash
   cargo tauri build
   ```
+  
+* Justfile
+  * Install [Tauri] `just install-tauri`
+  * Build and develop `just tauri-dev`
+  * Build and release `just tauri-build`
 
 ## Create Yew App
 
@@ -116,6 +128,10 @@ npx create-yew-app my-app
 cd my-app
 trunk serve
 ```
+
+Justfile:
+* Create-yew-app `just create-yew-app`
+* App-serve `just app-serve`
 
 ## Contributing
 

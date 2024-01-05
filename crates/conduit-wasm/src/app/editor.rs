@@ -42,21 +42,22 @@ pub fn editor(props: &Props) -> Html {
 
     {
         let article_get = article_get.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            props.slug.clone(),
             move |slug| {
                 if slug.is_some() {
                     article_get.run();
                 }
                 || ()
             },
-            props.slug.clone(),
         );
     }
 
     {
         let update_info = update_info.clone();
         let error = error.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            article_get,
             move |article_get| {
                 if let Some(article_info) = &article_get.data {
                     update_info.set(ArticleCreateUpdateInfo {
@@ -73,13 +74,13 @@ pub fn editor(props: &Props) -> Html {
 
                 || ()
             },
-            article_get,
         );
     }
 
     {
         let error = error.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            article_update.clone(),
             move |article_update| {
                 if let Some(article_info) = &article_update.data {
                     error.set(None);
@@ -93,7 +94,6 @@ pub fn editor(props: &Props) -> Html {
                 }
                 || ()
             },
-            article_update.clone(),
         );
     }
 

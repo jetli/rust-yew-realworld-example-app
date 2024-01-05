@@ -41,34 +41,34 @@ pub fn article_list(props: &Props) -> Html {
 
     {
         let current_page = current_page.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            props.filter.clone(),
             move |_| {
                 // Reset to first page
                 current_page.set(0);
                 || ()
             },
-            props.filter.clone(),
         );
     }
 
     {
         let article_list = article_list.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            (props.filter.clone(), *current_page),
             move |_| {
                 article_list.run();
                 || ()
             },
-            (props.filter.clone(), *current_page),
         );
     }
 
     let callback = {
         let current_page = current_page.clone();
         use_callback(
+            (),
             move |page, _| {
                 current_page.set(page);
             },
-            (),
         )
     };
 

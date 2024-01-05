@@ -38,7 +38,8 @@ pub fn main_view(props: &Props) -> Html {
     {
         let tab = tab.clone();
         let filter = filter.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            props.tag.clone(),
             move |tag| {
                 if let Some(tag) = &tag {
                     tab.set(Tab::Tag);
@@ -46,13 +47,13 @@ pub fn main_view(props: &Props) -> Html {
                 }
                 || ()
             },
-            props.tag.clone(),
         );
     }
 
     {
         let filter = filter.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            ((*tab).clone(), props.tag.clone()),
             move |(tab, tag)| {
                 match tab {
                     Tab::Feed => filter.set(ArticleListFilter::Feed),
@@ -65,7 +66,6 @@ pub fn main_view(props: &Props) -> Html {
                 }
                 || ()
             },
-            ((*tab).clone(), props.tag.clone()),
         );
     }
 

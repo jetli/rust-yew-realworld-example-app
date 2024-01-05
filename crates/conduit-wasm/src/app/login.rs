@@ -25,14 +25,14 @@ pub fn login_page() -> Html {
         })
     };
 
-    use_effect_with_deps(
+    use_effect_with(
+        user_login.clone(),
         move |user_login| {
             if let Some(user_info) = &user_login.data {
                 user_ctx.login(user_info.user.clone());
             }
             || ()
         },
-        user_login.clone(),
     );
 
     let onsubmit = {

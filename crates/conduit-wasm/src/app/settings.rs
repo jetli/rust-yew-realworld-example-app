@@ -33,9 +33,9 @@ pub fn settings() -> Html {
     };
 
     {
-        let user_info = user_info.clone();
         let update_info = update_info.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            user_info.clone(),
             move |user_info| {
                 if let Some(user_info) = &user_info.data {
                     update_info.set(UserUpdateInfo {
@@ -48,14 +48,13 @@ pub fn settings() -> Html {
                 }
                 || ()
             },
-            user_info,
         );
     }
 
     {
         let user_ctx = user_ctx.clone();
-        let user_update = user_update.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            user_update.clone(),
             move |user_update| {
                 if let Some(user_info) = &user_update.data {
                     // Login current user again to update user info.
@@ -63,7 +62,6 @@ pub fn settings() -> Html {
                 }
                 || ()
             },
-            user_update,
         );
     }
 
