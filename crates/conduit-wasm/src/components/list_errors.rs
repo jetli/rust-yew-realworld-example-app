@@ -34,7 +34,7 @@ pub fn list_errors(props: &Props) -> Html {
                         }
                         _ => {
                             html! {
-                                <li>{error}</li>
+                                <li>{error.to_string()}</li>
                             }
                         }
 

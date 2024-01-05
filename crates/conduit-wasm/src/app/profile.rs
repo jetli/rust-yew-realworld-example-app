@@ -43,25 +43,25 @@ pub fn profile(props: &Props) -> Html {
 
     {
         let profile_info = profile_info.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            props.username.clone(),
             move |_| {
                 profile_info.run();
                 || ()
             },
-            props.username.clone(),
         );
     }
 
     {
         let profile_info = profile_info.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            user_follow.clone(),
             move |user_follow| {
                 if let Some(profile) = &user_follow.data {
                     profile_info.update(profile.clone());
                 }
                 || ()
             },
-            user_follow.clone(),
         );
     }
 

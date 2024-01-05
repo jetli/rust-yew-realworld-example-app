@@ -55,7 +55,7 @@ pub fn switch(route: AppRoute) -> Html {
         AppRoute::Register => html! {<Register />},
         AppRoute::Home => html! {<Home />},
         AppRoute::Editor { slug } => html! {<Editor slug={Some(slug)}/>},
-        AppRoute::EditorCreate => html! {<Editor />},
+        AppRoute::EditorCreate => html! {<Editor slug={None::<String>}/>},
         AppRoute::Article { slug } => html! {<Article slug={slug} />},
         AppRoute::Settings => html! {<Settings />},
         AppRoute::ProfileFavorites { username } => html! {

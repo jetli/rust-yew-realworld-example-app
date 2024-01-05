@@ -26,14 +26,14 @@ pub fn register_page() -> Html {
     };
 
     {
-        use_effect_with_deps(
+        use_effect_with(
+            user_register.clone(),
             move |user_register| {
                 if let Some(user_info) = &user_register.data {
                     user_ctx.login(user_info.user.clone());
                 }
                 || ()
             },
-            user_register.clone(),
         );
     }
 

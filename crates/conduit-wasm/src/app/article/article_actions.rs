@@ -26,14 +26,14 @@ pub fn article_actions(props: &Props) -> Html {
         })
     };
 
-    use_effect_with_deps(
+    use_effect_with(
+        article_delete,
         move |article_delete| {
             if article_delete.data.is_some() {
                 navigator.push(&AppRoute::Home);
             }
             || ()
         },
-        article_delete,
     );
 
     if props.can_modify {

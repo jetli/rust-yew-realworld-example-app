@@ -47,7 +47,8 @@ pub fn comment_input(props: &Props) -> Html {
     {
         let create_info = create_info.clone();
         let callback = props.callback.clone();
-        use_effect_with_deps(
+        use_effect_with(
+            create_comment.clone(),
             move |create_comment| {
                 if let Some(comment_info) = &create_comment.data {
                     create_info.set(CommentCreateInfo::default());
@@ -56,7 +57,6 @@ pub fn comment_input(props: &Props) -> Html {
 
                 || ()
             },
-            create_comment.clone(),
         );
     }
 

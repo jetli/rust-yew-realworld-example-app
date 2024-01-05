@@ -26,14 +26,14 @@ pub fn delete_button(props: &Props) -> Html {
     };
 
     {
-        use_effect_with_deps(
+        use_effect_with(
+            (props.callback.clone(), props.comment_id, delete_comment),
             move |(callback, comment_id, delete_comment)| {
                 if delete_comment.data.is_some() {
                     callback.emit(*comment_id);
                 }
                 || ()
             },
-            (props.callback.clone(), props.comment_id, delete_comment),
         )
     }
 
