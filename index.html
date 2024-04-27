@@ -7,11 +7,17 @@
     <link href="//fonts.googleapis.com/css?family=Titillium+Web:700|Source+Serif+Pro:400,700|Merriweather+Sans:400,700|Source+Sans+Pro:400,300,600,700,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
     <title>Conduit</title>
     
-    <script type="module">import init from '/rust-yew-realworld-example-app/conduit-wasm-ded81ec169929f4d.js';init('/rust-yew-realworld-example-app/conduit-wasm-ded81ec169929f4d_bg.wasm');</script>
+    
+<script type="module">
+import init, * as bindings from '/rust-yew-realworld-example-app/conduit-wasm-abff38889d61bcef.js';
+init('/rust-yew-realworld-example-app/conduit-wasm-abff38889d61bcef_bg.wasm');
+window.wasmBindings = bindings;
+
+</script>
     <base href="/rust-yew-realworld-example-app/">
   
-<link rel="preload" href="/rust-yew-realworld-example-app/conduit-wasm-ded81ec169929f4d_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="/rust-yew-realworld-example-app/conduit-wasm-ded81ec169929f4d.js"></head>
+<link rel="modulepreload" href="/rust-yew-realworld-example-app/conduit-wasm-abff38889d61bcef.js" crossorigin="anonymous" integrity="sha384-ir6jjTP5CoPYp4Ajc1qUbBViRUAYUkUWpXXuDm4YHclAQl2Ag2Ba+7tYypqlJhEG">
+<link rel="preload" href="/rust-yew-realworld-example-app/conduit-wasm-abff38889d61bcef_bg.wasm" crossorigin="anonymous" integrity="sha384-Q8yhZlKWlTea5Jt6szr6xKSy4jcCJLYEL1Qv8GyMSlrOJEuhvztbmprG82B0133D" as="fetch" type="application/wasm"></head>
   <body>
   
 
