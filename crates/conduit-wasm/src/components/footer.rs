@@ -3,8 +3,8 @@ use yew_router::prelude::*;
 
 use crate::app::AppRoute;
 
-#[function_component(Footer)]
-pub fn footer() -> Html {
+#[function_component]
+pub fn Footer() -> Html {
     html! {
         <footer>
             <div class="container">

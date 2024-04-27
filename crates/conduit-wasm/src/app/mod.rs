@@ -69,8 +69,8 @@ pub fn switch(route: AppRoute) -> Html {
 }
 
 /// The root app component
-#[function_component(App)]
-pub fn app() -> Html {
+#[function_component]
+pub fn App() -> Html {
     html! {
         <HashRouter>
             <UserContextProvider>

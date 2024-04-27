@@ -9,8 +9,8 @@ use crate::services::auth::*;
 use crate::types::{UserUpdateInfo, UserUpdateInfoWrapper};
 
 /// Update settings of the author or logout
-#[function_component(Settings)]
-pub fn settings() -> Html {
+#[function_component]
+pub fn Settings() -> Html {
     let user_ctx = use_user_context();
     let update_info = use_state(UserUpdateInfo::default);
     let password = use_state(String::default);
@@ -35,36 +35,30 @@ pub fn settings() -> Html {
     {
         let user_info = user_info.clone();
         let update_info = update_info.clone();
-        use_effect_with_deps(
-            move |user_info| {
-                if let Some(user_info) = &user_info.data {
-                    update_info.set(UserUpdateInfo {
-                        email: user_info.user.email.clone(),
-                        username: user_info.user.username.clone(),
-                        password: None,
-                        image: user_info.user.image.clone().unwrap_or_default(),
-                        bio: user_info.user.bio.clone().unwrap_or_default(),
-                    });
-                }
-                || ()
-            },
-            user_info,
-        );
+        use_effect_with(user_info, move |user_info| {
+            if let Some(user_info) = &user_info.data {
+                update_info.set(UserUpdateInfo {
+                    email: user_info.user.email.clone(),
+                    username: user_info.user.username.clone(),
+                    password: None,
+                    image: user_info.user.image.clone().unwrap_or_default(),
+                    bio: user_info.user.bio.clone().unwrap_or_default(),
+                });
+            }
+            || ()
+        });
     }
 
     {
         let user_ctx = user_ctx.clone();
         let user_update = user_update.clone();
-        use_effect_with_deps(
-            move |user_update| {
-                if let Some(user_info) = &user_update.data {
-                    // Login current user again to update user info.
-                    user_ctx.login(user_info.user.clone());
-                }
-                || ()
-            },
-            user_update,
-        );
+        use_effect_with(user_update, move |user_update| {
+            if let Some(user_info) = &user_update.data {
+                // Login current user again to update user info.
+                user_ctx.login(user_info.user.clone());
+            }
+            || ()
+        });
     }
 
     let onsubmit = {

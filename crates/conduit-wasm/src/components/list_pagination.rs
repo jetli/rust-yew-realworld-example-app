@@ -10,8 +10,8 @@ pub struct Props {
 }
 
 /// Pagination component
-#[function_component(ListPagination)]
-pub fn list_pagination(props: &Props) -> Html {
+#[function_component]
+pub fn ListPagination(props: &Props) -> Html {
     if props.total_count < ITEMS_PER_PAGE {
         return html! {};
     }
