@@ -11,8 +11,8 @@ pub struct Props {
 }
 
 /// A component to delete a comment from an article.
-#[function_component(DeleteButton)]
-pub fn delete_button(props: &Props) -> Html {
+#[function_component]
+pub fn DeleteButton(props: &Props) -> Html {
     let delete_comment = {
         let slug = props.slug.clone();
         let comment_id = props.comment_id;
@@ -26,14 +26,14 @@ pub fn delete_button(props: &Props) -> Html {
     };
 
     {
-        use_effect_with_deps(
+        use_effect_with(
+            (props.callback.clone(), props.comment_id, delete_comment),
             move |(callback, comment_id, delete_comment)| {
                 if delete_comment.data.is_some() {
                     callback.emit(*comment_id);
                 }
                 || ()
             },
-            (props.callback.clone(), props.comment_id, delete_comment),
         )
     }
 

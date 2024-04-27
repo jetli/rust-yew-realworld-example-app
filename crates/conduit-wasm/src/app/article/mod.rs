@@ -22,8 +22,8 @@ pub struct Props {
 }
 
 /// Article detail page
-#[function_component(Article)]
-pub fn article(props: &Props) -> Html {
+#[function_component]
+pub fn Article(props: &Props) -> Html {
     let article = {
         let slug = props.slug.clone();
         use_async_with_options(

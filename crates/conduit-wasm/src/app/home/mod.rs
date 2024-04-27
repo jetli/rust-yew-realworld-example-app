@@ -9,8 +9,8 @@ use main_view::MainView;
 use tags::Tags;
 
 /// Home page with an article list and a tag list.
-#[function_component(Home)]
-pub fn home() -> Html {
+#[function_component]
+pub fn Home() -> Html {
     let tag = use_state(|| None);
     let callback = {
         let tag = tag.clone();

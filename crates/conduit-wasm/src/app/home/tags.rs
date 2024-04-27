@@ -9,8 +9,8 @@ pub struct Props {
 }
 
 /// A tag list component with a callback to notify that some tag is clicked.
-#[function_component(Tags)]
-pub fn tags(props: &Props) -> Html {
+#[function_component]
+pub fn Tags(props: &Props) -> Html {
     let tag_list = use_async_with_options(
         async move { get_all().await },
         UseAsyncOptions::enable_auto(),

@@ -13,8 +13,8 @@ pub struct Props {
     pub created_at: String,
 }
 
-#[function_component(ArticleMeta)]
-pub fn article_meta(props: &Props) -> Html {
+#[function_component]
+pub fn ArticleMeta(props: &Props) -> Html {
     html! {
         <div class="article-meta">
             <img src={ props.author.image.clone() } alt={ props.author.username.clone() } />

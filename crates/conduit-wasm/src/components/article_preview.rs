@@ -15,8 +15,8 @@ pub struct Props {
 }
 
 /// Single article preview component used by article list.
-#[function_component(ArticlePreview)]
-pub fn article_preview(props: &Props) -> Html {
+#[function_component]
+pub fn ArticlePreview(props: &Props) -> Html {
     let article = use_state(|| props.article.clone());
     let article_favorite = {
         let article = article.clone();
@@ -32,15 +32,12 @@ pub fn article_preview(props: &Props) -> Html {
     {
         let article = article.clone();
         let article_favorite = article_favorite.clone();
-        use_effect_with_deps(
-            move |article_favorite| {
-                if let Some(article_info) = &article_favorite.data {
-                    article.set(article_info.article.clone());
-                }
-                || ()
-            },
-            article_favorite,
-        );
+        use_effect_with(article_favorite, move |article_favorite| {
+            if let Some(article_info) = &article_favorite.data {
+                article.set(article_info.article.clone());
+            }
+            || ()
+        });
     }
 
     let favorite_button_class = if article.favorited {
@@ -66,7 +63,7 @@ pub fn article_preview(props: &Props) -> Html {
                         { &article.author.username }
                     </Link<AppRoute>>
                     <span class="date">
-                        { &article.created_at.format("%B %e, %Y") }
+                        { format!("{}", &article.created_at.format("%B %e, %Y")) }
                     </span>
                 </div>
                 <div class="pull-xs-right">
