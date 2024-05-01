@@ -12,8 +12,8 @@ pub struct Props {
 }
 
 /// Article actions component to edit or delete an article.
-#[function_component(ArticleActions)]
-pub fn article_actions(props: &Props) -> Html {
+#[function_component]
+pub fn ArticleActions(props: &Props) -> Html {
     let navigator = use_navigator().unwrap();
     let article_delete = {
         let slug = props.slug.clone();
@@ -26,15 +26,12 @@ pub fn article_actions(props: &Props) -> Html {
         })
     };
 
-    use_effect_with(
-        article_delete,
-        move |article_delete| {
-            if article_delete.data.is_some() {
-                navigator.push(&AppRoute::Home);
-            }
-            || ()
-        },
-    );
+    use_effect_with(article_delete, move |article_delete| {
+        if article_delete.data.is_some() {
+            navigator.push(&AppRoute::Home);
+        }
+        || ()
+    });
 
     if props.can_modify {
         html! {

@@ -5,8 +5,8 @@ use crate::app::AppRoute;
 use crate::hooks::use_user_context;
 use crate::types::UserInfo;
 
-#[function_component(Header)]
-pub fn header() -> Html {
+#[function_component]
+pub fn Header() -> Html {
     let user_ctx = use_user_context();
 
     html! {

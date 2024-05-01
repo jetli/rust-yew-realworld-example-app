@@ -20,8 +20,8 @@ pub enum ProfileTab {
 }
 
 /// Profile for an author
-#[function_component(Profile)]
-pub fn profile(props: &Props) -> Html {
+#[function_component]
+pub fn Profile(props: &Props) -> Html {
     let profile_info = {
         let username = props.username.clone();
         use_async(async move { get(username).await })
@@ -43,26 +43,20 @@ pub fn profile(props: &Props) -> Html {
 
     {
         let profile_info = profile_info.clone();
-        use_effect_with(
-            props.username.clone(),
-            move |_| {
-                profile_info.run();
-                || ()
-            },
-        );
+        use_effect_with(props.username.clone(), move |_| {
+            profile_info.run();
+            || ()
+        });
     }
 
     {
         let profile_info = profile_info.clone();
-        use_effect_with(
-            user_follow.clone(),
-            move |user_follow| {
-                if let Some(profile) = &user_follow.data {
-                    profile_info.update(profile.clone());
-                }
-                || ()
-            },
-        );
+        use_effect_with(user_follow.clone(), move |user_follow| {
+            if let Some(profile) = &user_follow.data {
+                profile_info.update(profile.clone());
+            }
+            || ()
+        });
     }
 
     let onclick = {

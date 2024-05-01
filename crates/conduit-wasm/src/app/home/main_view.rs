@@ -16,8 +16,8 @@ pub enum Tab {
 }
 
 /// Main content with tabs of article list for home page
-#[function_component(MainView)]
-pub fn main_view(props: &Props) -> Html {
+#[function_component]
+pub fn MainView(props: &Props) -> Html {
     let user_ctx = use_user_context();
     let tab = use_state(|| {
         if user_ctx.is_authenticated() {
@@ -38,35 +38,29 @@ pub fn main_view(props: &Props) -> Html {
     {
         let tab = tab.clone();
         let filter = filter.clone();
-        use_effect_with(
-            props.tag.clone(),
-            move |tag| {
-                if let Some(tag) = &tag {
-                    tab.set(Tab::Tag);
-                    filter.set(ArticleListFilter::ByTag(tag.clone()));
-                }
-                || ()
-            },
-        );
+        use_effect_with(props.tag.clone(), move |tag| {
+            if let Some(tag) = &tag {
+                tab.set(Tab::Tag);
+                filter.set(ArticleListFilter::ByTag(tag.clone()));
+            }
+            || ()
+        });
     }
 
     {
         let filter = filter.clone();
-        use_effect_with(
-            ((*tab).clone(), props.tag.clone()),
-            move |(tab, tag)| {
-                match tab {
-                    Tab::Feed => filter.set(ArticleListFilter::Feed),
-                    Tab::All => filter.set(ArticleListFilter::All),
-                    Tab::Tag => {
-                        if let Some(tag) = tag {
-                            filter.set(ArticleListFilter::ByTag(tag.clone()));
-                        }
+        use_effect_with(((*tab).clone(), props.tag.clone()), move |(tab, tag)| {
+            match tab {
+                Tab::Feed => filter.set(ArticleListFilter::Feed),
+                Tab::All => filter.set(ArticleListFilter::All),
+                Tab::Tag => {
+                    if let Some(tag) = tag {
+                        filter.set(ArticleListFilter::ByTag(tag.clone()));
                     }
                 }
-                || ()
-            },
-        );
+            }
+            || ()
+        });
     }
 
     html! {

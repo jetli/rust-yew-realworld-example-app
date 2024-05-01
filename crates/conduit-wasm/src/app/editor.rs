@@ -11,12 +11,13 @@ use crate::types::{ArticleCreateUpdateInfo, ArticleCreateUpdateInfoWrapper};
 
 #[derive(Properties, Clone, PartialEq, Eq)]
 pub struct Props {
+    #[prop_or_default]
     pub slug: Option<String>,
 }
 
 /// Create or update an article
-#[function_component(Editor)]
-pub fn editor(props: &Props) -> Html {
+#[function_component]
+pub fn Editor(props: &Props) -> Html {
     let navigator = use_navigator().unwrap();
     let error = use_state(|| None);
     let update_info = use_state(ArticleCreateUpdateInfo::default);
@@ -42,59 +43,50 @@ pub fn editor(props: &Props) -> Html {
 
     {
         let article_get = article_get.clone();
-        use_effect_with(
-            props.slug.clone(),
-            move |slug| {
-                if slug.is_some() {
-                    article_get.run();
-                }
-                || ()
-            },
-        );
+        use_effect_with(props.slug.clone(), move |slug| {
+            if slug.is_some() {
+                article_get.run();
+            }
+            || ()
+        });
     }
 
     {
         let update_info = update_info.clone();
         let error = error.clone();
-        use_effect_with(
-            article_get,
-            move |article_get| {
-                if let Some(article_info) = &article_get.data {
-                    update_info.set(ArticleCreateUpdateInfo {
-                        title: article_info.article.title.clone(),
-                        description: article_info.article.description.clone(),
-                        body: article_info.article.body.clone(),
-                        tag_list: Some(article_info.article.tag_list.clone()),
-                    });
-                    error.set(None);
-                }
-                if let Some(e) = &article_get.error {
-                    error.set(Some(e.clone()));
-                }
+        use_effect_with(article_get, move |article_get| {
+            if let Some(article_info) = &article_get.data {
+                update_info.set(ArticleCreateUpdateInfo {
+                    title: article_info.article.title.clone(),
+                    description: article_info.article.description.clone(),
+                    body: article_info.article.body.clone(),
+                    tag_list: Some(article_info.article.tag_list.clone()),
+                });
+                error.set(None);
+            }
+            if let Some(e) = &article_get.error {
+                error.set(Some(e.clone()));
+            }
 
-                || ()
-            },
-        );
+            || ()
+        });
     }
 
     {
         let error = error.clone();
-        use_effect_with(
-            article_update.clone(),
-            move |article_update| {
-                if let Some(article_info) = &article_update.data {
-                    error.set(None);
-                    // Route to article detail page.
-                    navigator.push(&AppRoute::Article {
-                        slug: article_info.article.slug.clone(),
-                    });
-                }
-                if let Some(e) = &article_update.error {
-                    error.set(Some(e.clone()));
-                }
-                || ()
-            },
-        );
+        use_effect_with(article_update.clone(), move |article_update| {
+            if let Some(article_info) = &article_update.data {
+                error.set(None);
+                // Route to article detail page.
+                navigator.push(&AppRoute::Article {
+                    slug: article_info.article.slug.clone(),
+                });
+            }
+            if let Some(e) = &article_update.error {
+                error.set(Some(e.clone()));
+            }
+            || ()
+        });
     }
 
     let onsubmit = {

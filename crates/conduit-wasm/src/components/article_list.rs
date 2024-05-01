@@ -21,8 +21,8 @@ pub enum ArticleListFilter {
 }
 
 /// List of articles component
-#[function_component(ArticleList)]
-pub fn article_list(props: &Props) -> Html {
+#[function_component]
+pub fn ArticleList(props: &Props) -> Html {
     let current_page = use_state(|| 0u32);
     let article_list = {
         let filter = props.filter.clone();
@@ -41,35 +41,26 @@ pub fn article_list(props: &Props) -> Html {
 
     {
         let current_page = current_page.clone();
-        use_effect_with(
-            props.filter.clone(),
-            move |_| {
-                // Reset to first page
-                current_page.set(0);
-                || ()
-            },
-        );
+        use_effect_with(props.filter.clone(), move |_| {
+            // Reset to first page
+            current_page.set(0);
+            || ()
+        });
     }
 
     {
         let article_list = article_list.clone();
-        use_effect_with(
-            (props.filter.clone(), *current_page),
-            move |_| {
-                article_list.run();
-                || ()
-            },
-        );
+        use_effect_with((props.filter.clone(), *current_page), move |_| {
+            article_list.run();
+            || ()
+        });
     }
 
     let callback = {
         let current_page = current_page.clone();
-        use_callback(
-            (),
-            move |page, _| {
-                current_page.set(page);
-            },
-        )
+        use_callback((), move |page, _| {
+            current_page.set(page);
+        })
     };
 
     if let Some(article_list) = &article_list.data {

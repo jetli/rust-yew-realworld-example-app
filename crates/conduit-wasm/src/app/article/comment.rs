@@ -13,8 +13,8 @@ pub struct Props {
     pub callback: Callback<u32>,
 }
 
-#[function_component(Comment)]
-pub fn comment(props: &Props) -> Html {
+#[function_component]
+pub fn Comment(props: &Props) -> Html {
     let user_ctx = use_user_context();
     let comment = &props.comment;
     let show = user_ctx.is_authenticated() && user_ctx.username == comment.author.username;

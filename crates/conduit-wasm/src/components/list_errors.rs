@@ -7,8 +7,8 @@ pub struct Props {
     pub error: Option<Error>,
 }
 
-#[function_component(ListErrors)]
-pub fn list_errors(props: &Props) -> Html {
+#[function_component]
+pub fn ListErrors(props: &Props) -> Html {
     if let Some(error) = &props.error {
         html! {
             <ul class="error-messages">

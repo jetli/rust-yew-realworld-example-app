@@ -11,8 +11,8 @@ pub struct Props {
 }
 
 /// A component to delete a comment from an article.
-#[function_component(DeleteButton)]
-pub fn delete_button(props: &Props) -> Html {
+#[function_component]
+pub fn DeleteButton(props: &Props) -> Html {
     let delete_comment = {
         let slug = props.slug.clone();
         let comment_id = props.comment_id;

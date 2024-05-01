@@ -15,8 +15,8 @@ pub struct Props {
 }
 
 /// Create a comment for an article.
-#[function_component(CommentInput)]
-pub fn comment_input(props: &Props) -> Html {
+#[function_component]
+pub fn CommentInput(props: &Props) -> Html {
     let create_info = use_state(CommentCreateInfo::default);
     let user_ctx = use_user_context();
     let create_comment = {
@@ -47,17 +47,14 @@ pub fn comment_input(props: &Props) -> Html {
     {
         let create_info = create_info.clone();
         let callback = props.callback.clone();
-        use_effect_with(
-            create_comment.clone(),
-            move |create_comment| {
-                if let Some(comment_info) = &create_comment.data {
-                    create_info.set(CommentCreateInfo::default());
-                    callback.emit(comment_info.comment.clone());
-                }
+        use_effect_with(create_comment.clone(), move |create_comment| {
+            if let Some(comment_info) = &create_comment.data {
+                create_info.set(CommentCreateInfo::default());
+                callback.emit(comment_info.comment.clone());
+            }
 
-                || ()
-            },
-        );
+            || ()
+        });
     }
 
     html! {

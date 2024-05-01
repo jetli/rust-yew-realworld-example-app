@@ -2,8 +2,8 @@ use yew::prelude::*;
 
 use crate::hooks::use_user_context;
 
-#[function_component(Banner)]
-pub fn banner() -> Html {
+#[function_component]
+pub fn Banner() -> Html {
     let user_ctx = use_user_context();
     if user_ctx.is_authenticated() {
         html! {}

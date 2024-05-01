@@ -1,9 +1,9 @@
 [workspace]
+resolver = "2"
 members = [
     "crates/conduit-wasm",
     "crates/conduit-tauri",
 ]
-resolver = "2"
 
 [profile.release]
 lto = true

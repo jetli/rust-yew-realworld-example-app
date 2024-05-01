@@ -11,8 +11,8 @@ use crate::services::auth::*;
 use crate::types::{RegisterInfo, RegisterInfoWrapper};
 
 /// Register page
-#[function_component(Register)]
-pub fn register_page() -> Html {
+#[function_component]
+pub fn Register() -> Html {
     let user_ctx = use_user_context();
     let register_info = use_state(RegisterInfo::default);
     let user_register = {
@@ -26,15 +26,12 @@ pub fn register_page() -> Html {
     };
 
     {
-        use_effect_with(
-            user_register.clone(),
-            move |user_register| {
-                if let Some(user_info) = &user_register.data {
-                    user_ctx.login(user_info.user.clone());
-                }
-                || ()
-            },
-        );
+        use_effect_with(user_register.clone(), move |user_register| {
+            if let Some(user_info) = &user_register.data {
+                user_ctx.login(user_info.user.clone());
+            }
+            || ()
+        });
     }
 
     let onsubmit = {

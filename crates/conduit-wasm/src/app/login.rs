@@ -11,8 +11,8 @@ use crate::services::auth::*;
 use crate::types::{LoginInfo, LoginInfoWrapper};
 
 /// Login page
-#[function_component(Login)]
-pub fn login_page() -> Html {
+#[function_component]
+pub fn Login() -> Html {
     let user_ctx = use_user_context();
     let login_info = use_state(LoginInfo::default);
     let user_login = {
@@ -25,15 +25,12 @@ pub fn login_page() -> Html {
         })
     };
 
-    use_effect_with(
-        user_login.clone(),
-        move |user_login| {
-            if let Some(user_info) = &user_login.data {
-                user_ctx.login(user_info.user.clone());
-            }
-            || ()
-        },
-    );
+    use_effect_with(user_login.clone(), move |user_login| {
+        if let Some(user_info) = &user_login.data {
+            user_ctx.login(user_info.user.clone());
+        }
+        || ()
+    });
 
     let onsubmit = {
         let user_login = user_login.clone();

@@ -15,8 +15,8 @@ pub struct Props {
 }
 
 /// Single article preview component used by article list.
-#[function_component(ArticlePreview)]
-pub fn article_preview(props: &Props) -> Html {
+#[function_component]
+pub fn ArticlePreview(props: &Props) -> Html {
     let article = use_state(|| props.article.clone());
     let article_favorite = {
         let article = article.clone();
@@ -31,25 +31,19 @@ pub fn article_preview(props: &Props) -> Html {
 
     {
         let article = article.clone();
-        use_effect_with(
-            props.clone(),
-            move |props| {
-                article.set(props.article.clone());
-            },
-        )
+        use_effect_with(props.clone(), move |props| {
+            article.set(props.article.clone());
+        })
     }
 
     {
         let article = article.clone();
-        use_effect_with(
-            article_favorite.clone(),
-            move |article_favorite| {
-                if let Some(article_info) = &article_favorite.data {
-                    article.set(article_info.article.clone());
-                }
-                || ()
-            },
-        );
+        use_effect_with(article_favorite.clone(), move |article_favorite| {
+            if let Some(article_info) = &article_favorite.data {
+                article.set(article_info.article.clone());
+            }
+            || ()
+        });
     }
 
     let favorite_button_class = if article.favorited {

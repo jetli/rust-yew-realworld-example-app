@@ -14,8 +14,8 @@ pub struct Props {
 }
 
 /// A comment list component of an article.
-#[function_component(CommentList)]
-pub fn comment_list(props: &Props) -> Html {
+#[function_component]
+pub fn CommentList(props: &Props) -> Html {
     let user_ctx = use_user_context();
     let comment_list = {
         let slug = props.slug.clone();
