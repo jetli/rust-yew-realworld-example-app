@@ -34,7 +34,7 @@ pub fn ListErrors(props: &Props) -> Html {
                         }
                         _ => {
                             html! {
-                                <li>{ format!("{}", error) }</li>
+                                <li>{error.to_string()}</li>
                             }
                         }
 

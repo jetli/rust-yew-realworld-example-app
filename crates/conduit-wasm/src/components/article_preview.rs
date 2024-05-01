@@ -31,8 +31,14 @@ pub fn ArticlePreview(props: &Props) -> Html {
 
     {
         let article = article.clone();
-        let article_favorite = article_favorite.clone();
-        use_effect_with(article_favorite, move |article_favorite| {
+        use_effect_with(props.clone(), move |props| {
+            article.set(props.article.clone());
+        })
+    }
+
+    {
+        let article = article.clone();
+        use_effect_with(article_favorite.clone(), move |article_favorite| {
             if let Some(article_info) = &article_favorite.data {
                 article.set(article_info.article.clone());
             }
@@ -63,7 +69,7 @@ pub fn ArticlePreview(props: &Props) -> Html {
                         { &article.author.username }
                     </Link<AppRoute>>
                     <span class="date">
-                        { format!("{}", &article.created_at.format("%B %e, %Y")) }
+                        { &article.created_at.format("%B %e, %Y").to_string() }
                     </span>
                 </div>
                 <div class="pull-xs-right">
