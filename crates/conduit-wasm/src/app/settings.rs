@@ -33,6 +33,7 @@ pub fn Settings() -> Html {
     };
 
     {
+        let user_info = user_info.clone();
         let update_info = update_info.clone();
         use_effect_with(user_info, move |user_info| {
             if let Some(user_info) = &user_info.data {
