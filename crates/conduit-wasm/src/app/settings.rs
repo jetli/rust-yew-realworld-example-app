@@ -150,8 +150,7 @@ pub fn Settings() -> Html {
                                         rows="8"
                                         placeholder="Short bio about you"
                                         value={update_info.bio.clone()}
-                                        oninput={oninput_bio} >
-                                    </textarea>
+                                        oninput={oninput_bio} />
                                 </fieldset>
                                 <fieldset class="form-group">
                                     <input

@@ -66,8 +66,7 @@ pub fn CommentInput(props: &Props) -> Html {
                         placeholder="Write a comment..."
                         rows="3"
                         value={create_info.body.clone()}
-                        oninput={oninput} >
-                    </textarea>
+                        oninput={oninput} />
                 </div>
                 <div class="card-footer">
                     {if user_ctx.is_authenticated() {

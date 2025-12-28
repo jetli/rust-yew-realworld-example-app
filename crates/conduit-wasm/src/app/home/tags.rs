@@ -35,7 +35,7 @@ pub fn Tags(props: &Props) -> Html {
                             href=""
                             class="tag-default tag-pill"
                             {onclick}>
-                            { &tag }
+                            { &*tag }
                         </a>
                     }
                 })}

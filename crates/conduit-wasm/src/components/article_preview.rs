@@ -97,7 +97,7 @@ pub fn ArticlePreview(props: &Props) -> Html {
                 {for article.tag_list.iter().map(|tag| {
                     html! {
                         <li class="tag-default tag-pill tag-outline" key={ (&tag).to_string() }>
-                            { &tag }
+                            { &*tag }
                         </li>
                     }
                 })}

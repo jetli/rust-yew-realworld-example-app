@@ -189,8 +189,7 @@ pub fn Editor(props: &Props) -> Html {
                                         rows="8"
                                         placeholder="Write your article (in markdown)"
                                         value={update_info.body.clone()}
-                                        oninput={oninput_body} >
-                                    </textarea>
+                                        oninput={oninput_body} />
                                 </fieldset>
                                 <fieldset class="form-group">
                                     <input
@@ -202,34 +201,30 @@ pub fn Editor(props: &Props) -> Html {
                                         {onkeypress}
                                         {onkeyup} />
                                     <div class="tag-list">
-                                        {
-                                            if let Some(tag_list) = &update_info.tag_list.clone() {
-                                                html! {for tag_list.iter().map(|tag| {
-                                                    let onclick_remove = {
-                                                        let tag = tag.clone();
-                                                        let update_info = update_info.clone();
-                                                        Callback::from(move |_| {
-                                                            // Remove a tag
-                                                            let mut info = (*update_info).clone();
-                                                            if let Some(tag_list) = &mut info.tag_list {
-                                                                tag_list.retain(|t| t != &tag);
-                                                            }
-                                                            update_info.set(info);
-                                                        })
-                                                    };
-                                                    html! {
-                                                        <span class="tag-default tag-pill">
-                                                            <i class="ion-close-round"
-                                                                onclick={onclick_remove}>
-                                                            </i>
-                                                            { &tag }
-                                                        </span>
+                                        {for update_info.tag_list.as_ref().map(|tags| {
+                                            tags.iter().map(|tag| {
+                                                let onclick_remove = {
+                                                let tag = tag.clone();
+                                                let update_info = update_info.clone();
+                                                Callback::from(move |_| {
+                                                    // Remove a tag
+                                                    let mut info = (*update_info).clone();
+                                                    if let Some(tag_list) = &mut info.tag_list {
+                                                        tag_list.retain(|t| t != &tag);
                                                     }
-                                                })}
-                                            } else {
-                                                html! {}
+                                                    update_info.set(info);
+                                                })
+                                            };
+                                            html! {
+                                                <span class="tag-default tag-pill">
+                                                    <i class="ion-close-round"
+                                                        onclick={onclick_remove}>
+                                                    </i>
+                                                    { &tag }
+                                                </span>
                                             }
-                                        }
+                                            })
+                                        }).into_iter().flatten()}
                                     </div>
                                 </fieldset>
                                 <button
