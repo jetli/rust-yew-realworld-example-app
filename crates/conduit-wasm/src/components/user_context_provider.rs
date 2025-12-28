@@ -35,7 +35,7 @@ pub fn UserContextProvider(props: &Props) -> Html {
             }
 
             if let Some(Error::Unauthorized | Error::Forbidden) = &current_user.error {
-                 set_token(None);
+                set_token(None);
             }
             || ()
         })
