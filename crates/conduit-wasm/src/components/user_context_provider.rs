@@ -34,11 +34,8 @@ pub fn UserContextProvider(props: &Props) -> Html {
                 user_ctx.set(user_info.user.clone());
             }
 
-            if let Some(error) = &current_user.error {
-                match error {
-                    Error::Unauthorized | Error::Forbidden => set_token(None),
-                    _ => (),
-                }
+            if let Some(Error::Unauthorized | Error::Forbidden) = &current_user.error {
+                 set_token(None);
             }
             || ()
         })
